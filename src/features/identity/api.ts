@@ -7,9 +7,8 @@
 // contract and will succeed once M3.1 opens per-role write policies (or when
 // called by a service-role context).
 
-import type { SupabaseClient } from "@supabase/supabase-js";
-
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import type {
   CreateDelegationInput,
   Delegation,
@@ -21,18 +20,10 @@ import type {
   UserWithAccess,
 } from "./types";
 
-// The generated Database type (src/integrations/supabase/types.ts) currently
-// exposes NO tables, so the strongly-typed client rejects the tas_* names at
-// compile time. Lovable regenerates that file to include the tas_* tables once
-// this module's migration is applied on sync; until then we access PostgREST
-// through a loosely-typed view of the client. Swap back to `supabase` (and
-// delete this alias) after types.ts is regenerated for full end-to-end typing.
-const db = supabase as unknown as SupabaseClient;
-
 // --- Reads ------------------------------------------------------------------
 
 export async function listUsers(): Promise<UserWithAccess[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_user")
     .select(
       `*,
@@ -57,7 +48,7 @@ export async function listUsers(): Promise<UserWithAccess[]> {
 }
 
 export async function getUser(userId: string): Promise<UserWithAccess | null> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_user")
     .select(
       `*,
@@ -82,7 +73,7 @@ export async function getUser(userId: string): Promise<UserWithAccess | null> {
 }
 
 export async function listRoles(): Promise<TasRole[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_role")
     .select("id, code, name_en, name_ar, is_system, status")
     .order("code");
@@ -91,7 +82,7 @@ export async function listRoles(): Promise<TasRole[]> {
 }
 
 export async function listPermissions(): Promise<TasPermission[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_permission")
     .select("id, module_code, action, name_en, name_ar")
     .order("module_code")
@@ -104,7 +95,7 @@ export async function listPermissions(): Promise<TasPermission[]> {
 export async function listRolePermissions(): Promise<
   { role_id: string; permission_id: string }[]
 > {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_role_permission")
     .select("role_id, permission_id");
   if (error) throw error;
@@ -118,7 +109,7 @@ export async function assignRoles(
   userId: string,
   roleIds: string[],
 ): Promise<void> {
-  const { error: delErr } = await db
+  const { error: delErr } = await supabase
     .from("tas_user_role")
     .delete()
     .eq("user_id", userId);
@@ -127,12 +118,12 @@ export async function assignRoles(
   if (roleIds.length === 0) return;
 
   const rows = roleIds.map((role_id) => ({ user_id: userId, role_id }));
-  const { error: insErr } = await db.from("tas_user_role").insert(rows);
+  const { error: insErr } = await supabase.from("tas_user_role").insert(rows);
   if (insErr) throw insErr;
 }
 
 export async function setScope(input: SetScopeInput): Promise<UserScope> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_user_scope")
     .insert({
       user_id: input.user_id,
@@ -150,13 +141,13 @@ export async function setScope(input: SetScopeInput): Promise<UserScope> {
 export async function createDelegation(
   input: CreateDelegationInput,
 ): Promise<Delegation> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_delegation")
     .insert({
       delegator_user_id: input.delegator_user_id,
       delegate_user_id: input.delegate_user_id,
       type: input.type,
-      scope_json: input.scope_json ?? [],
+      scope_json: (input.scope_json ?? []) as Json,
       start_date: input.start_date ?? null,
       end_date: input.end_date ?? null,
       status: "active",
@@ -168,7 +159,7 @@ export async function createDelegation(
 }
 
 export async function revokeDelegation(delegationId: string): Promise<void> {
-  const { error } = await db
+  const { error } = await supabase
     .from("tas_delegation")
     .update({ status: "revoked" })
     .eq("id", delegationId);
