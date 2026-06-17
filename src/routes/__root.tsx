@@ -80,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
+      { title: "Al Hamra TAS" },
       { name: "description", content: "Al Hamra TAS is a foundational enterprise web app skeleton supporting English and Arabic with full RTL." },
       { name: "author", content: "Lovable" },
       { property: "og:title", content: "Lovable App" },

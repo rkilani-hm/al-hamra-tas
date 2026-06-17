@@ -1,9 +1,10 @@
 // Module M0.2 — Core Configuration: typed Supabase data-access layer.
 //
 // Uses the strict typed `supabase` client (Database types include the tas_*
-// tables after the M0.1/M0.2 migrations were applied on sync). Under the M0.2
-// RLS scaffold, config tables are service-role-only until M3.1, so authenticated
-// reads return empty — callers wrap these with a degrade-to-empty helper.
+// tables after the M0.1/M0.2 migrations were applied on sync). Config tables
+// allow authenticated SELECT (read is live); WRITES remain service-role-only
+// until per-role write policies arrive in M3.1. Reads are still wrapped in a
+// defensive degrade-to-empty helper to keep the UI resilient to errors.
 
 import { supabase } from "@/integrations/supabase/client";
 import type {
@@ -394,7 +395,9 @@ export async function deleteLookup(id: string): Promise<void> {
 }
 
 // =========================================================================
-// Shared helper: degrade reads to empty under the M0.2 RLS scaffold.
+// Shared helper: defensively degrade a read to an empty list on error so the
+// UI stays resilient. (Authenticated SELECT is granted on config tables; this
+// is a guard against transient/permission errors, not an expected-empty path.)
 // =========================================================================
 
 export function safe<T>(fn: () => Promise<T[]>): () => Promise<T[]> {

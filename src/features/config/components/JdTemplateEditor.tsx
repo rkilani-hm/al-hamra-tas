@@ -147,7 +147,7 @@ export function JdTemplateEditor({
         setOriginalCompIds(detail.competencies.map((c) => c.competency_id));
       })
       .catch(() => {
-        /* degrade silently — RLS scaffold may block reads until M3.1 */
+        /* degrade silently — defensive guard against a failed detail read */
       });
 
     return () => {
