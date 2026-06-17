@@ -1,0 +1,28 @@
+{
+  "app": {
+    "name": "Al Hamra TAS",
+    "tagline": "Trade & Administration System"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "reports": "Reports",
+    "settings": "Settings"
+  },
+  "topbar": {
+    "toggleSidebar": "Toggle sidebar",
+    "language": "العربية",
+    "userMenu": "Account",
+    "profile": "Profile",
+    "signOut": "Sign out"
+  },
+  "login": {
+    "title": "Sign in to Al Hamra TAS",
+    "subtitle": "Use your organization account to continue.",
+    "microsoft": "Sign in with Microsoft",
+    "notConfigured": "Microsoft sign-in is not configured yet."
+  },
+  "shell": {
+    "welcome": "Welcome",
+    "placeholder": "Your modules will appear here."
+  }
+}
