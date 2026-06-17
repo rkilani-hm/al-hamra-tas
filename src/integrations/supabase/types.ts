@@ -48,6 +48,8 @@ export type Database = {
       }
       tas_branch: {
         Row: {
+          address_ar: string | null
+          address_en: string | null
           code: string
           created_at: string
           created_by: string | null
@@ -55,11 +57,14 @@ export type Database = {
           id: string
           name_ar: string
           name_en: string
+          paci_area: string | null
           status: string
           updated_at: string
           updated_by: string | null
         }
         Insert: {
+          address_ar?: string | null
+          address_en?: string | null
           code: string
           created_at?: string
           created_by?: string | null
@@ -67,11 +72,14 @@ export type Database = {
           id?: string
           name_ar: string
           name_en: string
+          paci_area?: string | null
           status?: string
           updated_at?: string
           updated_by?: string | null
         }
         Update: {
+          address_ar?: string | null
+          address_en?: string | null
           code?: string
           created_at?: string
           created_by?: string | null
@@ -79,6 +87,7 @@ export type Database = {
           id?: string
           name_ar?: string
           name_en?: string
+          paci_area?: string | null
           status?: string
           updated_at?: string
           updated_by?: string | null
@@ -92,6 +101,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tas_competency: {
+        Row: {
+          category: string | null
+          code: string
+          created_at: string
+          created_by: string | null
+          description_ar: string | null
+          description_en: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          category?: string | null
+          code: string
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          category?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       tas_delegation: {
         Row: {
@@ -159,9 +213,11 @@ export type Database = {
           code: string
           created_at: string
           created_by: string | null
+          function_code: string | null
           id: string
           name_ar: string
           name_en: string
+          parent_department_id: string | null
           status: string
           updated_at: string
           updated_by: string | null
@@ -171,9 +227,11 @@ export type Database = {
           code: string
           created_at?: string
           created_by?: string | null
+          function_code?: string | null
           id?: string
           name_ar: string
           name_en: string
+          parent_department_id?: string | null
           status?: string
           updated_at?: string
           updated_by?: string | null
@@ -183,9 +241,11 @@ export type Database = {
           code?: string
           created_at?: string
           created_by?: string | null
+          function_code?: string | null
           id?: string
           name_ar?: string
           name_en?: string
+          parent_department_id?: string | null
           status?: string
           updated_at?: string
           updated_by?: string | null
@@ -198,9 +258,188 @@ export type Database = {
             referencedRelation: "tas_branch"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "tas_department_parent_department_id_fkey"
+            columns: ["parent_department_id"]
+            isOneToOne: false
+            referencedRelation: "tas_department"
+            referencedColumns: ["id"]
+          },
         ]
       }
       tas_entity: {
+        Row: {
+          code: string
+          commercial_reg_no: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          kuwaitization_target_pct: number | null
+          name_ar: string
+          name_en: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          code: string
+          commercial_reg_no?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kuwaitization_target_pct?: number | null
+          name_ar: string
+          name_en: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          code?: string
+          commercial_reg_no?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          kuwaitization_target_pct?: number | null
+          name_ar?: string
+          name_en?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      tas_jd_competency: {
+        Row: {
+          competency_id: string
+          jd_template_id: string
+          proficiency_level: number | null
+        }
+        Insert: {
+          competency_id: string
+          jd_template_id: string
+          proficiency_level?: number | null
+        }
+        Update: {
+          competency_id?: string
+          jd_template_id?: string
+          proficiency_level?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_jd_competency_competency_id_fkey"
+            columns: ["competency_id"]
+            isOneToOne: false
+            referencedRelation: "tas_competency"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_jd_competency_jd_template_id_fkey"
+            columns: ["jd_template_id"]
+            isOneToOne: false
+            referencedRelation: "tas_jd_template"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_jd_section: {
+        Row: {
+          body_ar: string | null
+          body_en: string | null
+          heading_ar: string | null
+          heading_en: string | null
+          id: string
+          jd_template_id: string
+          section_type: string
+          sort_order: number
+        }
+        Insert: {
+          body_ar?: string | null
+          body_en?: string | null
+          heading_ar?: string | null
+          heading_en?: string | null
+          id?: string
+          jd_template_id: string
+          section_type: string
+          sort_order?: number
+        }
+        Update: {
+          body_ar?: string | null
+          body_en?: string | null
+          heading_ar?: string | null
+          heading_en?: string | null
+          id?: string
+          jd_template_id?: string
+          section_type?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_jd_section_jd_template_id_fkey"
+            columns: ["jd_template_id"]
+            isOneToOne: false
+            referencedRelation: "tas_jd_template"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_jd_template: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          id: string
+          job_position_id: string | null
+          status: string
+          summary_ar: string | null
+          summary_en: string | null
+          title_ar: string
+          title_en: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          job_position_id?: string | null
+          status?: string
+          summary_ar?: string | null
+          summary_en?: string | null
+          title_ar: string
+          title_en: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          job_position_id?: string | null
+          status?: string
+          summary_ar?: string | null
+          summary_en?: string | null
+          title_ar?: string
+          title_en?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_jd_template_job_position_id_fkey"
+            columns: ["job_position_id"]
+            isOneToOne: false
+            referencedRelation: "tas_job_position"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_job_family: {
         Row: {
           code: string
           created_at: string
@@ -230,6 +469,147 @@ export type Database = {
           id?: string
           name_ar?: string
           name_en?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      tas_job_grade: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          rank: number | null
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          rank?: number | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          rank?: number | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      tas_job_position: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_kuwaitization_targeted: boolean
+          job_family_id: string | null
+          job_grade_id: string | null
+          name_ar: string
+          name_en: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_kuwaitization_targeted?: boolean
+          job_family_id?: string | null
+          job_grade_id?: string | null
+          name_ar: string
+          name_en: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_kuwaitization_targeted?: boolean
+          job_family_id?: string | null
+          job_grade_id?: string | null
+          name_ar?: string
+          name_en?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_job_position_job_family_id_fkey"
+            columns: ["job_family_id"]
+            isOneToOne: false
+            referencedRelation: "tas_job_family"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_job_position_job_grade_id_fkey"
+            columns: ["job_grade_id"]
+            isOneToOne: false
+            referencedRelation: "tas_job_grade"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_lookup: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          id: string
+          lookup_type: string
+          name_ar: string
+          name_en: string
+          sort_order: number
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lookup_type: string
+          name_ar: string
+          name_en: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          lookup_type?: string
+          name_ar?: string
+          name_en?: string
+          sort_order?: number
           status?: string
           updated_at?: string
           updated_by?: string | null
