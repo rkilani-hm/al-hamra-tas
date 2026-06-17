@@ -13,6 +13,9 @@ import type {
   CreateDelegationInput,
   Delegation,
   SetScopeInput,
+  TasBranch,
+  TasDepartment,
+  TasEntity,
   TasPermission,
   TasRole,
   TasUser,
@@ -164,4 +167,35 @@ export async function revokeDelegation(delegationId: string): Promise<void> {
     .update({ status: "revoked" })
     .eq("id", delegationId);
   if (error) throw error;
+}
+
+// --- Org reads for the ScopeDrawer cascade (M0.2 fills these from real data) --
+// These power the Entity -> Branch -> Department selects. The ScopeDrawer filters
+// branches by entity and departments by branch client-side from the full lists.
+
+export async function listScopeEntities(): Promise<TasEntity[]> {
+  const { data, error } = await supabase
+    .from("tas_entity")
+    .select("id, code, name_en, name_ar, status")
+    .order("code");
+  if (error) throw error;
+  return (data ?? []) as TasEntity[];
+}
+
+export async function listScopeBranches(): Promise<TasBranch[]> {
+  const { data, error } = await supabase
+    .from("tas_branch")
+    .select("id, entity_id, code, name_en, name_ar, status")
+    .order("code");
+  if (error) throw error;
+  return (data ?? []) as TasBranch[];
+}
+
+export async function listScopeDepartments(): Promise<TasDepartment[]> {
+  const { data, error } = await supabase
+    .from("tas_department")
+    .select("id, branch_id, code, name_en, name_ar, status")
+    .order("code");
+  if (error) throw error;
+  return (data ?? []) as TasDepartment[];
 }

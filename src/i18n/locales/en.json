@@ -6,6 +6,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "identity": "Identity & Access",
+    "config": "Core Configuration",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -121,5 +122,156 @@
       "delegationError": "Could not create delegation."
     },
     "denied": "You do not have permission to access Identity & Access."
+  },
+  "config": {
+    "page": {
+      "title": "Core Configuration",
+      "subtitle": "Organization structure, job catalog, JD templates, and reference data."
+    },
+    "backToConfig": "Back to Core Configuration",
+    "landing": {
+      "orgDesc": "Manage entities, branches, and departments.",
+      "jobsDesc": "Manage job families, grades, and positions.",
+      "jdDesc": "Build reusable bilingual job-description templates.",
+      "lookupsDesc": "Manage reference lookup values."
+    },
+    "common": {
+      "loading": "Loading…",
+      "select": "Select…",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "add": "Add",
+      "remove": "Remove",
+      "delete": "Delete",
+      "archive": "Archive",
+      "reorder": "Reorder",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
+    },
+    "toasts": {
+      "saved": "Saved.",
+      "saveError": "Could not save.",
+      "deleted": "Deleted.",
+      "deleteError": "Could not delete."
+    },
+    "fields": {
+      "code": "Code",
+      "name": "Name",
+      "nameEn": "Name (English)",
+      "nameAr": "Name (Arabic)",
+      "commercialRegNo": "Commercial Reg. No.",
+      "kuwaitizationTarget": "Kuwaitization Target %",
+      "addressEn": "Address (English)",
+      "addressAr": "Address (Arabic)",
+      "paciArea": "PACI Area",
+      "parentDepartment": "Parent Department",
+      "functionCode": "Function Code",
+      "rank": "Rank",
+      "jobFamily": "Job Family",
+      "jobGrade": "Job Grade",
+      "kuwaitization": "Kuwaitization Targeted",
+      "title": "Title",
+      "titleEn": "Title (English)",
+      "titleAr": "Title (Arabic)",
+      "summaryEn": "Summary (English)",
+      "summaryAr": "Summary (Arabic)",
+      "headingEn": "Heading (English)",
+      "headingAr": "Heading (Arabic)",
+      "bodyEn": "Body (English)",
+      "bodyAr": "Body (Arabic)",
+      "proficiency": "Proficiency",
+      "status": "Status",
+      "version": "Version",
+      "sortOrder": "Sort Order",
+      "actions": "Actions"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "org": {
+      "title": "Organization",
+      "pageTitle": "Organization Structure",
+      "empty": "No entities yet. Add your first entity to begin.",
+      "addEntity": "Add Entity",
+      "addBranch": "Add Branch",
+      "addDepartment": "Add Department",
+      "noBranches": "No branches yet.",
+      "noDepartments": "No departments yet."
+    },
+    "entity": {
+      "addTitle": "Add Entity",
+      "editTitle": "Edit Entity",
+      "formHint": "Entities are the top of the org hierarchy (Entity → Branch → Department)."
+    },
+    "branch": {
+      "addTitle": "Add Branch",
+      "editTitle": "Edit Branch",
+      "formHint": "Branches belong to an entity."
+    },
+    "department": {
+      "addTitle": "Add Department",
+      "editTitle": "Edit Department",
+      "formHint": "Departments belong to a branch and may have a parent (sub-department).",
+      "noParent": "None (top-level)"
+    },
+    "jobs": {
+      "title": "Job Catalog",
+      "pageTitle": "Job Catalog",
+      "families": "Families",
+      "grades": "Grades",
+      "positions": "Positions",
+      "addFamily": "Add Family",
+      "addGrade": "Add Grade",
+      "addPosition": "Add Position",
+      "emptyFamilies": "No job families yet.",
+      "emptyGrades": "No job grades yet.",
+      "emptyPositions": "No job positions yet."
+    },
+    "jd": {
+      "title": "JD Templates",
+      "pageTitle": "Job Description Templates",
+      "add": "Add Template",
+      "empty": "No JD templates yet.",
+      "addTitle": "New JD Template",
+      "editTitle": "Edit JD Template",
+      "sections": "Sections",
+      "addSection": "Add Section",
+      "noSections": "No sections yet.",
+      "competencies": "Competencies",
+      "addCompetency": "Add Competency",
+      "noCompetencies": "No competencies attached yet."
+    },
+    "jdStatus": {
+      "draft": "Draft",
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "sectionType": {
+      "responsibilities": "Responsibilities",
+      "requirements": "Requirements",
+      "qualifications": "Qualifications",
+      "benefits": "Benefits",
+      "other": "Other"
+    },
+    "lookups": {
+      "title": "Lookups",
+      "pageTitle": "Reference Lookups",
+      "type": "Lookup Type",
+      "add": "Add Value",
+      "editTitle": "Edit Value",
+      "empty": "No values for this lookup type yet."
+    },
+    "lookupType": {
+      "employment_type": "Employment Type",
+      "contract_type": "Contract Type",
+      "nationality_class": "Nationality Class",
+      "work_location_type": "Work Location Type"
+    }
   }
 }

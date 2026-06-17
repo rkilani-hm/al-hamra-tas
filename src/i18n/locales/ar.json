@@ -6,6 +6,7 @@
   "nav": {
     "dashboard": "لوحة التحكم",
     "identity": "الهوية والوصول",
+    "config": "الإعدادات الأساسية",
     "reports": "التقارير",
     "settings": "الإعدادات"
   },
@@ -121,5 +122,156 @@
       "delegationError": "تعذر إنشاء التفويض."
     },
     "denied": "ليس لديك إذن للوصول إلى الهوية والوصول."
+  },
+  "config": {
+    "page": {
+      "title": "الإعدادات الأساسية",
+      "subtitle": "الهيكل التنظيمي، ودليل الوظائف، وقوالب الوصف الوظيفي، والبيانات المرجعية."
+    },
+    "backToConfig": "العودة إلى الإعدادات الأساسية",
+    "landing": {
+      "orgDesc": "إدارة الكيانات والفروع والأقسام.",
+      "jobsDesc": "إدارة عائلات الوظائف والدرجات والمناصب.",
+      "jdDesc": "إنشاء قوالب وصف وظيفي ثنائية اللغة قابلة لإعادة الاستخدام.",
+      "lookupsDesc": "إدارة قيم البيانات المرجعية."
+    },
+    "common": {
+      "loading": "جارٍ التحميل…",
+      "select": "اختر…",
+      "yes": "نعم",
+      "no": "لا"
+    },
+    "buttons": {
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "edit": "تعديل",
+      "add": "إضافة",
+      "remove": "إزالة",
+      "delete": "حذف",
+      "archive": "أرشفة",
+      "reorder": "إعادة ترتيب",
+      "moveUp": "تحريك لأعلى",
+      "moveDown": "تحريك لأسفل"
+    },
+    "toasts": {
+      "saved": "تم الحفظ.",
+      "saveError": "تعذر الحفظ.",
+      "deleted": "تم الحذف.",
+      "deleteError": "تعذر الحذف."
+    },
+    "fields": {
+      "code": "الرمز",
+      "name": "الاسم",
+      "nameEn": "الاسم (إنجليزي)",
+      "nameAr": "الاسم (عربي)",
+      "commercialRegNo": "رقم السجل التجاري",
+      "kuwaitizationTarget": "نسبة التكويت المستهدفة %",
+      "addressEn": "العنوان (إنجليزي)",
+      "addressAr": "العنوان (عربي)",
+      "paciArea": "منطقة PACI",
+      "parentDepartment": "القسم الأصل",
+      "functionCode": "رمز الوظيفة",
+      "rank": "الرتبة",
+      "jobFamily": "عائلة الوظيفة",
+      "jobGrade": "درجة الوظيفة",
+      "kuwaitization": "مستهدف للتكويت",
+      "title": "العنوان",
+      "titleEn": "العنوان (إنجليزي)",
+      "titleAr": "العنوان (عربي)",
+      "summaryEn": "الملخص (إنجليزي)",
+      "summaryAr": "الملخص (عربي)",
+      "headingEn": "العنوان الفرعي (إنجليزي)",
+      "headingAr": "العنوان الفرعي (عربي)",
+      "bodyEn": "النص (إنجليزي)",
+      "bodyAr": "النص (عربي)",
+      "proficiency": "مستوى الإتقان",
+      "status": "الحالة",
+      "version": "الإصدار",
+      "sortOrder": "ترتيب الفرز",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "org": {
+      "title": "المؤسسة",
+      "pageTitle": "الهيكل التنظيمي",
+      "empty": "لا توجد كيانات بعد. أضف أول كيان للبدء.",
+      "addEntity": "إضافة كيان",
+      "addBranch": "إضافة فرع",
+      "addDepartment": "إضافة قسم",
+      "noBranches": "لا توجد فروع بعد.",
+      "noDepartments": "لا توجد أقسام بعد."
+    },
+    "entity": {
+      "addTitle": "إضافة كيان",
+      "editTitle": "تعديل الكيان",
+      "formHint": "الكيانات هي أعلى الهيكل التنظيمي (كيان ← فرع ← قسم)."
+    },
+    "branch": {
+      "addTitle": "إضافة فرع",
+      "editTitle": "تعديل الفرع",
+      "formHint": "الفروع تتبع كياناً."
+    },
+    "department": {
+      "addTitle": "إضافة قسم",
+      "editTitle": "تعديل القسم",
+      "formHint": "الأقسام تتبع فرعاً وقد يكون لها قسم أصل (قسم فرعي).",
+      "noParent": "بدون (مستوى أعلى)"
+    },
+    "jobs": {
+      "title": "دليل الوظائف",
+      "pageTitle": "دليل الوظائف",
+      "families": "العائلات",
+      "grades": "الدرجات",
+      "positions": "المناصب",
+      "addFamily": "إضافة عائلة",
+      "addGrade": "إضافة درجة",
+      "addPosition": "إضافة منصب",
+      "emptyFamilies": "لا توجد عائلات وظيفية بعد.",
+      "emptyGrades": "لا توجد درجات وظيفية بعد.",
+      "emptyPositions": "لا توجد مناصب وظيفية بعد."
+    },
+    "jd": {
+      "title": "قوالب الوصف الوظيفي",
+      "pageTitle": "قوالب الوصف الوظيفي",
+      "add": "إضافة قالب",
+      "empty": "لا توجد قوالب وصف وظيفي بعد.",
+      "addTitle": "قالب وصف وظيفي جديد",
+      "editTitle": "تعديل قالب الوصف الوظيفي",
+      "sections": "الأقسام",
+      "addSection": "إضافة قسم",
+      "noSections": "لا توجد أقسام بعد.",
+      "competencies": "الكفاءات",
+      "addCompetency": "إضافة كفاءة",
+      "noCompetencies": "لم يتم إرفاق كفاءات بعد."
+    },
+    "jdStatus": {
+      "draft": "مسودة",
+      "active": "نشط",
+      "archived": "مؤرشف"
+    },
+    "sectionType": {
+      "responsibilities": "المسؤوليات",
+      "requirements": "المتطلبات",
+      "qualifications": "المؤهلات",
+      "benefits": "المزايا",
+      "other": "أخرى"
+    },
+    "lookups": {
+      "title": "القوائم المرجعية",
+      "pageTitle": "القوائم المرجعية",
+      "type": "نوع القائمة",
+      "add": "إضافة قيمة",
+      "editTitle": "تعديل القيمة",
+      "empty": "لا توجد قيم لهذا النوع بعد."
+    },
+    "lookupType": {
+      "employment_type": "نوع التوظيف",
+      "contract_type": "نوع العقد",
+      "nationality_class": "فئة الجنسية",
+      "work_location_type": "نوع موقع العمل"
+    }
   }
 }

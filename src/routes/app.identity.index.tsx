@@ -22,6 +22,9 @@ import {
   listPermissions,
   listRolePermissions,
   listRoles,
+  listScopeBranches,
+  listScopeDepartments,
+  listScopeEntities,
   listUsers,
   setScope,
 } from "@/features/identity/api";
@@ -69,6 +72,11 @@ function IdentityPage() {
     queryKey: ["identity", "role-permissions"],
     queryFn: safe(listRolePermissions),
   });
+
+  // Org data for the ScopeDrawer cascade (real rows from M0.2 master data).
+  const entitiesQuery = useQuery({ queryKey: ["identity", "scope-entities"], queryFn: safe(listScopeEntities) });
+  const branchesQuery = useQuery({ queryKey: ["identity", "scope-branches"], queryFn: safe(listScopeBranches) });
+  const departmentsQuery = useQuery({ queryKey: ["identity", "scope-departments"], queryFn: safe(listScopeDepartments) });
 
   const users = usersQuery.data ?? [];
 
@@ -181,14 +189,14 @@ function IdentityPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Scope drawer — entities/branches/departments arrive with M0.2 org master data */}
+      {/* Scope drawer — entities/branches/departments load from M0.2 org master data */}
       <ScopeDrawer
         open={scopeOpen}
         onOpenChange={setScopeOpen}
         user={scopeUser}
-        entities={[]}
-        branches={[]}
-        departments={[]}
+        entities={entitiesQuery.data ?? []}
+        branches={branchesQuery.data ?? []}
+        departments={departmentsQuery.data ?? []}
         onSave={handleSaveScope}
         saving={savingScope}
       />

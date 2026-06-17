@@ -14,6 +14,11 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppIdentityIndexRouteImport } from './routes/app.identity.index'
+import { Route as AppConfigIndexRouteImport } from './routes/app.config.index'
+import { Route as AppConfigOrgRouteImport } from './routes/app.config.org'
+import { Route as AppConfigLookupsRouteImport } from './routes/app.config.lookups'
+import { Route as AppConfigJobsRouteImport } from './routes/app.config.jobs'
+import { Route as AppConfigJdRouteImport } from './routes/app.config.jd'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -40,18 +45,53 @@ const AppIdentityIndexRoute = AppIdentityIndexRouteImport.update({
   path: '/identity/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppConfigIndexRoute = AppConfigIndexRouteImport.update({
+  id: '/config/',
+  path: '/config/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConfigOrgRoute = AppConfigOrgRouteImport.update({
+  id: '/config/org',
+  path: '/config/org',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConfigLookupsRoute = AppConfigLookupsRouteImport.update({
+  id: '/config/lookups',
+  path: '/config/lookups',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConfigJobsRoute = AppConfigJobsRouteImport.update({
+  id: '/config/jobs',
+  path: '/config/jobs',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppConfigJdRoute = AppConfigJdRouteImport.update({
+  id: '/config/jd',
+  path: '/config/jd',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/app/': typeof AppIndexRoute
+  '/app/config/jd': typeof AppConfigJdRoute
+  '/app/config/jobs': typeof AppConfigJobsRoute
+  '/app/config/lookups': typeof AppConfigLookupsRoute
+  '/app/config/org': typeof AppConfigOrgRoute
+  '/app/config/': typeof AppConfigIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/app': typeof AppIndexRoute
+  '/app/config/jd': typeof AppConfigJdRoute
+  '/app/config/jobs': typeof AppConfigJobsRoute
+  '/app/config/lookups': typeof AppConfigLookupsRoute
+  '/app/config/org': typeof AppConfigOrgRoute
+  '/app/config': typeof AppConfigIndexRoute
   '/app/identity': typeof AppIdentityIndexRoute
 }
 export interface FileRoutesById {
@@ -60,14 +100,49 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/app/': typeof AppIndexRoute
+  '/app/config/jd': typeof AppConfigJdRoute
+  '/app/config/jobs': typeof AppConfigJobsRoute
+  '/app/config/lookups': typeof AppConfigLookupsRoute
+  '/app/config/org': typeof AppConfigOrgRoute
+  '/app/config/': typeof AppConfigIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/app' | '/login' | '/app/' | '/app/identity/'
+  fullPaths:
+    | '/'
+    | '/app'
+    | '/login'
+    | '/app/'
+    | '/app/config/jd'
+    | '/app/config/jobs'
+    | '/app/config/lookups'
+    | '/app/config/org'
+    | '/app/config/'
+    | '/app/identity/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/app' | '/app/identity'
-  id: '__root__' | '/' | '/app' | '/login' | '/app/' | '/app/identity/'
+  to:
+    | '/'
+    | '/login'
+    | '/app'
+    | '/app/config/jd'
+    | '/app/config/jobs'
+    | '/app/config/lookups'
+    | '/app/config/org'
+    | '/app/config'
+    | '/app/identity'
+  id:
+    | '__root__'
+    | '/'
+    | '/app'
+    | '/login'
+    | '/app/'
+    | '/app/config/jd'
+    | '/app/config/jobs'
+    | '/app/config/lookups'
+    | '/app/config/org'
+    | '/app/config/'
+    | '/app/identity/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -113,16 +188,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIdentityIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/config/': {
+      id: '/app/config/'
+      path: '/config'
+      fullPath: '/app/config/'
+      preLoaderRoute: typeof AppConfigIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/config/org': {
+      id: '/app/config/org'
+      path: '/config/org'
+      fullPath: '/app/config/org'
+      preLoaderRoute: typeof AppConfigOrgRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/config/lookups': {
+      id: '/app/config/lookups'
+      path: '/config/lookups'
+      fullPath: '/app/config/lookups'
+      preLoaderRoute: typeof AppConfigLookupsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/config/jobs': {
+      id: '/app/config/jobs'
+      path: '/config/jobs'
+      fullPath: '/app/config/jobs'
+      preLoaderRoute: typeof AppConfigJobsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/config/jd': {
+      id: '/app/config/jd'
+      path: '/config/jd'
+      fullPath: '/app/config/jd'
+      preLoaderRoute: typeof AppConfigJdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppConfigJdRoute: typeof AppConfigJdRoute
+  AppConfigJobsRoute: typeof AppConfigJobsRoute
+  AppConfigLookupsRoute: typeof AppConfigLookupsRoute
+  AppConfigOrgRoute: typeof AppConfigOrgRoute
+  AppConfigIndexRoute: typeof AppConfigIndexRoute
   AppIdentityIndexRoute: typeof AppIdentityIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppConfigJdRoute: AppConfigJdRoute,
+  AppConfigJobsRoute: AppConfigJobsRoute,
+  AppConfigLookupsRoute: AppConfigLookupsRoute,
+  AppConfigOrgRoute: AppConfigOrgRoute,
+  AppConfigIndexRoute: AppConfigIndexRoute,
   AppIdentityIndexRoute: AppIdentityIndexRoute,
 }
 
@@ -136,3 +256,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
