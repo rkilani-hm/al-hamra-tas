@@ -5,6 +5,7 @@
   },
   "nav": {
     "dashboard": "لوحة التحكم",
+    "identity": "الهوية والوصول",
     "reports": "التقارير",
     "settings": "الإعدادات"
   },
@@ -24,5 +25,101 @@
   "shell": {
     "welcome": "مرحباً",
     "placeholder": "ستظهر وحداتك هنا."
+  },
+  "identity": {
+    "page": {
+      "title": "الهوية والوصول",
+      "subtitle": "إدارة المستخدمين والأدوار والنطاق التنظيمي والتفويضات."
+    },
+    "table": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "status": "الحالة",
+      "roles": "الأدوار",
+      "scope": "النطاق",
+      "actions": "الإجراءات",
+      "loading": "جارٍ تحميل المستخدمين…",
+      "empty": "لا يوجد مستخدمون بعد. يظهر المستخدمون هنا بعد أول تسجيل دخول لهم.",
+      "noRoles": "لا توجد أدوار",
+      "noScope": "لا يوجد نطاق",
+      "scopeUnit": "تخصيص"
+    },
+    "status": {
+      "unprovisioned": "غير مُفعَّل",
+      "active": "نشط",
+      "inactive": "غير نشط"
+    },
+    "roles": {
+      "SYSTEM_ADMIN": "مسؤول النظام",
+      "HR_MANAGER": "مدير الموارد البشرية",
+      "RECRUITER": "أخصائي توظيف",
+      "HIRING_MANAGER": "مدير التوظيف",
+      "APPROVER": "معتمِد",
+      "AUDITOR": "مدقق",
+      "INTERVIEWER": "مُحاوِر"
+    },
+    "actions": {
+      "assignRoles": "تعيين الأدوار",
+      "editScope": "تعديل النطاق",
+      "delegate": "تفويض",
+      "viewMatrix": "مصفوفة الأدوار والصلاحيات"
+    },
+    "matrix": {
+      "title": "مصفوفة الأدوار والصلاحيات",
+      "subtitle": "الصلاحيات الممنوحة لكل دور، حسب الوحدة والإجراء.",
+      "selectRole": "الدور",
+      "selectRolePlaceholder": "اختر دوراً",
+      "module": "الوحدة",
+      "empty": "لم يتم تعريف أي صلاحيات بعد.",
+      "actions": {
+        "view": "عرض",
+        "create": "إنشاء",
+        "edit": "تعديل",
+        "approve": "اعتماد",
+        "delete": "حذف",
+        "export": "تصدير"
+      }
+    },
+    "scope": {
+      "title": "تعديل النطاق التنظيمي",
+      "subtitle": "تحديد النطاق لـ {{name}}.",
+      "subtitleEmpty": "اختر مستخدماً لتعديل نطاقه.",
+      "entity": "الكيان",
+      "entityPlaceholder": "اختر كياناً",
+      "branch": "الفرع",
+      "branchPlaceholder": "جميع الفروع",
+      "department": "القسم",
+      "departmentPlaceholder": "جميع الأقسام",
+      "crossDept": "قراءة فقط عبر الأقسام",
+      "crossDeptHint": "السماح بالوصول للقراءة فقط إلى الأقسام المماثلة ضمن النطاق."
+    },
+    "delegation": {
+      "title": "إنشاء تفويض",
+      "subtitle": "تفويض الوصول من {{name}}.",
+      "subtitleEmpty": "اختر مستخدماً للتفويض منه.",
+      "delegate": "تفويض إلى",
+      "delegatePlaceholder": "اختر مستخدماً",
+      "type": "النوع",
+      "types": {
+        "role_wide": "على مستوى الدور",
+        "task_specific": "خاص بمهمة"
+      },
+      "startDate": "تاريخ البدء",
+      "endDate": "تاريخ الانتهاء",
+      "dateError": "يجب أن يكون تاريخ الانتهاء في أو بعد تاريخ البدء."
+    },
+    "buttons": {
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "delegate": "تفويض",
+      "revoke": "إلغاء التفويض"
+    },
+    "toasts": {
+      "scopeSaved": "تم حفظ النطاق.",
+      "scopeError": "تعذر حفظ النطاق.",
+      "delegationCreated": "تم إنشاء التفويض.",
+      "delegationError": "تعذر إنشاء التفويض."
+    },
+    "denied": "ليس لديك إذن للوصول إلى الهوية والوصول."
   }
 }

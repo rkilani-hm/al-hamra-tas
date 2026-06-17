@@ -5,6 +5,7 @@
   },
   "nav": {
     "dashboard": "Dashboard",
+    "identity": "Identity & Access",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -24,5 +25,101 @@
   "shell": {
     "welcome": "Welcome",
     "placeholder": "Your modules will appear here."
+  },
+  "identity": {
+    "page": {
+      "title": "Identity & Access",
+      "subtitle": "Manage users, roles, organizational scope, and delegations."
+    },
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "status": "Status",
+      "roles": "Roles",
+      "scope": "Scope",
+      "actions": "Actions",
+      "loading": "Loading users…",
+      "empty": "No users yet. Users appear here after their first sign-in.",
+      "noRoles": "No roles",
+      "noScope": "No scope",
+      "scopeUnit": "assignment(s)"
+    },
+    "status": {
+      "unprovisioned": "Unprovisioned",
+      "active": "Active",
+      "inactive": "Inactive"
+    },
+    "roles": {
+      "SYSTEM_ADMIN": "System Administrator",
+      "HR_MANAGER": "HR Manager",
+      "RECRUITER": "Recruiter",
+      "HIRING_MANAGER": "Hiring Manager",
+      "APPROVER": "Approver",
+      "AUDITOR": "Auditor",
+      "INTERVIEWER": "Interviewer"
+    },
+    "actions": {
+      "assignRoles": "Assign roles",
+      "editScope": "Edit scope",
+      "delegate": "Delegate",
+      "viewMatrix": "Role & permission matrix"
+    },
+    "matrix": {
+      "title": "Role & Permission Matrix",
+      "subtitle": "Permissions granted to each role, by module and action.",
+      "selectRole": "Role",
+      "selectRolePlaceholder": "Select a role",
+      "module": "Module",
+      "empty": "No permissions defined yet.",
+      "actions": {
+        "view": "View",
+        "create": "Create",
+        "edit": "Edit",
+        "approve": "Approve",
+        "delete": "Delete",
+        "export": "Export"
+      }
+    },
+    "scope": {
+      "title": "Edit Organizational Scope",
+      "subtitle": "Set the scope for {{name}}.",
+      "subtitleEmpty": "Select a user to edit their scope.",
+      "entity": "Entity",
+      "entityPlaceholder": "Select an entity",
+      "branch": "Branch",
+      "branchPlaceholder": "All branches",
+      "department": "Department",
+      "departmentPlaceholder": "All departments",
+      "crossDept": "Cross-department read-only",
+      "crossDeptHint": "Allow read-only access to sibling departments within scope."
+    },
+    "delegation": {
+      "title": "Create Delegation",
+      "subtitle": "Delegate access from {{name}}.",
+      "subtitleEmpty": "Select a user to delegate from.",
+      "delegate": "Delegate to",
+      "delegatePlaceholder": "Select a user",
+      "type": "Type",
+      "types": {
+        "role_wide": "Role-wide",
+        "task_specific": "Task-specific"
+      },
+      "startDate": "Start date",
+      "endDate": "End date",
+      "dateError": "End date must be on or after the start date."
+    },
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delegate": "Delegate",
+      "revoke": "Revoke"
+    },
+    "toasts": {
+      "scopeSaved": "Scope saved.",
+      "scopeError": "Could not save scope.",
+      "delegationCreated": "Delegation created.",
+      "delegationError": "Could not create delegation."
+    },
+    "denied": "You do not have permission to access Identity & Access."
   }
 }
