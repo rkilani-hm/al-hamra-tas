@@ -5,8 +5,6 @@
 // RLS scaffold, config tables are service-role-only until M3.1, so authenticated
 // reads return empty — callers wrap these with a degrade-to-empty helper.
 
-import type { SupabaseClient } from "@supabase/supabase-js";
-
 import { supabase } from "@/integrations/supabase/client";
 import type {
   Branch,
@@ -22,20 +20,12 @@ import type {
   Lookup,
 } from "./types";
 
-// INTERIM (same pattern as M0.1): the generated Database type does not yet
-// include the M0.2 tables/columns because Lovable applies this module's
-// migration on sync AFTER this code is committed. Until types.ts is
-// regenerated, access PostgREST through a loosely-typed view of the client.
-// Follow-up: swap `db` back to the strict typed `supabase` client (and delete
-// this alias) after the M0.2 migration is applied — mirrors the M0.1 cleanup.
-const db = supabase as unknown as SupabaseClient;
-
 // =========================================================================
 // Org master data
 // =========================================================================
 
 export async function listEntities(): Promise<Entity[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_entity")
     .select(
       "id, code, name_en, name_ar, status, commercial_reg_no, kuwaitization_target_pct",
@@ -46,7 +36,7 @@ export async function listEntities(): Promise<Entity[]> {
 }
 
 export async function createEntity(input: Omit<Entity, "id">): Promise<Entity> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_entity")
     .insert(input)
     .select("*")
@@ -59,12 +49,12 @@ export async function updateEntity(
   id: string,
   patch: Partial<Omit<Entity, "id">>,
 ): Promise<void> {
-  const { error } = await db.from("tas_entity").update(patch).eq("id", id);
+  const { error } = await supabase.from("tas_entity").update(patch).eq("id", id);
   if (error) throw error;
 }
 
 export async function listBranches(entityId?: string): Promise<Branch[]> {
-  let query = db
+  let query = supabase
     .from("tas_branch")
     .select(
       "id, entity_id, code, name_en, name_ar, status, address_en, address_ar, paci_area",
@@ -77,7 +67,7 @@ export async function listBranches(entityId?: string): Promise<Branch[]> {
 }
 
 export async function createBranch(input: Omit<Branch, "id">): Promise<Branch> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_branch")
     .insert(input)
     .select("*")
@@ -90,12 +80,12 @@ export async function updateBranch(
   id: string,
   patch: Partial<Omit<Branch, "id">>,
 ): Promise<void> {
-  const { error } = await db.from("tas_branch").update(patch).eq("id", id);
+  const { error } = await supabase.from("tas_branch").update(patch).eq("id", id);
   if (error) throw error;
 }
 
 export async function listDepartments(branchId?: string): Promise<Department[]> {
-  let query = db
+  let query = supabase
     .from("tas_department")
     .select(
       "id, branch_id, code, name_en, name_ar, status, parent_department_id, function_code",
@@ -110,7 +100,7 @@ export async function listDepartments(branchId?: string): Promise<Department[]> 
 export async function createDepartment(
   input: Omit<Department, "id">,
 ): Promise<Department> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_department")
     .insert(input)
     .select("*")
@@ -123,7 +113,7 @@ export async function updateDepartment(
   id: string,
   patch: Partial<Omit<Department, "id">>,
 ): Promise<void> {
-  const { error } = await db
+  const { error } = await supabase
     .from("tas_department")
     .update(patch)
     .eq("id", id);
@@ -135,7 +125,7 @@ export async function updateDepartment(
 // =========================================================================
 
 export async function listJobFamilies(): Promise<JobFamily[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_job_family")
     .select("id, code, name_en, name_ar, status")
     .order("code");
@@ -146,7 +136,7 @@ export async function listJobFamilies(): Promise<JobFamily[]> {
 export async function createJobFamily(
   input: Omit<JobFamily, "id">,
 ): Promise<JobFamily> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_job_family")
     .insert(input)
     .select("*")
@@ -159,7 +149,7 @@ export async function updateJobFamily(
   id: string,
   patch: Partial<Omit<JobFamily, "id">>,
 ): Promise<void> {
-  const { error } = await db
+  const { error } = await supabase
     .from("tas_job_family")
     .update(patch)
     .eq("id", id);
@@ -167,7 +157,7 @@ export async function updateJobFamily(
 }
 
 export async function listJobGrades(): Promise<JobGrade[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_job_grade")
     .select("id, code, name_en, name_ar, rank, status")
     .order("rank");
@@ -178,7 +168,7 @@ export async function listJobGrades(): Promise<JobGrade[]> {
 export async function createJobGrade(
   input: Omit<JobGrade, "id">,
 ): Promise<JobGrade> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_job_grade")
     .insert(input)
     .select("*")
@@ -191,7 +181,7 @@ export async function updateJobGrade(
   id: string,
   patch: Partial<Omit<JobGrade, "id">>,
 ): Promise<void> {
-  const { error } = await db
+  const { error } = await supabase
     .from("tas_job_grade")
     .update(patch)
     .eq("id", id);
@@ -199,7 +189,7 @@ export async function updateJobGrade(
 }
 
 export async function listJobPositions(): Promise<JobPosition[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_job_position")
     .select(
       "id, code, name_en, name_ar, job_family_id, job_grade_id, status, is_kuwaitization_targeted",
@@ -212,7 +202,7 @@ export async function listJobPositions(): Promise<JobPosition[]> {
 export async function createJobPosition(
   input: Omit<JobPosition, "id">,
 ): Promise<JobPosition> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_job_position")
     .insert(input)
     .select("*")
@@ -225,7 +215,7 @@ export async function updateJobPosition(
   id: string,
   patch: Partial<Omit<JobPosition, "id">>,
 ): Promise<void> {
-  const { error } = await db
+  const { error } = await supabase
     .from("tas_job_position")
     .update(patch)
     .eq("id", id);
@@ -237,7 +227,7 @@ export async function updateJobPosition(
 // =========================================================================
 
 export async function listJdTemplates(): Promise<JdTemplate[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_jd_template")
     .select(
       "id, code, job_position_id, title_en, title_ar, summary_en, summary_ar, status, version",
@@ -250,7 +240,7 @@ export async function listJdTemplates(): Promise<JdTemplate[]> {
 export async function getJdTemplate(
   id: string,
 ): Promise<JdTemplateDetail | null> {
-  const { data: tpl, error: tplErr } = await db
+  const { data: tpl, error: tplErr } = await supabase
     .from("tas_jd_template")
     .select(
       "id, code, job_position_id, title_en, title_ar, summary_en, summary_ar, status, version",
@@ -260,7 +250,7 @@ export async function getJdTemplate(
   if (tplErr) throw tplErr;
   if (!tpl) return null;
 
-  const { data: sections, error: secErr } = await db
+  const { data: sections, error: secErr } = await supabase
     .from("tas_jd_section")
     .select(
       "id, jd_template_id, section_type, heading_en, heading_ar, body_en, body_ar, sort_order",
@@ -269,7 +259,7 @@ export async function getJdTemplate(
     .order("sort_order");
   if (secErr) throw secErr;
 
-  const { data: comps, error: compErr } = await db
+  const { data: comps, error: compErr } = await supabase
     .from("tas_jd_competency")
     .select(
       "jd_template_id, competency_id, proficiency_level, tas_competency(id, code, name_en, name_ar, category, description_en, description_ar, status)",
@@ -293,7 +283,7 @@ export async function getJdTemplate(
 export async function createJdTemplate(
   input: Omit<JdTemplate, "id">,
 ): Promise<JdTemplate> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_jd_template")
     .insert(input)
     .select("*")
@@ -306,7 +296,7 @@ export async function updateJdTemplate(
   id: string,
   patch: Partial<Omit<JdTemplate, "id">>,
 ): Promise<void> {
-  const { error } = await db
+  const { error } = await supabase
     .from("tas_jd_template")
     .update(patch)
     .eq("id", id);
@@ -318,7 +308,7 @@ export async function saveJdSections(
   jdTemplateId: string,
   sections: Omit<JdSection, "id" | "jd_template_id">[],
 ): Promise<void> {
-  const { error: delErr } = await db
+  const { error: delErr } = await supabase
     .from("tas_jd_section")
     .delete()
     .eq("jd_template_id", jdTemplateId);
@@ -326,12 +316,12 @@ export async function saveJdSections(
 
   if (sections.length === 0) return;
   const rows = sections.map((s) => ({ ...s, jd_template_id: jdTemplateId }));
-  const { error: insErr } = await db.from("tas_jd_section").insert(rows);
+  const { error: insErr } = await supabase.from("tas_jd_section").insert(rows);
   if (insErr) throw insErr;
 }
 
 export async function listCompetencies(): Promise<Competency[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_competency")
     .select(
       "id, code, name_en, name_ar, category, description_en, description_ar, status",
@@ -346,7 +336,7 @@ export async function attachCompetency(
   competencyId: string,
   proficiencyLevel: number | null,
 ): Promise<void> {
-  const { error } = await db.from("tas_jd_competency").upsert({
+  const { error } = await supabase.from("tas_jd_competency").upsert({
     jd_template_id: jdTemplateId,
     competency_id: competencyId,
     proficiency_level: proficiencyLevel,
@@ -358,7 +348,7 @@ export async function detachCompetency(
   jdTemplateId: string,
   competencyId: string,
 ): Promise<void> {
-  const { error } = await db
+  const { error } = await supabase
     .from("tas_jd_competency")
     .delete()
     .eq("jd_template_id", jdTemplateId)
@@ -371,7 +361,7 @@ export async function detachCompetency(
 // =========================================================================
 
 export async function listLookups(lookupType: string): Promise<Lookup[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_lookup")
     .select("id, lookup_type, code, name_en, name_ar, sort_order, status")
     .eq("lookup_type", lookupType)
@@ -381,7 +371,7 @@ export async function listLookups(lookupType: string): Promise<Lookup[]> {
 }
 
 export async function createLookup(input: Omit<Lookup, "id">): Promise<Lookup> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_lookup")
     .insert(input)
     .select("*")
@@ -394,12 +384,12 @@ export async function updateLookup(
   id: string,
   patch: Partial<Omit<Lookup, "id">>,
 ): Promise<void> {
-  const { error } = await db.from("tas_lookup").update(patch).eq("id", id);
+  const { error } = await supabase.from("tas_lookup").update(patch).eq("id", id);
   if (error) throw error;
 }
 
 export async function deleteLookup(id: string): Promise<void> {
-  const { error } = await db.from("tas_lookup").delete().eq("id", id);
+  const { error } = await supabase.from("tas_lookup").delete().eq("id", id);
   if (error) throw error;
 }
 
