@@ -1,0 +1,11 @@
+grant select on public.tas_entity        to authenticated;
+grant select on public.tas_branch        to authenticated;
+grant select on public.tas_department     to authenticated;
+grant select on public.tas_job_family     to authenticated;
+grant select on public.tas_job_grade      to authenticated;
+grant select on public.tas_job_position   to authenticated;
+grant select on public.tas_jd_template    to authenticated;
+grant select on public.tas_jd_section     to authenticated;
+grant select on public.tas_competency     to authenticated;
+grant select on public.tas_jd_competency  to authenticated;
+grant select on public.tas_lookup         to authenticated;
