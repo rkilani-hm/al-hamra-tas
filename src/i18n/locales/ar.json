@@ -1,0 +1,28 @@
+{
+  "app": {
+    "name": "الحمراء TAS",
+    "tagline": "نظام التجارة والإدارة"
+  },
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "reports": "التقارير",
+    "settings": "الإعدادات"
+  },
+  "topbar": {
+    "toggleSidebar": "تبديل الشريط الجانبي",
+    "language": "English",
+    "userMenu": "الحساب",
+    "profile": "الملف الشخصي",
+    "signOut": "تسجيل الخروج"
+  },
+  "login": {
+    "title": "تسجيل الدخول إلى الحمراء TAS",
+    "subtitle": "استخدم حساب مؤسستك للمتابعة.",
+    "microsoft": "تسجيل الدخول باستخدام Microsoft",
+    "notConfigured": "لم يتم إعداد تسجيل الدخول عبر Microsoft بعد."
+  },
+  "shell": {
+    "welcome": "مرحباً",
+    "placeholder": "ستظهر وحداتك هنا."
+  }
+}
