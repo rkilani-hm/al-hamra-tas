@@ -102,6 +102,42 @@ export type Database = {
           },
         ]
       }
+      tas_comm_adapter_config: {
+        Row: {
+          channel: string
+          config_status: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_enabled: boolean
+          notes: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          channel: string
+          config_status?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_enabled?: boolean
+          notes?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          channel?: string
+          config_status?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_enabled?: boolean
+          notes?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       tas_competency: {
         Row: {
           category: string | null
@@ -613,6 +649,185 @@ export type Database = {
           status?: string
           updated_at?: string
           updated_by?: string | null
+        }
+        Relationships: []
+      }
+      tas_notification: {
+        Row: {
+          body: string | null
+          channel: string
+          context_json: Json
+          created_at: string
+          created_by: string | null
+          deep_link: string | null
+          error_text: string | null
+          id: string
+          locale: string
+          read_at: string | null
+          recipient_user_id: string | null
+          retry_count: number
+          sent_at: string | null
+          source_event_id: string | null
+          status: string
+          subject: string | null
+          type_code: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          body?: string | null
+          channel: string
+          context_json?: Json
+          created_at?: string
+          created_by?: string | null
+          deep_link?: string | null
+          error_text?: string | null
+          id?: string
+          locale?: string
+          read_at?: string | null
+          recipient_user_id?: string | null
+          retry_count?: number
+          sent_at?: string | null
+          source_event_id?: string | null
+          status?: string
+          subject?: string | null
+          type_code: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          body?: string | null
+          channel?: string
+          context_json?: Json
+          created_at?: string
+          created_by?: string | null
+          deep_link?: string | null
+          error_text?: string | null
+          id?: string
+          locale?: string
+          read_at?: string | null
+          recipient_user_id?: string | null
+          retry_count?: number
+          sent_at?: string | null
+          source_event_id?: string | null
+          status?: string
+          subject?: string | null
+          type_code?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_notification_recipient_user_id_fkey"
+            columns: ["recipient_user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_notification_source_event_id_fkey"
+            columns: ["source_event_id"]
+            isOneToOne: false
+            referencedRelation: "tas_workflow_event"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_notification_pref: {
+        Row: {
+          channel: string
+          created_at: string
+          created_by: string | null
+          enabled: boolean
+          id: string
+          is_mandatory: boolean
+          type_category: string
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+        }
+        Insert: {
+          channel: string
+          created_at?: string
+          created_by?: string | null
+          enabled?: boolean
+          id?: string
+          is_mandatory?: boolean
+          type_category: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          created_by?: string | null
+          enabled?: boolean
+          id?: string
+          is_mandatory?: boolean
+          type_category?: string
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_notification_pref_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_notification_template: {
+        Row: {
+          body_ar: string | null
+          body_en: string | null
+          channel: string
+          created_at: string
+          created_by: string | null
+          id: string
+          status: string
+          subject_ar: string | null
+          subject_en: string | null
+          type_code: string
+          updated_at: string
+          updated_by: string | null
+          variables_json: Json
+          version: number
+        }
+        Insert: {
+          body_ar?: string | null
+          body_en?: string | null
+          channel: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          status?: string
+          subject_ar?: string | null
+          subject_en?: string | null
+          type_code: string
+          updated_at?: string
+          updated_by?: string | null
+          variables_json?: Json
+          version?: number
+        }
+        Update: {
+          body_ar?: string | null
+          body_en?: string | null
+          channel?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          status?: string
+          subject_ar?: string | null
+          subject_en?: string | null
+          type_code?: string
+          updated_at?: string
+          updated_by?: string | null
+          variables_json?: Json
+          version?: number
         }
         Relationships: []
       }
@@ -1293,6 +1508,20 @@ export type Database = {
         Returns: boolean
       }
       instance_timeline: { Args: { p_instance_id: string }; Returns: Json }
+      mark_notification_read: { Args: { p_id: string }; Returns: undefined }
+      my_notifications: {
+        Args: { p_unread_only?: boolean; p_user_id: string }
+        Returns: {
+          body: string
+          created_at: string
+          deep_link: string
+          id: string
+          locale: string
+          read_at: string
+          subject: string
+          type_code: string
+        }[]
+      }
       my_pending_tasks: {
         Args: { p_user_id: string }
         Returns: {
@@ -1307,6 +1536,34 @@ export type Database = {
           task_id: string
         }[]
       }
+      notify: {
+        Args: {
+          p_context: Json
+          p_deep_link?: string
+          p_recipient_ids: string[]
+          p_type_code: string
+        }
+        Returns: number
+      }
+      preview_template: {
+        Args: { p_sample_context: Json; p_template_id: string }
+        Returns: {
+          body: string
+          subject: string
+        }[]
+      }
+      render_template: {
+        Args: {
+          p_channel: string
+          p_context: Json
+          p_locale: string
+          p_type_code: string
+        }
+        Returns: {
+          body: string
+          subject: string
+        }[]
+      }
       resolve_step_approvers: {
         Args: { p_instance_id: string; p_step_no: number }
         Returns: {
@@ -1314,6 +1571,7 @@ export type Database = {
           user_id: string
         }[]
       }
+      retry_notification: { Args: { p_id: string }; Returns: undefined }
       submit_workflow: {
         Args: {
           p_branch_id: string
@@ -1326,6 +1584,7 @@ export type Database = {
         }
         Returns: string
       }
+      unread_count: { Args: { p_user_id: string }; Returns: number }
     }
     Enums: {
       [_ in never]: never
