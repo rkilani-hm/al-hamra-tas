@@ -46,6 +46,50 @@ export type Database = {
           },
         ]
       }
+      tas_audit_log: {
+        Row: {
+          actor_user_id: string | null
+          created_at: string
+          detail_json: Json
+          entity_ref: string | null
+          entity_type: string | null
+          event_type: string | null
+          id: string
+          ip: string | null
+          module_code: string | null
+        }
+        Insert: {
+          actor_user_id?: string | null
+          created_at?: string
+          detail_json?: Json
+          entity_ref?: string | null
+          entity_type?: string | null
+          event_type?: string | null
+          id?: string
+          ip?: string | null
+          module_code?: string | null
+        }
+        Update: {
+          actor_user_id?: string | null
+          created_at?: string
+          detail_json?: Json
+          entity_ref?: string | null
+          entity_type?: string | null
+          event_type?: string | null
+          id?: string
+          ip?: string | null
+          module_code?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_audit_log_actor_user_id_fkey"
+            columns: ["actor_user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tas_branch: {
         Row: {
           address_ar: string | null
@@ -299,6 +343,84 @@ export type Database = {
             columns: ["parent_department_id"]
             isOneToOne: false
             referencedRelation: "tas_department"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_document: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          file_name: string | null
+          id: string
+          linked_entity_ref: string | null
+          linked_entity_type: string | null
+          mime_type: string | null
+          size_bytes: number | null
+          status: string
+          storage_provider: string
+          storage_ref: string | null
+          supersedes_id: string | null
+          title: string | null
+          updated_at: string
+          updated_by: string | null
+          uploaded_by: string | null
+          version: number
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          file_name?: string | null
+          id?: string
+          linked_entity_ref?: string | null
+          linked_entity_type?: string | null
+          mime_type?: string | null
+          size_bytes?: number | null
+          status?: string
+          storage_provider: string
+          storage_ref?: string | null
+          supersedes_id?: string | null
+          title?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          uploaded_by?: string | null
+          version?: number
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          file_name?: string | null
+          id?: string
+          linked_entity_ref?: string | null
+          linked_entity_type?: string | null
+          mime_type?: string | null
+          size_bytes?: number | null
+          status?: string
+          storage_provider?: string
+          storage_ref?: string | null
+          supersedes_id?: string | null
+          title?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          uploaded_by?: string | null
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_document_supersedes_id_fkey"
+            columns: ["supersedes_id"]
+            isOneToOne: false
+            referencedRelation: "tas_document"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_document_uploaded_by_fkey"
+            columns: ["uploaded_by"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
             referencedColumns: ["id"]
           },
         ]
@@ -965,6 +1087,42 @@ export type Database = {
           },
         ]
       }
+      tas_storage_adapter_config: {
+        Row: {
+          config_status: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_enabled: boolean
+          notes: string | null
+          provider: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          config_status?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_enabled?: boolean
+          notes?: string | null
+          provider: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          config_status?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_enabled?: boolean
+          notes?: string | null
+          provider?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       tas_user: {
         Row: {
           created_at: string
@@ -1462,7 +1620,21 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      v_audit_unified: {
+        Row: {
+          actor_user_id: string | null
+          created_at: string | null
+          detail_json: Json | null
+          entity_ref: string | null
+          entity_type: string | null
+          event_type: string | null
+          id: string | null
+          ip: string | null
+          module_code: string | null
+          source: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       _wf_advance: {
@@ -1503,11 +1675,55 @@ export type Database = {
         Args: { p_definition_id: string }
         Returns: undefined
       }
+      archive_document: { Args: { p_id: string }; Returns: undefined }
+      audit_log: {
+        Args: {
+          p_actor: string
+          p_detail: Json
+          p_entity_ref: string
+          p_entity_type: string
+          p_event_type: string
+          p_module: string
+        }
+        Returns: string
+      }
+      document_versions: {
+        Args: { p_id: string }
+        Returns: {
+          created_at: string
+          file_name: string
+          id: string
+          status: string
+          supersedes_id: string
+          title: string
+          version: number
+        }[]
+      }
       eval_condition: {
         Args: { p_condition: Json; p_context: Json }
         Returns: boolean
       }
       instance_timeline: { Args: { p_instance_id: string }; Returns: Json }
+      list_documents: {
+        Args: { p_entity_ref: string; p_entity_type: string }
+        Returns: {
+          category: string
+          created_at: string
+          file_name: string
+          id: string
+          linked_entity_ref: string
+          linked_entity_type: string
+          mime_type: string
+          size_bytes: number
+          status: string
+          storage_provider: string
+          storage_ref: string
+          supersedes_id: string
+          title: string
+          uploaded_by: string
+          version: number
+        }[]
+      }
       mark_notification_read: { Args: { p_id: string }; Returns: undefined }
       my_notifications: {
         Args: { p_unread_only?: boolean; p_user_id: string }
@@ -1572,6 +1788,31 @@ export type Database = {
         }[]
       }
       retry_notification: { Args: { p_id: string }; Returns: undefined }
+      search_audit: {
+        Args: {
+          p_actor?: string
+          p_entity_ref?: string
+          p_entity_type?: string
+          p_event_type?: string
+          p_from?: string
+          p_limit?: number
+          p_module?: string
+          p_offset?: number
+          p_to?: string
+        }
+        Returns: {
+          actor_user_id: string
+          created_at: string
+          detail_json: Json
+          entity_ref: string
+          entity_type: string
+          event_type: string
+          id: string
+          ip: string
+          module_code: string
+          source: string
+        }[]
+      }
       submit_workflow: {
         Args: {
           p_branch_id: string
