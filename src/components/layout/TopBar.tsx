@@ -12,9 +12,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { LanguageToggle } from "@/components/layout/LanguageToggle";
+import { NotificationBell } from "@/features/notifications/components/NotificationBell";
 
 export function TopBar() {
   const { t } = useTranslation();
+  // Real Entra sign-in wiring lands later; no resolved tas_user id yet, so the
+  // bell renders its "sign in" state. Pass the id here once auth is wired
+  // (same gating as the workflow inbox).
+  const currentUserId: string | null = null;
 
   return (
     <header className="flex h-14 items-center gap-3 border-b bg-card px-4">
@@ -32,6 +37,7 @@ export function TopBar() {
       </div>
 
       <div className="ms-auto flex items-center gap-1">
+        <NotificationBell currentUserId={currentUserId} />
         <LanguageToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

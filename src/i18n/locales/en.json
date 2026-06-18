@@ -8,6 +8,7 @@
     "identity": "Identity & Access",
     "config": "Core Configuration",
     "workflow": "Workflow & Approvals",
+    "notifications": "Notifications",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -405,6 +406,124 @@
       "empty": "No timeline available.",
       "current": "Current",
       "noTasks": "No approvers resolved for this step."
+    }
+  },
+  "notifications": {
+    "page": {
+      "title": "Notifications",
+      "subtitle": "Your in-app notifications and communication settings."
+    },
+    "backToNotifications": "Back to Notifications",
+    "common": {
+      "loading": "Loading…"
+    },
+    "nav": {
+      "preferences": "Preferences",
+      "templates": "Templates",
+      "log": "Delivery Log"
+    },
+    "toasts": {
+      "saved": "Saved.",
+      "retried": "Queued for retry.",
+      "actionError": "Action failed (some writes require elevated permissions until M3.1)."
+    },
+    "bell": {
+      "aria": "Notifications",
+      "title": "Notifications",
+      "markAll": "Mark all read",
+      "signInRequired": "Sign in to see your notifications.",
+      "empty": "You're all caught up.",
+      "viewAll": "View all"
+    },
+    "center": {
+      "signInRequired": "Sign in to see your notifications.",
+      "all": "All",
+      "unread": "Unread",
+      "empty": "No notifications.",
+      "open": "Open",
+      "markRead": "Mark read"
+    },
+    "prefs": {
+      "pageTitle": "Notification Preferences",
+      "signInRequired": "Sign in to manage your preferences.",
+      "intro": "Choose how you want to be notified. In-app notifications are always on.",
+      "mandatory": "Always on"
+    },
+    "category": {
+      "workflow": "Approvals & Workflow"
+    },
+    "channel": {
+      "in_app": "In-app",
+      "outlook_email": "Outlook email",
+      "teams": "Teams",
+      "sms": "SMS"
+    },
+    "template": {
+      "pageTitle": "Notification Templates",
+      "typeCode": "Type",
+      "channel": "Channel",
+      "version": "Version",
+      "status": "Status",
+      "actions": "Actions",
+      "empty": "No templates.",
+      "editTitle": "Edit Template",
+      "placeholders": "Placeholders",
+      "subjectEn": "Subject (English)",
+      "subjectAr": "Subject (Arabic)",
+      "bodyEn": "Body (English)",
+      "bodyAr": "Body (Arabic)",
+      "preview": "Preview"
+    },
+    "templateStatus": {
+      "draft": "Draft",
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "typeCode": {
+      "workflow": {
+        "task_created": "Approval needed",
+        "step_advanced": "Step advanced",
+        "instance_completed": "Approved",
+        "rejected": "Rejected",
+        "returned": "Returned",
+        "escalated": "Escalated",
+        "blocked": "Blocked"
+      }
+    },
+    "buttons": {
+      "edit": "Edit",
+      "cancel": "Cancel",
+      "save": "Save"
+    },
+    "adapters": {
+      "title": "Channel Status",
+      "live": "Live"
+    },
+    "adapterStatus": {
+      "unconfigured": "Pending credentials",
+      "configured": "Configured"
+    },
+    "deliveryStatus": {
+      "queued": "Queued",
+      "sent": "Sent",
+      "skipped": "Skipped",
+      "failed": "Failed",
+      "failed_terminal": "Failed (final)"
+    },
+    "log": {
+      "pageTitle": "Delivery Log",
+      "filterStatus": "Status",
+      "allStatuses": "All statuses",
+      "filterChannel": "Channel",
+      "allChannels": "All channels",
+      "type": "Type",
+      "channel": "Channel",
+      "status": "Status",
+      "time": "Time",
+      "error": "Detail",
+      "actions": "Actions",
+      "empty": "No delivery records.",
+      "retry": "Retry"
     }
   }
 }

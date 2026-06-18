@@ -8,6 +8,7 @@
     "identity": "الهوية والوصول",
     "config": "الإعدادات الأساسية",
     "workflow": "سير العمل والموافقات",
+    "notifications": "الإشعارات",
     "reports": "التقارير",
     "settings": "الإعدادات"
   },
@@ -405,6 +406,124 @@
       "empty": "لا يوجد جدول زمني متاح.",
       "current": "الحالية",
       "noTasks": "لم يتم تحديد معتمِدين لهذه الخطوة."
+    }
+  },
+  "notifications": {
+    "page": {
+      "title": "الإشعارات",
+      "subtitle": "إشعاراتك داخل التطبيق وإعدادات الاتصال."
+    },
+    "backToNotifications": "العودة إلى الإشعارات",
+    "common": {
+      "loading": "جارٍ التحميل…"
+    },
+    "nav": {
+      "preferences": "التفضيلات",
+      "templates": "القوالب",
+      "log": "سجل التسليم"
+    },
+    "toasts": {
+      "saved": "تم الحفظ.",
+      "retried": "تمت إعادة الإدراج للمحاولة.",
+      "actionError": "فشل الإجراء (تتطلب بعض عمليات الكتابة صلاحيات أعلى حتى الإصدار M3.1)."
+    },
+    "bell": {
+      "aria": "الإشعارات",
+      "title": "الإشعارات",
+      "markAll": "تعليم الكل كمقروء",
+      "signInRequired": "سجّل الدخول لعرض إشعاراتك.",
+      "empty": "لا جديد لديك.",
+      "viewAll": "عرض الكل"
+    },
+    "center": {
+      "signInRequired": "سجّل الدخول لعرض إشعاراتك.",
+      "all": "الكل",
+      "unread": "غير المقروءة",
+      "empty": "لا توجد إشعارات.",
+      "open": "فتح",
+      "markRead": "تعليم كمقروء"
+    },
+    "prefs": {
+      "pageTitle": "تفضيلات الإشعارات",
+      "signInRequired": "سجّل الدخول لإدارة تفضيلاتك.",
+      "intro": "اختر كيف تريد أن يتم إشعارك. الإشعارات داخل التطبيق مفعّلة دائماً.",
+      "mandatory": "مفعّل دائماً"
+    },
+    "category": {
+      "workflow": "الموافقات وسير العمل"
+    },
+    "channel": {
+      "in_app": "داخل التطبيق",
+      "outlook_email": "بريد Outlook",
+      "teams": "Teams",
+      "sms": "رسائل نصية"
+    },
+    "template": {
+      "pageTitle": "قوالب الإشعارات",
+      "typeCode": "النوع",
+      "channel": "القناة",
+      "version": "الإصدار",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "empty": "لا توجد قوالب.",
+      "editTitle": "تعديل القالب",
+      "placeholders": "العناصر النائبة",
+      "subjectEn": "الموضوع (إنجليزي)",
+      "subjectAr": "الموضوع (عربي)",
+      "bodyEn": "النص (إنجليزي)",
+      "bodyAr": "النص (عربي)",
+      "preview": "معاينة"
+    },
+    "templateStatus": {
+      "draft": "مسودة",
+      "active": "نشط",
+      "archived": "مؤرشف"
+    },
+    "typeCode": {
+      "workflow": {
+        "task_created": "مطلوب اعتماد",
+        "step_advanced": "تم التقدّم",
+        "instance_completed": "تمت الموافقة",
+        "rejected": "مرفوض",
+        "returned": "مُعاد",
+        "escalated": "تم التصعيد",
+        "blocked": "محظور"
+      }
+    },
+    "buttons": {
+      "edit": "تعديل",
+      "cancel": "إلغاء",
+      "save": "حفظ"
+    },
+    "adapters": {
+      "title": "حالة القنوات",
+      "live": "مُفعّل"
+    },
+    "adapterStatus": {
+      "unconfigured": "بانتظار بيانات الاعتماد",
+      "configured": "مُهيّأ"
+    },
+    "deliveryStatus": {
+      "queued": "في قائمة الانتظار",
+      "sent": "تم الإرسال",
+      "skipped": "تم التخطي",
+      "failed": "فشل",
+      "failed_terminal": "فشل (نهائي)"
+    },
+    "log": {
+      "pageTitle": "سجل التسليم",
+      "filterStatus": "الحالة",
+      "allStatuses": "كل الحالات",
+      "filterChannel": "القناة",
+      "allChannels": "كل القنوات",
+      "type": "النوع",
+      "channel": "القناة",
+      "status": "الحالة",
+      "time": "الوقت",
+      "error": "التفاصيل",
+      "actions": "الإجراءات",
+      "empty": "لا توجد سجلات تسليم.",
+      "retry": "إعادة المحاولة"
     }
   }
 }

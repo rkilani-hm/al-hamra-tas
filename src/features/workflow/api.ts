@@ -97,6 +97,22 @@ export async function saveSteps(
 
 // --- RPC wrappers -----------------------------------------------------------
 
+// M0.4: best-effort immediate dispatch. After a workflow transition we nudge the
+// notification-dispatch edge function so notifications go out without waiting for
+// the cron tick. Fire-and-forget and fully swallowed — a dispatch failure must
+// NEVER break the workflow action (the cron sweep will catch anything missed).
+function fireDispatch(): void {
+  try {
+    void supabase.functions
+      .invoke("notification-dispatch", { body: {} })
+      .catch(() => {
+        /* ignored — cron will retry */
+      });
+  } catch {
+    /* ignored — invoke not available / offline */
+  }
+}
+
 // Admin RPC (service-role only until M3.1; fails-soft for authenticated).
 export async function activateWorkflow(definitionId: string): Promise<void> {
   const { error } = await supabase.rpc("activate_workflow", {
@@ -127,6 +143,7 @@ export async function submitWorkflow(input: {
     p_context_json: (input.context_json ?? {}) as Json,
   });
   if (error) throw error;
+  fireDispatch(); // best-effort immediate notification dispatch
   return data as string;
 }
 
@@ -146,6 +163,7 @@ export async function actOnTask(input: {
     p_target: input.target ?? undefined,
   });
   if (error) throw error;
+  fireDispatch(); // best-effort immediate notification dispatch
 }
 
 export async function myPendingTasks(userId: string): Promise<PendingTask[]> {
