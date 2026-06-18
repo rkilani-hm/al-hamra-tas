@@ -1,11 +1,7 @@
 // Module M0.3 — Workflow & Approval Engine: data-access layer.
 //
-// INTERIM (same pattern as M0.1/M0.2): the workflow tables and RPC functions are
-// not in the generated Database type until Lovable applies this module's
-// migrations on sync. Until then, PostgREST table/rpc names don't type-check, so
-// we access through a loosely-typed view of the client. Follow-up: swap `db`
-// back to the strict typed `supabase` client (and delete this alias) after the
-// M0.3 migrations are applied — mirrors the M0.1/M0.2 cleanups.
+// Uses the strict typed `supabase` client (Database types include the workflow
+// tables + RPCs after the M0.3 migrations were applied on sync).
 //
 // RLS posture: definitions/steps are readable by authenticated; instance/task/
 // history/event are self-scoped reads. All WRITES (and admin RPCs activate/
@@ -13,9 +9,8 @@
 // The user-facing RPCs act_on_task / my_pending_tasks / instance_timeline are
 // granted to authenticated.
 
-import type { SupabaseClient } from "@supabase/supabase-js";
-
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import type {
   InstanceTimeline,
   PendingTask,
@@ -25,12 +20,10 @@ import type {
   WorkflowStep,
 } from "./types";
 
-const db = supabase as unknown as SupabaseClient;
-
 // --- Definitions / steps (PostgREST) ---------------------------------------
 
 export async function listDefinitions(): Promise<WorkflowDefinition[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_workflow_definition")
     .select("id, request_type, version, name_en, name_ar, status")
     .order("request_type")
@@ -45,7 +38,7 @@ export async function createDefinition(input: {
   name_en: string;
   name_ar: string;
 }): Promise<WorkflowDefinition> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_workflow_definition")
     .insert({ ...input, status: "draft" })
     .select("*")
@@ -55,7 +48,7 @@ export async function createDefinition(input: {
 }
 
 export async function archiveDefinition(id: string): Promise<void> {
-  const { error } = await db
+  const { error } = await supabase
     .from("tas_workflow_definition")
     .update({ status: "archived" })
     .eq("id", id);
@@ -63,7 +56,7 @@ export async function archiveDefinition(id: string): Promise<void> {
 }
 
 export async function listSteps(definitionId: string): Promise<WorkflowStep[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_workflow_step")
     .select(
       "id, definition_id, step_no, name_en, name_ar, approver_rule_type, approver_rule_value, condition_json, quorum, sla_hours, on_reject",
@@ -79,7 +72,7 @@ export async function saveSteps(
   definitionId: string,
   steps: StepDraft[],
 ): Promise<void> {
-  const { error: delErr } = await db
+  const { error: delErr } = await supabase
     .from("tas_workflow_step")
     .delete()
     .eq("definition_id", definitionId);
@@ -92,13 +85,13 @@ export async function saveSteps(
     name_en: s.name_en,
     name_ar: s.name_ar,
     approver_rule_type: s.approver_rule_type,
-    approver_rule_value: s.approver_rule_value,
-    condition_json: s.condition_json,
+    approver_rule_value: s.approver_rule_value as unknown as Json,
+    condition_json: s.condition_json as unknown as Json,
     quorum: s.quorum,
     sla_hours: s.sla_hours,
     on_reject: s.on_reject,
   }));
-  const { error: insErr } = await db.from("tas_workflow_step").insert(rows);
+  const { error: insErr } = await supabase.from("tas_workflow_step").insert(rows);
   if (insErr) throw insErr;
 }
 
@@ -106,7 +99,7 @@ export async function saveSteps(
 
 // Admin RPC (service-role only until M3.1; fails-soft for authenticated).
 export async function activateWorkflow(definitionId: string): Promise<void> {
-  const { error } = await db.rpc("activate_workflow", {
+  const { error } = await supabase.rpc("activate_workflow", {
     p_definition_id: definitionId,
   });
   if (error) throw error;
@@ -122,14 +115,16 @@ export async function submitWorkflow(input: {
   department_id?: string | null;
   context_json?: Record<string, unknown>;
 }): Promise<string> {
-  const { data, error } = await db.rpc("submit_workflow", {
+  // The generated Args type marks the org ids as required strings, but the SQL
+  // function accepts null for whole-org scope — cast the nullable ids through.
+  const { data, error } = await supabase.rpc("submit_workflow", {
     p_request_type: input.request_type,
     p_request_ref: input.request_ref,
     p_requester_id: input.requester_id,
-    p_entity_id: input.entity_id ?? null,
-    p_branch_id: input.branch_id ?? null,
-    p_department_id: input.department_id ?? null,
-    p_context_json: input.context_json ?? {},
+    p_entity_id: (input.entity_id ?? null) as unknown as string,
+    p_branch_id: (input.branch_id ?? null) as unknown as string,
+    p_department_id: (input.department_id ?? null) as unknown as string,
+    p_context_json: (input.context_json ?? {}) as Json,
   });
   if (error) throw error;
   return data as string;
@@ -143,18 +138,18 @@ export async function actOnTask(input: {
   comment_ar?: string | null;
   target?: string | null;
 }): Promise<void> {
-  const { error } = await db.rpc("act_on_task", {
+  const { error } = await supabase.rpc("act_on_task", {
     p_task_id: input.task_id,
     p_action: input.action,
-    p_comment: input.comment ?? null,
-    p_comment_ar: input.comment_ar ?? null,
-    p_target: input.target ?? null,
+    p_comment: input.comment ?? undefined,
+    p_comment_ar: input.comment_ar ?? undefined,
+    p_target: input.target ?? undefined,
   });
   if (error) throw error;
 }
 
 export async function myPendingTasks(userId: string): Promise<PendingTask[]> {
-  const { data, error } = await db.rpc("my_pending_tasks", { p_user_id: userId });
+  const { data, error } = await supabase.rpc("my_pending_tasks", { p_user_id: userId });
   if (error) throw error;
   return (data ?? []) as PendingTask[];
 }
@@ -162,11 +157,12 @@ export async function myPendingTasks(userId: string): Promise<PendingTask[]> {
 export async function instanceTimeline(
   instanceId: string,
 ): Promise<InstanceTimeline> {
-  const { data, error } = await db.rpc("instance_timeline", {
+  const { data, error } = await supabase.rpc("instance_timeline", {
     p_instance_id: instanceId,
   });
   if (error) throw error;
-  return (data ?? { instance: null, steps: [], tasks: [], history: [] }) as InstanceTimeline;
+  // instance_timeline returns Json (a jsonb object) — cast to the view model.
+  return (data ?? { instance: null, steps: [], tasks: [], history: [] }) as unknown as InstanceTimeline;
 }
 
 // --- Shared helper: degrade a read to empty on error (defensive guard). ------
