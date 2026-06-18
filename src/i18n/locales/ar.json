@@ -9,6 +9,8 @@
     "config": "الإعدادات الأساسية",
     "workflow": "سير العمل والموافقات",
     "notifications": "الإشعارات",
+    "documents": "المستندات",
+    "audit": "سجل التدقيق",
     "reports": "التقارير",
     "settings": "الإعدادات"
   },
@@ -524,6 +526,97 @@
       "actions": "الإجراءات",
       "empty": "لا توجد سجلات تسليم.",
       "retry": "إعادة المحاولة"
+    }
+  },
+  "audit": {
+    "page": {
+      "title": "سجل التدقيق",
+      "subtitle": "سجل قابل للبحث وغير قابل للتعديل لأحداث النظام."
+    },
+    "common": {
+      "loading": "جارٍ التحميل…"
+    },
+    "filter": {
+      "module": "الوحدة",
+      "eventType": "نوع الحدث",
+      "actor": "المنفّذ (معرّف المستخدم)",
+      "entityRef": "مرجع الكيان",
+      "from": "من",
+      "to": "إلى",
+      "search": "بحث"
+    },
+    "table": {
+      "time": "الوقت",
+      "module": "الوحدة",
+      "event": "الحدث",
+      "entity": "الكيان",
+      "actor": "المنفّذ",
+      "source": "المصدر",
+      "empty": "لا توجد سجلات تطابق عوامل التصفية.",
+      "toggle": "عرض التفاصيل"
+    },
+    "source": {
+      "audit_log": "سجل التدقيق",
+      "access_audit": "تدقيق الوصول"
+    },
+    "trail": {
+      "empty": "لم يتم تسجيل أي نشاط بعد."
+    },
+    "pager": {
+      "prev": "السابق",
+      "next": "التالي",
+      "page": "صفحة {{page}}"
+    }
+  },
+  "documents": {
+    "page": {
+      "title": "المستندات",
+      "subtitle": "تخزين وإدارة المستندات. يُستخدم SharePoint عند تهيئته، وإلا فتخزين Supabase.",
+      "unlinked": "مستندات غير مرتبطة"
+    },
+    "adapters": {
+      "title": "حالة التخزين",
+      "live": "مُفعّل",
+      "usingFallback": "لم تتم تهيئة SharePoint — يتم استخدام تخزين Supabase."
+    },
+    "adapterStatus": {
+      "unconfigured": "بانتظار بيانات الاعتماد",
+      "configured": "مُهيّأ"
+    },
+    "provider": {
+      "sharepoint": "SharePoint",
+      "supabase_storage": "تخزين Supabase"
+    },
+    "panel": {
+      "category": "الفئة",
+      "upload": "رفع",
+      "uploading": "جارٍ الرفع…",
+      "replacing": "استبدال مستند موجود"
+    },
+    "table": {
+      "title": "العنوان",
+      "category": "الفئة",
+      "version": "الإصدار",
+      "provider": "التخزين",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "empty": "لا توجد مستندات بعد."
+    },
+    "status": {
+      "active": "نشط",
+      "archived": "مؤرشف"
+    },
+    "actions": {
+      "download": "تنزيل",
+      "replace": "استبدال",
+      "archive": "أرشفة"
+    },
+    "toasts": {
+      "uploaded": "تم رفع المستند.",
+      "uploadError": "فشل الرفع.",
+      "downloadError": "تعذر الحصول على رابط التنزيل.",
+      "archived": "تمت أرشفة المستند.",
+      "actionError": "فشل الإجراء."
     }
   }
 }

@@ -16,7 +16,9 @@ import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppWorkflowIndexRouteImport } from './routes/app.workflow.index'
 import { Route as AppNotificationsIndexRouteImport } from './routes/app.notifications.index'
 import { Route as AppIdentityIndexRouteImport } from './routes/app.identity.index'
+import { Route as AppDocumentsIndexRouteImport } from './routes/app.documents.index'
 import { Route as AppConfigIndexRouteImport } from './routes/app.config.index'
+import { Route as AppAuditIndexRouteImport } from './routes/app.audit.index'
 import { Route as AppWorkflowInboxRouteImport } from './routes/app.workflow.inbox'
 import { Route as AppWorkflowDefsRouteImport } from './routes/app.workflow.defs'
 import { Route as AppNotificationsTemplatesRouteImport } from './routes/app.notifications.templates'
@@ -62,9 +64,19 @@ const AppIdentityIndexRoute = AppIdentityIndexRouteImport.update({
   path: '/identity/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppDocumentsIndexRoute = AppDocumentsIndexRouteImport.update({
+  id: '/documents/',
+  path: '/documents/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppConfigIndexRoute = AppConfigIndexRouteImport.update({
   id: '/config/',
   path: '/config/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAuditIndexRoute = AppAuditIndexRouteImport.update({
+  id: '/audit/',
+  path: '/audit/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppWorkflowInboxRoute = AppWorkflowInboxRouteImport.update({
@@ -129,7 +141,9 @@ export interface FileRoutesByFullPath {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
+  '/app/audit/': typeof AppAuditIndexRoute
   '/app/config/': typeof AppConfigIndexRoute
+  '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
@@ -147,7 +161,9 @@ export interface FileRoutesByTo {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
+  '/app/audit': typeof AppAuditIndexRoute
   '/app/config': typeof AppConfigIndexRoute
+  '/app/documents': typeof AppDocumentsIndexRoute
   '/app/identity': typeof AppIdentityIndexRoute
   '/app/notifications': typeof AppNotificationsIndexRoute
   '/app/workflow': typeof AppWorkflowIndexRoute
@@ -167,7 +183,9 @@ export interface FileRoutesById {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
+  '/app/audit/': typeof AppAuditIndexRoute
   '/app/config/': typeof AppConfigIndexRoute
+  '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
@@ -188,7 +206,9 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
+    | '/app/audit/'
     | '/app/config/'
+    | '/app/documents/'
     | '/app/identity/'
     | '/app/notifications/'
     | '/app/workflow/'
@@ -206,7 +226,9 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
+    | '/app/audit'
     | '/app/config'
+    | '/app/documents'
     | '/app/identity'
     | '/app/notifications'
     | '/app/workflow'
@@ -225,7 +247,9 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
+    | '/app/audit/'
     | '/app/config/'
+    | '/app/documents/'
     | '/app/identity/'
     | '/app/notifications/'
     | '/app/workflow/'
@@ -288,11 +312,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIdentityIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/documents/': {
+      id: '/app/documents/'
+      path: '/documents'
+      fullPath: '/app/documents/'
+      preLoaderRoute: typeof AppDocumentsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/config/': {
       id: '/app/config/'
       path: '/config'
       fullPath: '/app/config/'
       preLoaderRoute: typeof AppConfigIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/audit/': {
+      id: '/app/audit/'
+      path: '/audit'
+      fullPath: '/app/audit/'
+      preLoaderRoute: typeof AppAuditIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/workflow/inbox': {
@@ -372,7 +410,9 @@ interface AppRouteChildren {
   AppNotificationsTemplatesRoute: typeof AppNotificationsTemplatesRoute
   AppWorkflowDefsRoute: typeof AppWorkflowDefsRoute
   AppWorkflowInboxRoute: typeof AppWorkflowInboxRoute
+  AppAuditIndexRoute: typeof AppAuditIndexRoute
   AppConfigIndexRoute: typeof AppConfigIndexRoute
+  AppDocumentsIndexRoute: typeof AppDocumentsIndexRoute
   AppIdentityIndexRoute: typeof AppIdentityIndexRoute
   AppNotificationsIndexRoute: typeof AppNotificationsIndexRoute
   AppWorkflowIndexRoute: typeof AppWorkflowIndexRoute
@@ -389,7 +429,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppNotificationsTemplatesRoute: AppNotificationsTemplatesRoute,
   AppWorkflowDefsRoute: AppWorkflowDefsRoute,
   AppWorkflowInboxRoute: AppWorkflowInboxRoute,
+  AppAuditIndexRoute: AppAuditIndexRoute,
   AppConfigIndexRoute: AppConfigIndexRoute,
+  AppDocumentsIndexRoute: AppDocumentsIndexRoute,
   AppIdentityIndexRoute: AppIdentityIndexRoute,
   AppNotificationsIndexRoute: AppNotificationsIndexRoute,
   AppWorkflowIndexRoute: AppWorkflowIndexRoute,
@@ -405,3 +447,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

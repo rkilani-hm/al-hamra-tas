@@ -9,6 +9,8 @@
     "config": "Core Configuration",
     "workflow": "Workflow & Approvals",
     "notifications": "Notifications",
+    "documents": "Documents",
+    "audit": "Audit Log",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -524,6 +526,97 @@
       "actions": "Actions",
       "empty": "No delivery records.",
       "retry": "Retry"
+    }
+  },
+  "audit": {
+    "page": {
+      "title": "Audit Log",
+      "subtitle": "Searchable, immutable record of system events."
+    },
+    "common": {
+      "loading": "Loading…"
+    },
+    "filter": {
+      "module": "Module",
+      "eventType": "Event type",
+      "actor": "Actor (user id)",
+      "entityRef": "Entity reference",
+      "from": "From",
+      "to": "To",
+      "search": "Search"
+    },
+    "table": {
+      "time": "Time",
+      "module": "Module",
+      "event": "Event",
+      "entity": "Entity",
+      "actor": "Actor",
+      "source": "Source",
+      "empty": "No audit entries match your filters.",
+      "toggle": "Toggle details"
+    },
+    "source": {
+      "audit_log": "Audit log",
+      "access_audit": "Access audit"
+    },
+    "trail": {
+      "empty": "No activity recorded yet."
+    },
+    "pager": {
+      "prev": "Previous",
+      "next": "Next",
+      "page": "Page {{page}}"
+    }
+  },
+  "documents": {
+    "page": {
+      "title": "Documents",
+      "subtitle": "Store and manage documents. Uses SharePoint when configured, otherwise Supabase Storage.",
+      "unlinked": "Unlinked Documents"
+    },
+    "adapters": {
+      "title": "Storage Status",
+      "live": "Live",
+      "usingFallback": "SharePoint is not configured — using Supabase Storage."
+    },
+    "adapterStatus": {
+      "unconfigured": "Pending credentials",
+      "configured": "Configured"
+    },
+    "provider": {
+      "sharepoint": "SharePoint",
+      "supabase_storage": "Supabase Storage"
+    },
+    "panel": {
+      "category": "Category",
+      "upload": "Upload",
+      "uploading": "Uploading…",
+      "replacing": "Replacing existing document"
+    },
+    "table": {
+      "title": "Title",
+      "category": "Category",
+      "version": "Version",
+      "provider": "Storage",
+      "status": "Status",
+      "actions": "Actions",
+      "empty": "No documents yet."
+    },
+    "status": {
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "actions": {
+      "download": "Download",
+      "replace": "Replace",
+      "archive": "Archive"
+    },
+    "toasts": {
+      "uploaded": "Document uploaded.",
+      "uploadError": "Upload failed.",
+      "downloadError": "Could not get download link.",
+      "archived": "Document archived.",
+      "actionError": "Action failed."
     }
   }
 }
