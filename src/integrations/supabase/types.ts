@@ -902,12 +902,430 @@ export type Database = {
           },
         ]
       }
+      tas_workflow_definition: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          request_type: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+          version: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          request_type: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          request_type?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+          version?: number
+        }
+        Relationships: []
+      }
+      tas_workflow_event: {
+        Row: {
+          consumed: boolean
+          created_at: string
+          event_type: string
+          id: string
+          instance_id: string
+          payload_json: Json
+        }
+        Insert: {
+          consumed?: boolean
+          created_at?: string
+          event_type: string
+          id?: string
+          instance_id: string
+          payload_json?: Json
+        }
+        Update: {
+          consumed?: boolean
+          created_at?: string
+          event_type?: string
+          id?: string
+          instance_id?: string
+          payload_json?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_workflow_event_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "tas_workflow_instance"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_workflow_history: {
+        Row: {
+          action: string | null
+          actor_user_id: string | null
+          comment: string | null
+          created_at: string
+          from_status: string | null
+          id: string
+          instance_id: string
+          step_no: number | null
+          to_status: string | null
+        }
+        Insert: {
+          action?: string | null
+          actor_user_id?: string | null
+          comment?: string | null
+          created_at?: string
+          from_status?: string | null
+          id?: string
+          instance_id: string
+          step_no?: number | null
+          to_status?: string | null
+        }
+        Update: {
+          action?: string | null
+          actor_user_id?: string | null
+          comment?: string | null
+          created_at?: string
+          from_status?: string | null
+          id?: string
+          instance_id?: string
+          step_no?: number | null
+          to_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_workflow_history_actor_user_id_fkey"
+            columns: ["actor_user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_workflow_history_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "tas_workflow_instance"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_workflow_instance: {
+        Row: {
+          branch_id: string | null
+          context_json: Json
+          created_at: string
+          created_by: string | null
+          current_step: number
+          definition_id: string
+          department_id: string | null
+          entity_id: string | null
+          id: string
+          request_ref: string | null
+          request_type: string
+          requester_user_id: string | null
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          branch_id?: string | null
+          context_json?: Json
+          created_at?: string
+          created_by?: string | null
+          current_step?: number
+          definition_id: string
+          department_id?: string | null
+          entity_id?: string | null
+          id?: string
+          request_ref?: string | null
+          request_type: string
+          requester_user_id?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          branch_id?: string | null
+          context_json?: Json
+          created_at?: string
+          created_by?: string | null
+          current_step?: number
+          definition_id?: string
+          department_id?: string | null
+          entity_id?: string | null
+          id?: string
+          request_ref?: string | null
+          request_type?: string
+          requester_user_id?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_workflow_instance_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "tas_branch"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_workflow_instance_definition_id_fkey"
+            columns: ["definition_id"]
+            isOneToOne: false
+            referencedRelation: "tas_workflow_definition"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_workflow_instance_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "tas_department"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_workflow_instance_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "tas_entity"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_workflow_instance_requester_user_id_fkey"
+            columns: ["requester_user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_workflow_step: {
+        Row: {
+          approver_rule_type: string
+          approver_rule_value: Json
+          condition_json: Json | null
+          created_at: string
+          created_by: string | null
+          definition_id: string
+          id: string
+          name_ar: string
+          name_en: string
+          on_reject: string
+          quorum: number
+          sla_hours: number | null
+          step_no: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          approver_rule_type: string
+          approver_rule_value?: Json
+          condition_json?: Json | null
+          created_at?: string
+          created_by?: string | null
+          definition_id: string
+          id?: string
+          name_ar: string
+          name_en: string
+          on_reject?: string
+          quorum?: number
+          sla_hours?: number | null
+          step_no: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          approver_rule_type?: string
+          approver_rule_value?: Json
+          condition_json?: Json | null
+          created_at?: string
+          created_by?: string | null
+          definition_id?: string
+          id?: string
+          name_ar?: string
+          name_en?: string
+          on_reject?: string
+          quorum?: number
+          sla_hours?: number | null
+          step_no?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_workflow_step_definition_id_fkey"
+            columns: ["definition_id"]
+            isOneToOne: false
+            referencedRelation: "tas_workflow_definition"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_workflow_task: {
+        Row: {
+          acted_at: string | null
+          assignee_user_id: string | null
+          created_at: string
+          created_by: string | null
+          decision_comment_ar: string | null
+          decision_comment_en: string | null
+          due_at: string | null
+          id: string
+          instance_id: string
+          resolved_via: string
+          status: string
+          step_no: number
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          acted_at?: string | null
+          assignee_user_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          decision_comment_ar?: string | null
+          decision_comment_en?: string | null
+          due_at?: string | null
+          id?: string
+          instance_id: string
+          resolved_via?: string
+          status?: string
+          step_no: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          acted_at?: string | null
+          assignee_user_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          decision_comment_ar?: string | null
+          decision_comment_en?: string | null
+          due_at?: string | null
+          id?: string
+          instance_id?: string
+          resolved_via?: string
+          status?: string
+          step_no?: number
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_workflow_task_assignee_user_id_fkey"
+            columns: ["assignee_user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_workflow_task_instance_id_fkey"
+            columns: ["instance_id"]
+            isOneToOne: false
+            referencedRelation: "tas_workflow_instance"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      _wf_advance: {
+        Args: { p_actor: string; p_from_step: number; p_instance: string }
+        Returns: undefined
+      }
+      _wf_apply_delegation: {
+        Args: { p_request_type: string; p_user: string }
+        Returns: {
+          final_uid: string
+          via: string
+        }[]
+      }
+      _wf_audit: {
+        Args: {
+          p_action: string
+          p_actor: string
+          p_instance: string
+          p_step: number
+        }
+        Returns: undefined
+      }
+      _wf_enter_step: {
+        Args: { p_instance: string; p_step_no: number }
+        Returns: number
+      }
+      act_on_task: {
+        Args: {
+          p_action: string
+          p_comment?: string
+          p_comment_ar?: string
+          p_target?: string
+          p_task_id: string
+        }
+        Returns: undefined
+      }
+      activate_workflow: {
+        Args: { p_definition_id: string }
+        Returns: undefined
+      }
+      eval_condition: {
+        Args: { p_condition: Json; p_context: Json }
+        Returns: boolean
+      }
+      instance_timeline: { Args: { p_instance_id: string }; Returns: Json }
+      my_pending_tasks: {
+        Args: { p_user_id: string }
+        Returns: {
+          created_at: string
+          due_at: string
+          instance_id: string
+          instance_status: string
+          request_ref: string
+          request_type: string
+          resolved_via: string
+          step_no: number
+          task_id: string
+        }[]
+      }
+      resolve_step_approvers: {
+        Args: { p_instance_id: string; p_step_no: number }
+        Returns: {
+          resolved_via: string
+          user_id: string
+        }[]
+      }
+      submit_workflow: {
+        Args: {
+          p_branch_id: string
+          p_context_json: Json
+          p_department_id: string
+          p_entity_id: string
+          p_request_ref: string
+          p_request_type: string
+          p_requester_id: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
