@@ -135,21 +135,24 @@ stable
 security definer
 set search_path = public
 as $$
+  -- A recursive CTE allows exactly ONE union between the seed and a single
+  -- recursive term (Postgres 42P19). We walk the chain in BOTH directions inside
+  -- that one recursive term, carrying a visited[] array as a cycle guard.
   with recursive chain as (
-    -- seed
-    select d.id, d.supersedes_id from public.tas_document d where d.id = p_id
-    union
-    -- ancestors (older versions this one supersedes)
-    select d.id, d.supersedes_id
+    -- non-recursive seed: the starting doc
+    select d.id, d.supersedes_id, array[d.id] as visited
     from public.tas_document d
-    join chain c on d.id = c.supersedes_id
-    union
-    -- descendants (newer versions that supersede a row in the chain)
-    select d.id, d.supersedes_id
+    where d.id = p_id
+    union all
+    -- single recursive term: step to a neighbor in EITHER direction, skip visited
+    select d.id, d.supersedes_id, c.visited || d.id
     from public.tas_document d
-    join chain c on d.supersedes_id = c.id
+    join chain c
+      on (d.id = c.supersedes_id        -- older version this row supersedes
+          or d.supersedes_id = c.id)    -- newer version that supersedes this row
+    where d.id <> all(c.visited)        -- cycle guard
   )
-  select d.id, d.title, d.version, d.supersedes_id, d.status, d.file_name, d.created_at
+  select distinct d.id, d.title, d.version, d.supersedes_id, d.status, d.file_name, d.created_at
   from public.tas_document d
   join chain c on c.id = d.id
   order by d.version desc;

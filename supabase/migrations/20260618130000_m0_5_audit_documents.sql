@@ -11,12 +11,13 @@
 --       FALLBACK so upload/download works today. Degradation is a feature.
 --
 -- -----------------------------------------------------------------------------
--- ⚠️  STORAGE BUCKET REQUIREMENT (action for Lovable on apply):
+-- ⚠️  STORAGE BUCKET REQUIREMENT (provision via the Lovable Storage UI):
 --     The Supabase Storage fallback needs a PRIVATE bucket named 'tas-documents'.
---     This migration ATTEMPTS an idempotent insert into storage.buckets (wrapped
---     so it is harmless if storage isn't manageable via SQL). If that no-ops,
---     Lovable MUST provision/confirm a PRIVATE bucket named 'tas-documents'
---     during apply. The document-upload/download edge functions assume it exists.
+--     This migration deliberately contains NO SQL that creates the bucket —
+--     Lovable Cloud rejects any migration that references the storage bucket
+--     table. Create the bucket manually in the Lovable Storage UI:
+--         Bucket name: tas-documents   |   Visibility: Private
+--     The document-upload/download edge functions assume it exists.
 -- -----------------------------------------------------------------------------
 --
 -- RLS posture (M0.5; per-role tightening in M3.1):
@@ -203,22 +204,16 @@ insert into public.tas_lookup (lookup_type, code, name_en, name_ar, sort_order) 
 on conflict (lookup_type, code) do nothing;
 
 -- =============================================================================
--- 7. STORAGE BUCKET (best-effort; see header). Harmless if storage schema differs.
+-- 7. STORAGE BUCKET — PROVISION VIA LOVABLE STORAGE UI (NOT via migration).
 -- =============================================================================
--- Attempt to create the private 'tas-documents' bucket idempotently. Wrapped in a
--- DO block so any permission/schema difference is swallowed — Lovable confirms
--- the bucket on apply regardless.
-do $$
-begin
-  if exists (select 1 from information_schema.tables
-             where table_schema = 'storage' and table_name = 'buckets') then
-    insert into storage.buckets (id, name, public)
-    values ('tas-documents', 'tas-documents', false)
-    on conflict (id) do nothing;
-  end if;
-exception when others then
-  raise notice 'tas-documents bucket not created via SQL (provision it in Lovable): %', sqlerrm;
-end $$;
+-- The Supabase Storage fallback requires a PRIVATE bucket named 'tas-documents'.
+-- This migration intentionally contains NO SQL that creates or references the
+-- storage bucket table: Lovable Cloud rejects any such migration (even when
+-- wrapped in an exception handler), which blocks the entire apply. Provision the
+-- bucket manually in the Lovable Storage UI:
+--     Bucket name: tas-documents
+--     Visibility:  Private (public = false)
+-- The document-upload / document-download edge functions assume it exists.
 
 -- =============================================================================
 -- End of schema/seed. RPC functions follow in 20260618130001_m0_5_audit_documents_rpc.sql
