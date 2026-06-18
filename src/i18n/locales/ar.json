@@ -7,6 +7,7 @@
     "dashboard": "لوحة التحكم",
     "identity": "الهوية والوصول",
     "config": "الإعدادات الأساسية",
+    "workflow": "سير العمل والموافقات",
     "reports": "التقارير",
     "settings": "الإعدادات"
   },
@@ -272,6 +273,138 @@
       "contract_type": "نوع العقد",
       "nationality_class": "فئة الجنسية",
       "work_location_type": "نوع موقع العمل"
+    }
+  },
+  "workflow": {
+    "page": {
+      "title": "سير العمل والموافقات",
+      "subtitle": "مسارات موافقة قابلة للتهيئة وصندوق الموافقات الخاص بك."
+    },
+    "backToWorkflow": "العودة إلى سير العمل والموافقات",
+    "landing": {
+      "defsDesc": "تعريف وإصدار مسارات الموافقة لكل نوع طلب.",
+      "inboxDesc": "مراجعة واتخاذ القرار بشأن الموافقات المسندة إليك."
+    },
+    "common": {
+      "loading": "جارٍ التحميل…"
+    },
+    "fields": {
+      "requestType": "نوع الطلب",
+      "name": "الاسم",
+      "nameEn": "الاسم (إنجليزي)",
+      "nameAr": "الاسم (عربي)",
+      "version": "الإصدار",
+      "status": "الحالة",
+      "actions": "الإجراءات",
+      "requestRef": "المرجع",
+      "step": "الخطوة",
+      "due": "الاستحقاق"
+    },
+    "buttons": {
+      "edit": "تعديل",
+      "activate": "تفعيل",
+      "archive": "أرشفة",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "moveUp": "تحريك لأعلى",
+      "moveDown": "تحريك لأسفل",
+      "remove": "إزالة"
+    },
+    "toasts": {
+      "saved": "تم الحفظ.",
+      "saveError": "تعذر الحفظ.",
+      "activated": "تم تفعيل سير العمل.",
+      "archived": "تمت أرشفة سير العمل.",
+      "actionError": "فشل الإجراء (تتطلب الكتابة صلاحيات أعلى حتى الإصدار M3.1).",
+      "decisionRecorded": "تم تسجيل القرار."
+    },
+    "defs": {
+      "title": "تعريفات سير العمل",
+      "pageTitle": "تعريفات سير العمل",
+      "add": "تعريف جديد",
+      "empty": "لا توجد تعريفات سير عمل بعد."
+    },
+    "defStatus": {
+      "draft": "مسودة",
+      "active": "نشط",
+      "archived": "مؤرشف"
+    },
+    "builder": {
+      "title": "أداة بناء الخطوات",
+      "saveSteps": "حفظ الخطوات",
+      "noSteps": "لا توجد خطوات بعد. أضف خطوة الموافقة الأولى.",
+      "addStep": "إضافة خطوة",
+      "approverRule": "قاعدة المعتمِد",
+      "pickRole": "اختر دوراً",
+      "pickRelative": "اختر علاقة هرمية",
+      "pickUser": "اختر مستخدماً",
+      "condition": "الشرط (اختياري)",
+      "field": "الحقل",
+      "value": "القيمة",
+      "conditionHint": "اترك الحقل فارغاً لخطوة تنطبق دائماً. لعامل \"in\" استخدم قائمة مفصولة بفواصل.",
+      "quorum": "النصاب",
+      "slaHours": "اتفاقية مستوى الخدمة (ساعات)",
+      "onReject": "عند الرفض"
+    },
+    "ruleType": {
+      "role": "دور",
+      "hierarchy": "تسلسل هرمي",
+      "named_user": "مستخدم محدد"
+    },
+    "relative": {
+      "branch_manager": "مدير الفرع",
+      "department_head": "رئيس القسم",
+      "entity_admin": "مسؤول الكيان"
+    },
+    "onReject": {
+      "stop": "إيقاف (رفض الطلب)",
+      "return": "إعادة إلى مقدم الطلب"
+    },
+    "inbox": {
+      "title": "موافقاتي",
+      "pageTitle": "موافقاتي",
+      "signInRequired": "سجّل الدخول لعرض الموافقات المسندة إليك.",
+      "empty": "لا توجد موافقات معلقة.",
+      "decide": "اتخاذ قرار",
+      "decideTitle": "تسجيل قرار",
+      "action": "الإجراء",
+      "reassignTo": "إعادة التعيين إلى",
+      "commentEn": "تعليق (إنجليزي)",
+      "commentAr": "تعليق (عربي)",
+      "submitDecision": "إرسال القرار"
+    },
+    "actions": {
+      "approve": "اعتماد",
+      "reject": "رفض",
+      "request_changes": "طلب تعديلات",
+      "reassign": "إعادة تعيين"
+    },
+    "status": {
+      "in_progress": "قيد التنفيذ",
+      "approved": "معتمد",
+      "rejected": "مرفوض",
+      "returned": "مُعاد",
+      "blocked": "محظور"
+    },
+    "taskStatus": {
+      "pending": "معلق",
+      "approved": "معتمد",
+      "rejected": "مرفوض",
+      "changes_requested": "مطلوب تعديلات",
+      "reassigned": "أُعيد تعيينه",
+      "skipped": "تم تخطيه",
+      "escalated": "تم تصعيده"
+    },
+    "resolvedVia": {
+      "direct": "مباشر",
+      "delegation": "تفويض",
+      "reassign": "إعادة تعيين"
+    },
+    "timeline": {
+      "title": "الجدول الزمني للموافقة",
+      "empty": "لا يوجد جدول زمني متاح.",
+      "current": "الحالية",
+      "noTasks": "لم يتم تحديد معتمِدين لهذه الخطوة."
     }
   }
 }

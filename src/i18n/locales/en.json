@@ -7,6 +7,7 @@
     "dashboard": "Dashboard",
     "identity": "Identity & Access",
     "config": "Core Configuration",
+    "workflow": "Workflow & Approvals",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -272,6 +273,138 @@
       "contract_type": "Contract Type",
       "nationality_class": "Nationality Class",
       "work_location_type": "Work Location Type"
+    }
+  },
+  "workflow": {
+    "page": {
+      "title": "Workflow & Approvals",
+      "subtitle": "Configurable approval workflows and your approval inbox."
+    },
+    "backToWorkflow": "Back to Workflow & Approvals",
+    "landing": {
+      "defsDesc": "Define and version approval workflows per request type.",
+      "inboxDesc": "Review and decide on approvals assigned to you."
+    },
+    "common": {
+      "loading": "Loading…"
+    },
+    "fields": {
+      "requestType": "Request Type",
+      "name": "Name",
+      "nameEn": "Name (English)",
+      "nameAr": "Name (Arabic)",
+      "version": "Version",
+      "status": "Status",
+      "actions": "Actions",
+      "requestRef": "Reference",
+      "step": "Step",
+      "due": "Due"
+    },
+    "buttons": {
+      "edit": "Edit",
+      "activate": "Activate",
+      "archive": "Archive",
+      "cancel": "Cancel",
+      "save": "Save",
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove"
+    },
+    "toasts": {
+      "saved": "Saved.",
+      "saveError": "Could not save.",
+      "activated": "Workflow activated.",
+      "archived": "Workflow archived.",
+      "actionError": "Action failed (writes require elevated permissions until M3.1).",
+      "decisionRecorded": "Decision recorded."
+    },
+    "defs": {
+      "title": "Workflow Definitions",
+      "pageTitle": "Workflow Definitions",
+      "add": "New Definition",
+      "empty": "No workflow definitions yet."
+    },
+    "defStatus": {
+      "draft": "Draft",
+      "active": "Active",
+      "archived": "Archived"
+    },
+    "builder": {
+      "title": "Step Builder",
+      "saveSteps": "Save Steps",
+      "noSteps": "No steps yet. Add the first approval step.",
+      "addStep": "Add Step",
+      "approverRule": "Approver Rule",
+      "pickRole": "Select a role",
+      "pickRelative": "Select a hierarchy relation",
+      "pickUser": "Select a user",
+      "condition": "Condition (optional)",
+      "field": "Field",
+      "value": "Value",
+      "conditionHint": "Leave the field blank for a step that always applies. For \"in\", use a comma-separated list.",
+      "quorum": "Quorum",
+      "slaHours": "SLA (hours)",
+      "onReject": "On Reject"
+    },
+    "ruleType": {
+      "role": "Role",
+      "hierarchy": "Hierarchy",
+      "named_user": "Named User"
+    },
+    "relative": {
+      "branch_manager": "Branch Manager",
+      "department_head": "Department Head",
+      "entity_admin": "Entity Admin"
+    },
+    "onReject": {
+      "stop": "Stop (reject request)",
+      "return": "Return to requester"
+    },
+    "inbox": {
+      "title": "My Approvals",
+      "pageTitle": "My Approvals",
+      "signInRequired": "Sign in to view the approvals assigned to you.",
+      "empty": "You have no pending approvals.",
+      "decide": "Decide",
+      "decideTitle": "Record a decision",
+      "action": "Action",
+      "reassignTo": "Reassign to",
+      "commentEn": "Comment (English)",
+      "commentAr": "Comment (Arabic)",
+      "submitDecision": "Submit Decision"
+    },
+    "actions": {
+      "approve": "Approve",
+      "reject": "Reject",
+      "request_changes": "Request changes",
+      "reassign": "Reassign"
+    },
+    "status": {
+      "in_progress": "In progress",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "returned": "Returned",
+      "blocked": "Blocked"
+    },
+    "taskStatus": {
+      "pending": "Pending",
+      "approved": "Approved",
+      "rejected": "Rejected",
+      "changes_requested": "Changes requested",
+      "reassigned": "Reassigned",
+      "skipped": "Skipped",
+      "escalated": "Escalated"
+    },
+    "resolvedVia": {
+      "direct": "Direct",
+      "delegation": "Delegation",
+      "reassign": "Reassigned"
+    },
+    "timeline": {
+      "title": "Approval Timeline",
+      "empty": "No timeline available.",
+      "current": "Current",
+      "noTasks": "No approvers resolved for this step."
     }
   }
 }

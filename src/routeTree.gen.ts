@@ -13,8 +13,11 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AppWorkflowIndexRouteImport } from './routes/app.workflow.index'
 import { Route as AppIdentityIndexRouteImport } from './routes/app.identity.index'
 import { Route as AppConfigIndexRouteImport } from './routes/app.config.index'
+import { Route as AppWorkflowInboxRouteImport } from './routes/app.workflow.inbox'
+import { Route as AppWorkflowDefsRouteImport } from './routes/app.workflow.defs'
 import { Route as AppConfigOrgRouteImport } from './routes/app.config.org'
 import { Route as AppConfigLookupsRouteImport } from './routes/app.config.lookups'
 import { Route as AppConfigJobsRouteImport } from './routes/app.config.jobs'
@@ -40,6 +43,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppWorkflowIndexRoute = AppWorkflowIndexRouteImport.update({
+  id: '/workflow/',
+  path: '/workflow/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppIdentityIndexRoute = AppIdentityIndexRouteImport.update({
   id: '/identity/',
   path: '/identity/',
@@ -48,6 +56,16 @@ const AppIdentityIndexRoute = AppIdentityIndexRouteImport.update({
 const AppConfigIndexRoute = AppConfigIndexRouteImport.update({
   id: '/config/',
   path: '/config/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppWorkflowInboxRoute = AppWorkflowInboxRouteImport.update({
+  id: '/workflow/inbox',
+  path: '/workflow/inbox',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppWorkflowDefsRoute = AppWorkflowDefsRouteImport.update({
+  id: '/workflow/defs',
+  path: '/workflow/defs',
   getParentRoute: () => AppRoute,
 } as any)
 const AppConfigOrgRoute = AppConfigOrgRouteImport.update({
@@ -80,8 +98,11 @@ export interface FileRoutesByFullPath {
   '/app/config/jobs': typeof AppConfigJobsRoute
   '/app/config/lookups': typeof AppConfigLookupsRoute
   '/app/config/org': typeof AppConfigOrgRoute
+  '/app/workflow/defs': typeof AppWorkflowDefsRoute
+  '/app/workflow/inbox': typeof AppWorkflowInboxRoute
   '/app/config/': typeof AppConfigIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
+  '/app/workflow/': typeof AppWorkflowIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -91,8 +112,11 @@ export interface FileRoutesByTo {
   '/app/config/jobs': typeof AppConfigJobsRoute
   '/app/config/lookups': typeof AppConfigLookupsRoute
   '/app/config/org': typeof AppConfigOrgRoute
+  '/app/workflow/defs': typeof AppWorkflowDefsRoute
+  '/app/workflow/inbox': typeof AppWorkflowInboxRoute
   '/app/config': typeof AppConfigIndexRoute
   '/app/identity': typeof AppIdentityIndexRoute
+  '/app/workflow': typeof AppWorkflowIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -104,8 +128,11 @@ export interface FileRoutesById {
   '/app/config/jobs': typeof AppConfigJobsRoute
   '/app/config/lookups': typeof AppConfigLookupsRoute
   '/app/config/org': typeof AppConfigOrgRoute
+  '/app/workflow/defs': typeof AppWorkflowDefsRoute
+  '/app/workflow/inbox': typeof AppWorkflowInboxRoute
   '/app/config/': typeof AppConfigIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
+  '/app/workflow/': typeof AppWorkflowIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -118,8 +145,11 @@ export interface FileRouteTypes {
     | '/app/config/jobs'
     | '/app/config/lookups'
     | '/app/config/org'
+    | '/app/workflow/defs'
+    | '/app/workflow/inbox'
     | '/app/config/'
     | '/app/identity/'
+    | '/app/workflow/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -129,8 +159,11 @@ export interface FileRouteTypes {
     | '/app/config/jobs'
     | '/app/config/lookups'
     | '/app/config/org'
+    | '/app/workflow/defs'
+    | '/app/workflow/inbox'
     | '/app/config'
     | '/app/identity'
+    | '/app/workflow'
   id:
     | '__root__'
     | '/'
@@ -141,8 +174,11 @@ export interface FileRouteTypes {
     | '/app/config/jobs'
     | '/app/config/lookups'
     | '/app/config/org'
+    | '/app/workflow/defs'
+    | '/app/workflow/inbox'
     | '/app/config/'
     | '/app/identity/'
+    | '/app/workflow/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -181,6 +217,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/workflow/': {
+      id: '/app/workflow/'
+      path: '/workflow'
+      fullPath: '/app/workflow/'
+      preLoaderRoute: typeof AppWorkflowIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/identity/': {
       id: '/app/identity/'
       path: '/identity'
@@ -193,6 +236,20 @@ declare module '@tanstack/react-router' {
       path: '/config'
       fullPath: '/app/config/'
       preLoaderRoute: typeof AppConfigIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/workflow/inbox': {
+      id: '/app/workflow/inbox'
+      path: '/workflow/inbox'
+      fullPath: '/app/workflow/inbox'
+      preLoaderRoute: typeof AppWorkflowInboxRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/workflow/defs': {
+      id: '/app/workflow/defs'
+      path: '/workflow/defs'
+      fullPath: '/app/workflow/defs'
+      preLoaderRoute: typeof AppWorkflowDefsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/config/org': {
@@ -232,8 +289,11 @@ interface AppRouteChildren {
   AppConfigJobsRoute: typeof AppConfigJobsRoute
   AppConfigLookupsRoute: typeof AppConfigLookupsRoute
   AppConfigOrgRoute: typeof AppConfigOrgRoute
+  AppWorkflowDefsRoute: typeof AppWorkflowDefsRoute
+  AppWorkflowInboxRoute: typeof AppWorkflowInboxRoute
   AppConfigIndexRoute: typeof AppConfigIndexRoute
   AppIdentityIndexRoute: typeof AppIdentityIndexRoute
+  AppWorkflowIndexRoute: typeof AppWorkflowIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -242,8 +302,11 @@ const AppRouteChildren: AppRouteChildren = {
   AppConfigJobsRoute: AppConfigJobsRoute,
   AppConfigLookupsRoute: AppConfigLookupsRoute,
   AppConfigOrgRoute: AppConfigOrgRoute,
+  AppWorkflowDefsRoute: AppWorkflowDefsRoute,
+  AppWorkflowInboxRoute: AppWorkflowInboxRoute,
   AppConfigIndexRoute: AppConfigIndexRoute,
   AppIdentityIndexRoute: AppIdentityIndexRoute,
+  AppWorkflowIndexRoute: AppWorkflowIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -256,3 +319,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
