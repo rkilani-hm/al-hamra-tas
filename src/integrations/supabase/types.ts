@@ -46,6 +46,160 @@ export type Database = {
           },
         ]
       }
+      tas_application: {
+        Row: {
+          applied_at: string
+          candidate_id: string
+          created_at: string
+          created_by: string | null
+          current_stage_id: string | null
+          id: string
+          owner_user_id: string | null
+          reference: string | null
+          rejection_reason: string | null
+          requisition_id: string
+          source: string | null
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          applied_at?: string
+          candidate_id: string
+          created_at?: string
+          created_by?: string | null
+          current_stage_id?: string | null
+          id?: string
+          owner_user_id?: string | null
+          reference?: string | null
+          rejection_reason?: string | null
+          requisition_id: string
+          source?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          applied_at?: string
+          candidate_id?: string
+          created_at?: string
+          created_by?: string | null
+          current_stage_id?: string | null
+          id?: string
+          owner_user_id?: string | null
+          reference?: string | null
+          rejection_reason?: string | null
+          requisition_id?: string
+          source?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_application_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "tas_candidate"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_application_current_stage_id_fkey"
+            columns: ["current_stage_id"]
+            isOneToOne: false
+            referencedRelation: "tas_pipeline_stage"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_application_owner_user_id_fkey"
+            columns: ["owner_user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_application_requisition_id_fkey"
+            columns: ["requisition_id"]
+            isOneToOne: false
+            referencedRelation: "tas_requisition"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_application_counter: {
+        Row: {
+          fiscal_year: number
+          last_no: number
+        }
+        Insert: {
+          fiscal_year: number
+          last_no?: number
+        }
+        Update: {
+          fiscal_year?: number
+          last_no?: number
+        }
+        Relationships: []
+      }
+      tas_application_stage_history: {
+        Row: {
+          application_id: string
+          created_at: string
+          from_stage_id: string | null
+          id: string
+          moved_by: string | null
+          note: string | null
+          to_stage_id: string | null
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          from_stage_id?: string | null
+          id?: string
+          moved_by?: string | null
+          note?: string | null
+          to_stage_id?: string | null
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          from_stage_id?: string | null
+          id?: string
+          moved_by?: string | null
+          note?: string | null
+          to_stage_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_application_stage_history_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "tas_application"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_application_stage_history_from_stage_id_fkey"
+            columns: ["from_stage_id"]
+            isOneToOne: false
+            referencedRelation: "tas_pipeline_stage"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_application_stage_history_moved_by_fkey"
+            columns: ["moved_by"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_application_stage_history_to_stage_id_fkey"
+            columns: ["to_stage_id"]
+            isOneToOne: false
+            referencedRelation: "tas_pipeline_stage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tas_audit_log: {
         Row: {
           actor_user_id: string | null
@@ -222,6 +376,63 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      tas_candidate: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          current_title: string | null
+          email: string | null
+          first_name: string | null
+          full_name_ar: string | null
+          full_name_en: string | null
+          id: string
+          last_name: string | null
+          nationality: string | null
+          nationality_class: string | null
+          phone: string | null
+          source: string | null
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          current_title?: string | null
+          email?: string | null
+          first_name?: string | null
+          full_name_ar?: string | null
+          full_name_en?: string | null
+          id?: string
+          last_name?: string | null
+          nationality?: string | null
+          nationality_class?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          current_title?: string | null
+          email?: string | null
+          first_name?: string | null
+          full_name_ar?: string | null
+          full_name_en?: string | null
+          id?: string
+          last_name?: string | null
+          nationality?: string | null
+          nationality_class?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
       }
       tas_comm_adapter_config: {
         Row: {
@@ -1051,6 +1262,51 @@ export type Database = {
           module_code?: string
           name_ar?: string | null
           name_en?: string | null
+        }
+        Relationships: []
+      }
+      tas_pipeline_stage: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_terminal: boolean
+          name_ar: string
+          name_en: string
+          sort_order: number
+          stage_type: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_terminal?: boolean
+          name_ar: string
+          name_en: string
+          sort_order?: number
+          stage_type?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_terminal?: boolean
+          name_ar?: string
+          name_en?: string
+          sort_order?: number
+          stage_type?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
         }
         Relationships: []
       }
@@ -1956,6 +2212,19 @@ export type Database = {
         Args: { p_definition_id: string }
         Returns: undefined
       }
+      application_detail: { Args: { p_id: string }; Returns: Json }
+      applications_for_candidate: {
+        Args: { p_candidate_id: string }
+        Returns: {
+          applied_at: string
+          created_at: string
+          current_stage_id: string
+          id: string
+          reference: string
+          requisition_id: string
+          status: string
+        }[]
+      }
       archive_document: { Args: { p_id: string }; Returns: undefined }
       audit_log: {
         Args: {
@@ -1981,6 +2250,14 @@ export type Database = {
           over_budget: boolean
         }[]
       }
+      create_application: {
+        Args: {
+          p_candidate_id: string
+          p_requisition_id: string
+          p_source?: string
+        }
+        Returns: string
+      }
       document_versions: {
         Args: { p_id: string }
         Returns: {
@@ -1997,8 +2274,46 @@ export type Database = {
         Args: { p_condition: Json; p_context: Json }
         Returns: boolean
       }
+      generate_application_ref: { Args: never; Returns: string }
       generate_requisition_ref: { Args: never; Returns: string }
       instance_timeline: { Args: { p_instance_id: string }; Returns: Json }
+      list_applications: {
+        Args: {
+          p_candidate_id?: string
+          p_limit?: number
+          p_offset?: number
+          p_owner_id?: string
+          p_requisition_id?: string
+          p_stage_id?: string
+          p_status?: string
+        }
+        Returns: {
+          applied_at: string
+          candidate_id: string
+          created_at: string
+          current_stage_id: string
+          id: string
+          owner_user_id: string
+          reference: string
+          requisition_id: string
+          source: string
+          status: string
+        }[]
+      }
+      list_candidates: {
+        Args: { p_limit?: number; p_offset?: number; p_search?: string }
+        Returns: {
+          created_at: string
+          current_title: string
+          email: string
+          full_name_ar: string
+          full_name_en: string
+          id: string
+          nationality_class: string
+          phone: string
+          status: string
+        }[]
+      }
       list_documents: {
         Args: { p_entity_ref: string; p_entity_type: string }
         Returns: {
@@ -2045,6 +2360,14 @@ export type Database = {
         }[]
       }
       mark_notification_read: { Args: { p_id: string }; Returns: undefined }
+      move_application_stage: {
+        Args: {
+          p_application_id: string
+          p_note?: string
+          p_to_stage_id: string
+        }
+        Returns: undefined
+      }
       my_notifications: {
         Args: { p_unread_only?: boolean; p_user_id: string }
         Returns: {
@@ -2134,6 +2457,10 @@ export type Database = {
           source: string
         }[]
       }
+      set_application_status: {
+        Args: { p_application_id: string; p_reason?: string; p_status: string }
+        Returns: undefined
+      }
       submit_requisition: {
         Args: { p_requisition_id: string }
         Returns: string
@@ -2159,6 +2486,22 @@ export type Database = {
         Returns: undefined
       }
       unread_count: { Args: { p_user_id: string }; Returns: number }
+      upsert_candidate: {
+        Args: {
+          p_current_title?: string
+          p_email?: string
+          p_first_name?: string
+          p_full_name_ar?: string
+          p_full_name_en?: string
+          p_id?: string
+          p_last_name?: string
+          p_nationality?: string
+          p_nationality_class?: string
+          p_phone?: string
+          p_source?: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
