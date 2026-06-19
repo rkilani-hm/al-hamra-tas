@@ -755,6 +755,263 @@ export type Database = {
         }
         Relationships: []
       }
+      tas_interview: {
+        Row: {
+          application_id: string
+          calendar_status: string
+          created_at: string
+          created_by: string | null
+          duration_min: number
+          id: string
+          location: string | null
+          mode: string
+          outcome: string | null
+          outlook_event_id: string | null
+          reference: string | null
+          round_type: string | null
+          scheduled_at: string | null
+          scheduled_by: string | null
+          scorecard_id: string | null
+          status: string
+          teams_join_url: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          application_id: string
+          calendar_status?: string
+          created_at?: string
+          created_by?: string | null
+          duration_min?: number
+          id?: string
+          location?: string | null
+          mode?: string
+          outcome?: string | null
+          outlook_event_id?: string | null
+          reference?: string | null
+          round_type?: string | null
+          scheduled_at?: string | null
+          scheduled_by?: string | null
+          scorecard_id?: string | null
+          status?: string
+          teams_join_url?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          calendar_status?: string
+          created_at?: string
+          created_by?: string | null
+          duration_min?: number
+          id?: string
+          location?: string | null
+          mode?: string
+          outcome?: string | null
+          outlook_event_id?: string | null
+          reference?: string | null
+          round_type?: string | null
+          scheduled_at?: string | null
+          scheduled_by?: string | null
+          scorecard_id?: string | null
+          status?: string
+          teams_join_url?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_interview_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "tas_application"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_interview_scheduled_by_fkey"
+            columns: ["scheduled_by"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_interview_scorecard_id_fkey"
+            columns: ["scorecard_id"]
+            isOneToOne: false
+            referencedRelation: "tas_screening_scorecard"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_interview_counter: {
+        Row: {
+          fiscal_year: number
+          last_no: number
+        }
+        Insert: {
+          fiscal_year: number
+          last_no?: number
+        }
+        Update: {
+          fiscal_year?: number
+          last_no?: number
+        }
+        Relationships: []
+      }
+      tas_interview_panelist: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          interview_id: string
+          role: string | null
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          interview_id: string
+          role?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          interview_id?: string
+          role?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_interview_panelist_interview_id_fkey"
+            columns: ["interview_id"]
+            isOneToOne: false
+            referencedRelation: "tas_interview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_interview_panelist_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_interview_score: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          interview_id: string
+          notes_en: string | null
+          overall_score: number | null
+          panelist_user_id: string | null
+          recommendation: string | null
+          scorecard_id: string | null
+          submitted_at: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          interview_id: string
+          notes_en?: string | null
+          overall_score?: number | null
+          panelist_user_id?: string | null
+          recommendation?: string | null
+          scorecard_id?: string | null
+          submitted_at?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          interview_id?: string
+          notes_en?: string | null
+          overall_score?: number | null
+          panelist_user_id?: string | null
+          recommendation?: string | null
+          scorecard_id?: string | null
+          submitted_at?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_interview_score_interview_id_fkey"
+            columns: ["interview_id"]
+            isOneToOne: false
+            referencedRelation: "tas_interview"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_interview_score_panelist_user_id_fkey"
+            columns: ["panelist_user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_interview_score_scorecard_id_fkey"
+            columns: ["scorecard_id"]
+            isOneToOne: false
+            referencedRelation: "tas_screening_scorecard"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_interview_score_detail: {
+        Row: {
+          criterion_id: string
+          id: string
+          interview_score_id: string
+          note: string | null
+          score: number | null
+        }
+        Insert: {
+          criterion_id: string
+          id?: string
+          interview_score_id: string
+          note?: string | null
+          score?: number | null
+        }
+        Update: {
+          criterion_id?: string
+          id?: string
+          interview_score_id?: string
+          note?: string | null
+          score?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_interview_score_detail_criterion_id_fkey"
+            columns: ["criterion_id"]
+            isOneToOne: false
+            referencedRelation: "tas_screening_criterion"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_interview_score_detail_interview_score_id_fkey"
+            columns: ["interview_score_id"]
+            isOneToOne: false
+            referencedRelation: "tas_interview_score"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tas_jd_competency: {
         Row: {
           competency_id: string
@@ -2429,6 +2686,10 @@ export type Database = {
         }
         Returns: string
       }
+      cancel_interview: {
+        Args: { p_interview_id: string; p_reason?: string }
+        Returns: undefined
+      }
       check_budgeted_position: {
         Args: {
           p_department_id: string
@@ -2471,8 +2732,14 @@ export type Database = {
         Returns: boolean
       }
       generate_application_ref: { Args: never; Returns: string }
+      generate_interview_ref: { Args: never; Returns: string }
       generate_requisition_ref: { Args: never; Returns: string }
       instance_timeline: { Args: { p_instance_id: string }; Returns: Json }
+      interview_detail: { Args: { p_id: string }; Returns: Json }
+      interview_panel_summary: {
+        Args: { p_interview_id: string }
+        Returns: Json
+      }
       list_applications: {
         Args: {
           p_candidate_search?: string
@@ -2519,6 +2786,34 @@ export type Database = {
           title: string
           uploaded_by: string
           version: number
+        }[]
+      }
+      list_interviews: {
+        Args: {
+          p_application_id?: string
+          p_from?: string
+          p_limit?: number
+          p_mine?: boolean
+          p_offset?: number
+          p_status?: string
+          p_to?: string
+        }
+        Returns: {
+          application_id: string
+          application_ref: string
+          calendar_status: string
+          candidate_name_ar: string
+          candidate_name_en: string
+          duration_min: number
+          id: string
+          location: string
+          mode: string
+          outcome: string
+          reference: string
+          round_type: string
+          scheduled_at: string
+          status: string
+          teams_join_url: string
         }[]
       }
       list_pipeline_stages: {
@@ -2612,6 +2907,10 @@ export type Database = {
           subject: string
         }[]
       }
+      record_interview_outcome: {
+        Args: { p_interview_id: string; p_outcome: string }
+        Returns: Json
+      }
       render_template: {
         Args: {
           p_channel: string
@@ -2625,6 +2924,10 @@ export type Database = {
         }[]
       }
       requisition_detail: { Args: { p_id: string }; Returns: Json }
+      reschedule_interview: {
+        Args: { p_interview_id: string; p_new_datetime: string }
+        Returns: undefined
+      }
       resolve_step_approvers: {
         Args: { p_instance_id: string; p_step_no: number }
         Returns: {
@@ -2636,6 +2939,19 @@ export type Database = {
       save_screening_scores: {
         Args: { p_scores: Json; p_screening_id: string }
         Returns: number
+      }
+      schedule_interview: {
+        Args: {
+          p_application_id: string
+          p_duration_min: number
+          p_location: string
+          p_mode: string
+          p_panelist_ids: string[]
+          p_round_type: string
+          p_scheduled_at: string
+          p_scorecard_id?: string
+        }
+        Returns: string
       }
       screening_detail: { Args: { p_application_id: string }; Returns: Json }
       search_audit: {
@@ -2666,6 +2982,15 @@ export type Database = {
       set_application_status: {
         Args: { p_application_id: string; p_reason?: string; p_status: string }
         Returns: undefined
+      }
+      submit_interview_score: {
+        Args: {
+          p_interview_id: string
+          p_notes_en?: string
+          p_recommendation?: string
+          p_scores: Json
+        }
+        Returns: number
       }
       submit_requisition: {
         Args: { p_requisition_id: string }
