@@ -2213,18 +2213,6 @@ export type Database = {
         Returns: undefined
       }
       application_detail: { Args: { p_id: string }; Returns: Json }
-      applications_for_candidate: {
-        Args: { p_candidate_id: string }
-        Returns: {
-          applied_at: string
-          created_at: string
-          current_stage_id: string
-          id: string
-          reference: string
-          requisition_id: string
-          status: string
-        }[]
-      }
       archive_document: { Args: { p_id: string }; Returns: undefined }
       audit_log: {
         Args: {
@@ -2279,10 +2267,10 @@ export type Database = {
       instance_timeline: { Args: { p_instance_id: string }; Returns: Json }
       list_applications: {
         Args: {
-          p_candidate_id?: string
+          p_candidate_search?: string
           p_limit?: number
+          p_mine?: boolean
           p_offset?: number
-          p_owner_id?: string
           p_requisition_id?: string
           p_stage_id?: string
           p_status?: string
@@ -2290,27 +2278,18 @@ export type Database = {
         Returns: {
           applied_at: string
           candidate_id: string
+          candidate_name_ar: string
+          candidate_name_en: string
           created_at: string
           current_stage_id: string
           id: string
           owner_user_id: string
           reference: string
           requisition_id: string
-          source: string
-          status: string
-        }[]
-      }
-      list_candidates: {
-        Args: { p_limit?: number; p_offset?: number; p_search?: string }
-        Returns: {
-          created_at: string
-          current_title: string
-          email: string
-          full_name_ar: string
-          full_name_en: string
-          id: string
-          nationality_class: string
-          phone: string
+          requisition_reference: string
+          stage_name_ar: string
+          stage_name_en: string
+          stage_type: string
           status: string
         }[]
       }
@@ -2332,6 +2311,19 @@ export type Database = {
           title: string
           uploaded_by: string
           version: number
+        }[]
+      }
+      list_pipeline_stages: {
+        Args: never
+        Returns: {
+          code: string
+          id: string
+          is_terminal: boolean
+          name_ar: string
+          name_en: string
+          sort_order: number
+          stage_type: string
+          status: string
         }[]
       }
       list_requisitions: {
