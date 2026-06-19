@@ -10,6 +10,7 @@
     "requisitions": "Requisitions",
     "applications": "Applications",
     "candidates": "Candidates",
+    "screening": "Screening",
     "workflow": "Workflow & Approvals",
     "notifications": "Notifications",
     "documents": "Documents",
@@ -865,6 +866,70 @@
       "downloadError": "Could not get download link.",
       "archived": "Document archived.",
       "actionError": "Action failed."
+    }
+  },
+  "screening": {
+    "page": {
+      "title": "Screening",
+      "subtitle": "Screen applications against a configurable scorecard and shortlist or reject."
+    },
+    "common": {
+      "loading": "Loading…"
+    },
+    "panel": {
+      "title": "Screening",
+      "start": "Start screening",
+      "none": "No screening yet for this application.",
+      "overall": "Overall score",
+      "recommendation": "Recommendation",
+      "screenedBy": "Screened by",
+      "status": "Status",
+      "criteria": "Criteria"
+    },
+    "form": {
+      "title": "Screening",
+      "scorecard": "Scorecard",
+      "criterion": "Criterion",
+      "weight": "Weight",
+      "max": "Max",
+      "score": "Score",
+      "note": "Note",
+      "notes": "Notes (internal)",
+      "overall": "Overall score",
+      "recommendation": "Recommendation",
+      "saveDraft": "Save draft",
+      "submit": "Submit",
+      "saving": "Saving…"
+    },
+    "recommendation": {
+      "shortlist": "Shortlist",
+      "reject": "Reject",
+      "hold": "Hold"
+    },
+    "status": {
+      "draft": "Draft",
+      "submitted": "Submitted"
+    },
+    "config": {
+      "title": "Scorecards",
+      "subtitle": "Manage screening scorecards and their criteria.",
+      "criteria": "Criteria",
+      "addCriterion": "Add criterion",
+      "code": "Code",
+      "nameEn": "Name (EN)",
+      "nameAr": "Name (AR)",
+      "weight": "Weight",
+      "max": "Max score",
+      "order": "Order",
+      "save": "Save criteria",
+      "readOnly": "Scorecard configuration is read-only until role-based access is enabled (M3.1).",
+      "empty": "No scorecards configured."
+    },
+    "toasts": {
+      "saved": "Screening saved.",
+      "submitted": "Screening submitted.",
+      "error": "Action failed.",
+      "noStage": "Screening recorded, but no matching pipeline stage was found to move the application."
     }
   }
 }

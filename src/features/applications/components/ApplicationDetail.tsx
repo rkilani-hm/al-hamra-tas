@@ -17,6 +17,7 @@ import {
 import { useLanguage } from "@/hooks/use-language";
 import { DocumentPanel } from "@/features/documents/components/DocumentPanel";
 import { AuditTrail } from "@/features/audit/components/AuditTrail";
+import { ScreeningPanel } from "@/features/screening/components/ScreeningPanel";
 import {
   applicationDetail,
   listPipelineStages,
@@ -143,6 +144,12 @@ export function ApplicationDetail({ id, currentUserId = null }: ApplicationDetai
       <section className="space-y-2 rounded-md border p-4">
         <h3 className="font-medium text-foreground">{t("applications.detail.documents")}</h3>
         <DocumentPanel entityType="application" entityRef={id} currentUserId={currentUserId} />
+      </section>
+
+      {/* Screening (M1.6, reused panel) */}
+      <section className="space-y-2 rounded-md border p-4">
+        <h3 className="font-medium text-foreground">{t("screening.panel.title")}</h3>
+        <ScreeningPanel applicationId={id} />
       </section>
 
       {/* Audit trail (reused) */}

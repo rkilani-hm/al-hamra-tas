@@ -14,6 +14,7 @@ import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AppWorkflowIndexRouteImport } from './routes/app.workflow.index'
+import { Route as AppScreeningIndexRouteImport } from './routes/app.screening.index'
 import { Route as AppRequisitionsIndexRouteImport } from './routes/app.requisitions.index'
 import { Route as AppNotificationsIndexRouteImport } from './routes/app.notifications.index'
 import { Route as AppIdentityIndexRouteImport } from './routes/app.identity.index'
@@ -24,6 +25,7 @@ import { Route as AppAuditIndexRouteImport } from './routes/app.audit.index'
 import { Route as AppApplicationsIndexRouteImport } from './routes/app.applications.index'
 import { Route as AppWorkflowInboxRouteImport } from './routes/app.workflow.inbox'
 import { Route as AppWorkflowDefsRouteImport } from './routes/app.workflow.defs'
+import { Route as AppScreeningScorecardsRouteImport } from './routes/app.screening.scorecards'
 import { Route as AppRequisitionsNewRouteImport } from './routes/app.requisitions.new'
 import { Route as AppRequisitionsIdRouteImport } from './routes/app.requisitions.$id'
 import { Route as AppNotificationsTemplatesRouteImport } from './routes/app.notifications.templates'
@@ -61,6 +63,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
 const AppWorkflowIndexRoute = AppWorkflowIndexRouteImport.update({
   id: '/workflow/',
   path: '/workflow/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppScreeningIndexRoute = AppScreeningIndexRouteImport.update({
+  id: '/screening/',
+  path: '/screening/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppRequisitionsIndexRoute = AppRequisitionsIndexRouteImport.update({
@@ -111,6 +118,11 @@ const AppWorkflowInboxRoute = AppWorkflowInboxRouteImport.update({
 const AppWorkflowDefsRoute = AppWorkflowDefsRouteImport.update({
   id: '/workflow/defs',
   path: '/workflow/defs',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppScreeningScorecardsRoute = AppScreeningScorecardsRouteImport.update({
+  id: '/screening/scorecards',
+  path: '/screening/scorecards',
   getParentRoute: () => AppRoute,
 } as any)
 const AppRequisitionsNewRoute = AppRequisitionsNewRouteImport.update({
@@ -199,6 +211,7 @@ export interface FileRoutesByFullPath {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/requisitions/$id': typeof AppRequisitionsIdRoute
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
+  '/app/screening/scorecards': typeof AppScreeningScorecardsRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
   '/app/applications/': typeof AppApplicationsIndexRoute
@@ -209,6 +222,7 @@ export interface FileRoutesByFullPath {
   '/app/identity/': typeof AppIdentityIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
+  '/app/screening/': typeof AppScreeningIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
 }
 export interface FileRoutesByTo {
@@ -228,6 +242,7 @@ export interface FileRoutesByTo {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/requisitions/$id': typeof AppRequisitionsIdRoute
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
+  '/app/screening/scorecards': typeof AppScreeningScorecardsRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
   '/app/applications': typeof AppApplicationsIndexRoute
@@ -238,6 +253,7 @@ export interface FileRoutesByTo {
   '/app/identity': typeof AppIdentityIndexRoute
   '/app/notifications': typeof AppNotificationsIndexRoute
   '/app/requisitions': typeof AppRequisitionsIndexRoute
+  '/app/screening': typeof AppScreeningIndexRoute
   '/app/workflow': typeof AppWorkflowIndexRoute
 }
 export interface FileRoutesById {
@@ -259,6 +275,7 @@ export interface FileRoutesById {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/requisitions/$id': typeof AppRequisitionsIdRoute
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
+  '/app/screening/scorecards': typeof AppScreeningScorecardsRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
   '/app/applications/': typeof AppApplicationsIndexRoute
@@ -269,6 +286,7 @@ export interface FileRoutesById {
   '/app/identity/': typeof AppIdentityIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
+  '/app/screening/': typeof AppScreeningIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
 }
 export interface FileRouteTypes {
@@ -291,6 +309,7 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/requisitions/$id'
     | '/app/requisitions/new'
+    | '/app/screening/scorecards'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
     | '/app/applications/'
@@ -301,6 +320,7 @@ export interface FileRouteTypes {
     | '/app/identity/'
     | '/app/notifications/'
     | '/app/requisitions/'
+    | '/app/screening/'
     | '/app/workflow/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -320,6 +340,7 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/requisitions/$id'
     | '/app/requisitions/new'
+    | '/app/screening/scorecards'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
     | '/app/applications'
@@ -330,6 +351,7 @@ export interface FileRouteTypes {
     | '/app/identity'
     | '/app/notifications'
     | '/app/requisitions'
+    | '/app/screening'
     | '/app/workflow'
   id:
     | '__root__'
@@ -350,6 +372,7 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/requisitions/$id'
     | '/app/requisitions/new'
+    | '/app/screening/scorecards'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
     | '/app/applications/'
@@ -360,6 +383,7 @@ export interface FileRouteTypes {
     | '/app/identity/'
     | '/app/notifications/'
     | '/app/requisitions/'
+    | '/app/screening/'
     | '/app/workflow/'
   fileRoutesById: FileRoutesById
 }
@@ -404,6 +428,13 @@ declare module '@tanstack/react-router' {
       path: '/workflow'
       fullPath: '/app/workflow/'
       preLoaderRoute: typeof AppWorkflowIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/screening/': {
+      id: '/app/screening/'
+      path: '/screening'
+      fullPath: '/app/screening/'
+      preLoaderRoute: typeof AppScreeningIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/requisitions/': {
@@ -474,6 +505,13 @@ declare module '@tanstack/react-router' {
       path: '/workflow/defs'
       fullPath: '/app/workflow/defs'
       preLoaderRoute: typeof AppWorkflowDefsRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/screening/scorecards': {
+      id: '/app/screening/scorecards'
+      path: '/screening/scorecards'
+      fullPath: '/app/screening/scorecards'
+      preLoaderRoute: typeof AppScreeningScorecardsRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/requisitions/new': {
@@ -585,6 +623,7 @@ interface AppRouteChildren {
   AppNotificationsTemplatesRoute: typeof AppNotificationsTemplatesRoute
   AppRequisitionsIdRoute: typeof AppRequisitionsIdRoute
   AppRequisitionsNewRoute: typeof AppRequisitionsNewRoute
+  AppScreeningScorecardsRoute: typeof AppScreeningScorecardsRoute
   AppWorkflowDefsRoute: typeof AppWorkflowDefsRoute
   AppWorkflowInboxRoute: typeof AppWorkflowInboxRoute
   AppApplicationsIndexRoute: typeof AppApplicationsIndexRoute
@@ -595,6 +634,7 @@ interface AppRouteChildren {
   AppIdentityIndexRoute: typeof AppIdentityIndexRoute
   AppNotificationsIndexRoute: typeof AppNotificationsIndexRoute
   AppRequisitionsIndexRoute: typeof AppRequisitionsIndexRoute
+  AppScreeningIndexRoute: typeof AppScreeningIndexRoute
   AppWorkflowIndexRoute: typeof AppWorkflowIndexRoute
 }
 
@@ -613,6 +653,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppNotificationsTemplatesRoute: AppNotificationsTemplatesRoute,
   AppRequisitionsIdRoute: AppRequisitionsIdRoute,
   AppRequisitionsNewRoute: AppRequisitionsNewRoute,
+  AppScreeningScorecardsRoute: AppScreeningScorecardsRoute,
   AppWorkflowDefsRoute: AppWorkflowDefsRoute,
   AppWorkflowInboxRoute: AppWorkflowInboxRoute,
   AppApplicationsIndexRoute: AppApplicationsIndexRoute,
@@ -623,6 +664,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppIdentityIndexRoute: AppIdentityIndexRoute,
   AppNotificationsIndexRoute: AppNotificationsIndexRoute,
   AppRequisitionsIndexRoute: AppRequisitionsIndexRoute,
+  AppScreeningIndexRoute: AppScreeningIndexRoute,
   AppWorkflowIndexRoute: AppWorkflowIndexRoute,
 }
 
@@ -636,3 +678,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
