@@ -1,11 +1,9 @@
 // Module M1.9 — Offer Management: data-access layer.
 //
-// INTERIM: the M1.9 tables (tas_offer, tas_offer_event) + RPCs (submit_offer,
-// sync_offer_status, issue_offer, respond_to_offer, transition_offer,
-// offer_detail, list_offers) are NOT yet in the generated Database types. Route
-// them through a loosely typed client until Lovable applies the migration and
-// regenerates types.ts — then swap `db` back to the strict `supabase` client.
-import type { SupabaseClient } from "@supabase/supabase-js";
+// Uses the strict typed `supabase` client (Database types include the M1.9
+// tas_offer / tas_offer_event tables + offer RPCs after Lovable applied the
+// migration and regenerated types.ts). Sensitive write RPCs are service-role-
+// guarded (revoked from public) and fail-soft for authenticated callers until M3.1.
 import { supabase } from "@/integrations/supabase/client";
 import type {
   OfferDetailData,
@@ -15,13 +13,10 @@ import type {
   OfferRecord,
 } from "./types";
 
-// INTERIM: swap to strict client after Lovable applies migration (regen types.ts).
-const db = supabase as unknown as SupabaseClient;
-
 // --- Reads ------------------------------------------------------------------
 
 export async function listOffers(filter: OfferFilter): Promise<OfferListRow[]> {
-  const { data, error } = await db.rpc("list_offers", {
+  const { data, error } = await supabase.rpc("list_offers", {
     p_application_id: filter.applicationId ?? undefined,
     p_candidate_id: filter.candidateId ?? undefined,
     p_status: filter.status ?? undefined,
@@ -34,7 +29,7 @@ export async function listOffers(filter: OfferFilter): Promise<OfferListRow[]> {
 }
 
 export async function offerDetail(id: string): Promise<OfferDetailData> {
-  const { data, error } = await db.rpc("offer_detail", { p_id: id });
+  const { data, error } = await supabase.rpc("offer_detail", { p_id: id });
   if (error) throw error;
   return (data ?? {
     offer: null, application: null, candidate: null, instance: null, letter_snapshot: null, events: [],
@@ -43,9 +38,9 @@ export async function offerDetail(id: string): Promise<OfferDetailData> {
 
 // Derive-on-read: call before rendering the detail to apply terminal transitions.
 export async function syncOfferStatus(id: string): Promise<string | null> {
-  const { data, error } = await db.rpc("sync_offer_status", { p_offer_id: id });
+  const { data, error } = await supabase.rpc("sync_offer_status", { p_offer_id: id });
   if (error) throw error;
-  return (data ?? null) as unknown as string | null;
+  return data ?? null;
 }
 
 // --- Writes -----------------------------------------------------------------
@@ -55,7 +50,7 @@ export async function createDraftOffer(
   input: OfferDraftInput,
   createdBy: string | null,
 ): Promise<OfferRecord> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_offer")
     .insert({ ...input, currency: input.currency ?? "KWD", status: "draft", created_by: createdBy })
     .select("*")
@@ -67,19 +62,19 @@ export async function createDraftOffer(
 // Update a draft's fields. Non-status writes are service-role until M3.1 —
 // fails-soft for authenticated callers for now (mirrors M1.2).
 export async function updateDraftOffer(id: string, patch: Partial<OfferDraftInput>): Promise<void> {
-  const { error } = await db.from("tas_offer").update(patch).eq("id", id);
+  const { error } = await supabase.from("tas_offer").update(patch).eq("id", id);
   if (error) throw error;
 }
 
 // Submit (service-role-guarded RPC; fails-soft for authenticated until M3.1).
 export async function submitOffer(id: string): Promise<void> {
-  const { error } = await db.rpc("submit_offer", { p_offer_id: id });
+  const { error } = await supabase.rpc("submit_offer", { p_offer_id: id });
   if (error) throw error;
 }
 
 // Issue (service-role-guarded). Best-effort kicks the dormant e-sign adapter.
 export async function issueOffer(id: string): Promise<void> {
-  const { error } = await db.rpc("issue_offer", { p_offer_id: id });
+  const { error } = await supabase.rpc("issue_offer", { p_offer_id: id });
   if (error) throw error;
   void invokeEsignAdapter(id);
 }
@@ -91,7 +86,7 @@ export async function respondToOffer(
   reason?: string | null,
   signature?: string | null,
 ): Promise<void> {
-  const { error } = await db.rpc("respond_to_offer", {
+  const { error } = await supabase.rpc("respond_to_offer", {
     p_offer_id: id,
     p_decision: decision,
     p_reason: reason ?? undefined,
@@ -102,7 +97,7 @@ export async function respondToOffer(
 
 // Lifecycle transition: cancel | expire (service-role-guarded).
 export async function transitionOffer(id: string, action: "cancel" | "expire"): Promise<void> {
-  const { error } = await db.rpc("transition_offer", { p_offer_id: id, p_action: action });
+  const { error } = await supabase.rpc("transition_offer", { p_offer_id: id, p_action: action });
   if (error) throw error;
 }
 
@@ -110,13 +105,13 @@ export async function transitionOffer(id: string, action: "cancel" | "expire"): 
 // in-app acceptance works regardless; signing is best-effort.
 async function invokeEsignAdapter(offerId: string): Promise<void> {
   try {
-    await db.functions.invoke("offer-esign", { body: { offer_id: offerId } });
+    await supabase.functions.invoke("offer-esign", { body: { offer_id: offerId } });
   } catch (err) {
     console.warn("[offers] e-sign adapter invoke failed (non-blocking):", err);
   }
 }
 
-// --- Reference data (existing table — strict client) ------------------------
+// --- Reference data (existing tables — strict client) -----------------------
 
 export interface OfferLookup {
   code: string;
