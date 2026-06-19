@@ -12,6 +12,7 @@
     "candidates": "المرشحون",
     "screening": "الفرز",
     "interviews": "المقابلات",
+    "offers": "العروض",
     "workflow": "سير العمل والموافقات",
     "notifications": "الإشعارات",
     "documents": "المستندات",
@@ -1036,6 +1037,97 @@
       "outcomeRecorded": "تم تسجيل النتيجة.",
       "scoreSaved": "تم إرسال بطاقة التقييم.",
       "error": "فشل الإجراء."
+    }
+  },
+  "offers": {
+    "page": {
+      "title": "العروض",
+      "subtitle": "إنشاء واعتماد وإصدار وتتبع عروض العمل للمرشحين.",
+      "new": "عرض جديد",
+      "needContext": "افتح طلبًا واستخدم \"إنشاء عرض\" لبدء عرض ضمن سياق المرشح."
+    },
+    "backToList": "العودة إلى العروض",
+    "common": {
+      "loading": "جارٍ التحميل…"
+    },
+    "panel": {
+      "title": "العرض",
+      "none": "لا توجد عروض لهذا الطلب بعد."
+    },
+    "form": {
+      "grade": "الدرجة",
+      "salary": "الراتب",
+      "currency": "د.ك",
+      "employmentType": "نوع التوظيف",
+      "contractType": "نوع العقد",
+      "startDate": "تاريخ البدء",
+      "probation": "فترة التجربة (أشهر)",
+      "expiry": "تاريخ الانتهاء",
+      "termsEn": "الشروط (إنجليزي)",
+      "termsAr": "الشروط (عربي)"
+    },
+    "status": {
+      "draft": "مسودة",
+      "in_approval": "قيد الاعتماد",
+      "approved": "معتمد",
+      "issued": "صادر",
+      "accepted": "مقبول",
+      "declined": "مرفوض",
+      "expired": "منتهٍ",
+      "cancelled": "ملغى"
+    },
+    "esign": {
+      "none": "التوقيع: لا شيء",
+      "pending": "التوقيع: معلّق",
+      "signed": "التوقيع: موقّع",
+      "skipped": "التوقيع: داخل النظام",
+      "failed": "التوقيع: فشل"
+    },
+    "actions": {
+      "create": "إنشاء عرض",
+      "edit": "تعديل",
+      "submit": "إرسال للاعتماد",
+      "issue": "إصدار العرض",
+      "cancel": "إلغاء",
+      "expire": "إنهاء",
+      "accept": "قبول",
+      "decline": "رفض",
+      "recordResponse": "تسجيل الرد",
+      "saveDraft": "حفظ كمسودة",
+      "saving": "جارٍ الحفظ…",
+      "cancelEdit": "إلغاء"
+    },
+    "detail": {
+      "approval": "الاعتماد",
+      "candidate": "المرشح",
+      "onboardingReady": "جاهز للإعداد",
+      "yes": "نعم",
+      "no": "لا",
+      "recordResponse": "تسجيل رد المرشح",
+      "decision": "القرار",
+      "reason": "السبب",
+      "letter": "خطاب العرض",
+      "documents": "المستندات",
+      "history": "السجل",
+      "noHistory": "لا توجد أحداث بعد.",
+      "audit": "سجل التدقيق",
+      "notFound": "لم يتم العثور على العرض."
+    },
+    "letter": {
+      "notIssued": "يتم إنشاء الخطاب عند إصدار العرض."
+    },
+    "adapter": {
+      "title": "التوقيع الإلكتروني",
+      "dormant": "القبول داخل النظام؛ المزود بانتظار التهيئة."
+    },
+    "toasts": {
+      "draftSaved": "تم حفظ المسودة.",
+      "saveError": "تعذر الحفظ. تحقق من الحقول المطلوبة.",
+      "submitted": "تم إرسال العرض للاعتماد.",
+      "issued": "تم إصدار العرض.",
+      "actionDone": "تم.",
+      "actionError": "فشل الإجراء.",
+      "responseRecorded": "تم تسجيل الرد."
     }
   }
 }

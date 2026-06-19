@@ -12,6 +12,7 @@
     "candidates": "Candidates",
     "screening": "Screening",
     "interviews": "Interviews",
+    "offers": "Offers",
     "workflow": "Workflow & Approvals",
     "notifications": "Notifications",
     "documents": "Documents",
@@ -1036,6 +1037,97 @@
       "outcomeRecorded": "Outcome recorded.",
       "scoreSaved": "Scorecard submitted.",
       "error": "Action failed."
+    }
+  },
+  "offers": {
+    "page": {
+      "title": "Offers",
+      "subtitle": "Create, approve, issue, and track candidate job offers.",
+      "new": "New Offer",
+      "needContext": "Open an application and use \"Create offer\" to start an offer with the candidate context."
+    },
+    "backToList": "Back to Offers",
+    "common": {
+      "loading": "Loading…"
+    },
+    "panel": {
+      "title": "Offer",
+      "none": "No offers for this application yet."
+    },
+    "form": {
+      "grade": "Grade",
+      "salary": "Salary",
+      "currency": "KWD",
+      "employmentType": "Employment type",
+      "contractType": "Contract type",
+      "startDate": "Start date",
+      "probation": "Probation (months)",
+      "expiry": "Expiry date",
+      "termsEn": "Terms (EN)",
+      "termsAr": "Terms (AR)"
+    },
+    "status": {
+      "draft": "Draft",
+      "in_approval": "In approval",
+      "approved": "Approved",
+      "issued": "Issued",
+      "accepted": "Accepted",
+      "declined": "Declined",
+      "expired": "Expired",
+      "cancelled": "Cancelled"
+    },
+    "esign": {
+      "none": "E-sign: none",
+      "pending": "E-sign: pending",
+      "signed": "E-sign: signed",
+      "skipped": "E-sign: in-app",
+      "failed": "E-sign: failed"
+    },
+    "actions": {
+      "create": "Create offer",
+      "edit": "Edit",
+      "submit": "Submit for approval",
+      "issue": "Issue offer",
+      "cancel": "Cancel",
+      "expire": "Expire",
+      "accept": "Accept",
+      "decline": "Decline",
+      "recordResponse": "Record response",
+      "saveDraft": "Save draft",
+      "saving": "Saving…",
+      "cancelEdit": "Cancel"
+    },
+    "detail": {
+      "approval": "Approval",
+      "candidate": "Candidate",
+      "onboardingReady": "Onboarding ready",
+      "yes": "Yes",
+      "no": "No",
+      "recordResponse": "Record candidate response",
+      "decision": "Decision",
+      "reason": "Reason",
+      "letter": "Offer letter",
+      "documents": "Documents",
+      "history": "History",
+      "noHistory": "No events yet.",
+      "audit": "Audit trail",
+      "notFound": "Offer not found."
+    },
+    "letter": {
+      "notIssued": "The letter is generated when the offer is issued."
+    },
+    "adapter": {
+      "title": "E-signature",
+      "dormant": "In-app acceptance; provider pending configuration."
+    },
+    "toasts": {
+      "draftSaved": "Draft saved.",
+      "saveError": "Could not save. Check required fields.",
+      "submitted": "Offer submitted for approval.",
+      "issued": "Offer issued.",
+      "actionDone": "Done.",
+      "actionError": "Action failed.",
+      "responseRecorded": "Response recorded."
     }
   }
 }
