@@ -1,10 +1,8 @@
 // Module M1.5 — Application Tracking (ATS): data-access layer.
 //
-// Strict typed `supabase` client is reused for EXISTING tables via the config /
-// requisition feature APIs (lookups, requisitions). The brand-new M1.5 tables +
-// RPCs aren't in the generated Database type until Lovable applies this module's
-// migration, so they go through a loosely-typed view of the client.
-import type { SupabaseClient } from "@supabase/supabase-js";
+// Uses the strict typed `supabase` client (Database types include the M1.5
+// tables + RPCs after the migration + corrective realign were applied). Existing
+// tables are also read via the config/requisition feature APIs.
 
 import { supabase } from "@/integrations/supabase/client";
 import type {
@@ -16,23 +14,18 @@ import type {
   PipelineStage,
 } from "./types";
 
-// INTERIM: swap after apply — remove this cast once tas_candidate /
-// tas_pipeline_stage / tas_application / tas_application_stage_history + RPCs
-// land in types.ts.
-const db = supabase as unknown as SupabaseClient;
-
 // --- Pipeline stages --------------------------------------------------------
 
 // Active stages (board / move pickers).
 export async function listPipelineStages(): Promise<PipelineStage[]> {
-  const { data, error } = await db.rpc("list_pipeline_stages");
+  const { data, error } = await supabase.rpc("list_pipeline_stages");
   if (error) throw error;
   return (data ?? []) as PipelineStage[];
 }
 
 // ALL stages (StageConfig admin) — direct table read (SELECT granted).
 export async function listAllStages(): Promise<PipelineStage[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_pipeline_stage")
     .select("id, code, name_en, name_ar, sort_order, stage_type, is_terminal, status")
     .order("sort_order");
@@ -45,18 +38,18 @@ export async function updateStage(
   id: string,
   patch: Partial<Pick<PipelineStage, "sort_order" | "status" | "name_en" | "name_ar">>,
 ): Promise<void> {
-  const { error } = await db.from("tas_pipeline_stage").update(patch).eq("id", id);
+  const { error } = await supabase.from("tas_pipeline_stage").update(patch).eq("id", id);
   if (error) throw error;
 }
 
 // --- Applications -----------------------------------------------------------
 
 export async function listApplications(filter: ApplicationFilter): Promise<ApplicationListRow[]> {
-  const { data, error } = await db.rpc("list_applications", {
-    p_requisition_id: filter.requisitionId ?? null,
-    p_stage_id: filter.stageId ?? null,
-    p_status: filter.status ?? null,
-    p_candidate_search: filter.candidateSearch ?? null,
+  const { data, error } = await supabase.rpc("list_applications", {
+    p_requisition_id: filter.requisitionId ?? undefined,
+    p_stage_id: filter.stageId ?? undefined,
+    p_status: filter.status ?? undefined,
+    p_candidate_search: filter.candidateSearch ?? undefined,
     p_mine: filter.mine ?? false,
     p_limit: filter.limit ?? 100,
     p_offset: filter.offset ?? 0,
@@ -66,9 +59,10 @@ export async function listApplications(filter: ApplicationFilter): Promise<Appli
 }
 
 export async function applicationDetail(id: string): Promise<ApplicationDetailData> {
-  const { data, error } = await db.rpc("application_detail", { p_id: id });
+  const { data, error } = await supabase.rpc("application_detail", { p_id: id });
   if (error) throw error;
-  return (data ?? { application: null, candidate: null, current_stage: null, requisition: null, history: [] }) as ApplicationDetailData;
+  // application_detail returns a Json object — cast to the view model.
+  return (data ?? { application: null, candidate: null, current_stage: null, requisition: null, history: [] }) as unknown as ApplicationDetailData;
 }
 
 // Recruiter actions (authenticated-callable RPCs).
@@ -77,10 +71,10 @@ export async function createApplication(
   candidateId: string,
   source?: string | null,
 ): Promise<string> {
-  const { data, error } = await db.rpc("create_application", {
+  const { data, error } = await supabase.rpc("create_application", {
     p_requisition_id: requisitionId,
     p_candidate_id: candidateId,
-    p_source: source ?? null,
+    p_source: source ?? undefined,
   });
   if (error) throw error;
   return data as string;
@@ -91,10 +85,10 @@ export async function moveApplicationStage(
   toStageId: string,
   note?: string | null,
 ): Promise<void> {
-  const { error } = await db.rpc("move_application_stage", {
+  const { error } = await supabase.rpc("move_application_stage", {
     p_application_id: applicationId,
     p_to_stage_id: toStageId,
-    p_note: note ?? null,
+    p_note: note ?? undefined,
   });
   if (error) throw error;
 }
@@ -104,10 +98,10 @@ export async function setApplicationStatus(
   status: string,
   reason?: string | null,
 ): Promise<void> {
-  const { error } = await db.rpc("set_application_status", {
+  const { error } = await supabase.rpc("set_application_status", {
     p_application_id: applicationId,
     p_status: status,
-    p_reason: reason ?? null,
+    p_reason: reason ?? undefined,
   });
   if (error) throw error;
 }
@@ -115,7 +109,7 @@ export async function setApplicationStatus(
 // --- Candidates -------------------------------------------------------------
 
 export async function listCandidates(search?: string | null): Promise<Candidate[]> {
-  let query = db
+  let query = supabase
     .from("tas_candidate")
     .select(
       "id, first_name, last_name, full_name_en, full_name_ar, email, phone, nationality, nationality_class, current_title, source, status, created_at",
@@ -134,7 +128,7 @@ export async function listCandidates(search?: string | null): Promise<Candidate[
 // A candidate's applications (candidate detail). Direct table read with embeds —
 // list_applications has no candidate filter by spec, so we query the table.
 export async function applicationsForCandidate(candidateId: string): Promise<ApplicationListRow[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_application")
     .select(
       "id, reference, requisition_id, candidate_id, current_stage_id, status, applied_at, created_at, tas_requisition(reference), tas_pipeline_stage(name_en, name_ar, stage_type)",
@@ -170,7 +164,7 @@ export async function applicationsForCandidate(candidateId: string): Promise<App
 }
 
 export async function getCandidate(id: string): Promise<Candidate | null> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_candidate")
     .select(
       "id, first_name, last_name, full_name_en, full_name_ar, email, phone, nationality, nationality_class, current_title, source, status, created_at",
@@ -182,18 +176,18 @@ export async function getCandidate(id: string): Promise<Candidate | null> {
 }
 
 export async function upsertCandidate(input: CandidateInput): Promise<string> {
-  const { data, error } = await db.rpc("upsert_candidate", {
-    p_id: input.id ?? null,
-    p_first_name: input.first_name ?? null,
-    p_last_name: input.last_name ?? null,
-    p_full_name_en: input.full_name_en ?? null,
-    p_full_name_ar: input.full_name_ar ?? null,
-    p_email: input.email ?? null,
-    p_phone: input.phone ?? null,
-    p_nationality: input.nationality ?? null,
-    p_nationality_class: input.nationality_class ?? null,
-    p_current_title: input.current_title ?? null,
-    p_source: input.source ?? null,
+  const { data, error } = await supabase.rpc("upsert_candidate", {
+    p_id: input.id ?? undefined,
+    p_first_name: input.first_name ?? undefined,
+    p_last_name: input.last_name ?? undefined,
+    p_full_name_en: input.full_name_en ?? undefined,
+    p_full_name_ar: input.full_name_ar ?? undefined,
+    p_email: input.email ?? undefined,
+    p_phone: input.phone ?? undefined,
+    p_nationality: input.nationality ?? undefined,
+    p_nationality_class: input.nationality_class ?? undefined,
+    p_current_title: input.current_title ?? undefined,
+    p_source: input.source ?? undefined,
   });
   if (error) throw error;
   return data as string;
