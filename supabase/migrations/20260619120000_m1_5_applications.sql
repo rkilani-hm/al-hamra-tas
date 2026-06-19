@@ -231,7 +231,9 @@ on conflict (code) do nothing;
 insert into public.tas_candidate (first_name, last_name, full_name_en, full_name_ar, email, nationality_class, current_title, source, status) values
   ('Sample', 'Candidate One', 'Sample Candidate One', 'مرشح تجريبي ١', 'sample.candidate1@example.com', 'kuwaiti', 'HR Officer', 'sample', 'active'),
   ('Sample', 'Candidate Two', 'Sample Candidate Two', 'مرشح تجريبي ٢', 'sample.candidate2@example.com', 'expat',   'Accountant', 'sample', 'active')
-on conflict (email) do nothing;
+-- email is backed by a PARTIAL unique index (WHERE email IS NOT NULL); the
+-- ON CONFLICT clause must repeat that predicate for Postgres to infer it (42P10).
+on conflict (email) where email is not null do nothing;
 
 -- =============================================================================
 -- End of schema/seed. RPCs follow in 20260619120001_m1_5_applications_rpc.sql
