@@ -11,6 +11,7 @@
     "applications": "Applications",
     "candidates": "Candidates",
     "screening": "Screening",
+    "interviews": "Interviews",
     "workflow": "Workflow & Approvals",
     "notifications": "Notifications",
     "documents": "Documents",
@@ -930,6 +931,111 @@
       "submitted": "Screening submitted.",
       "error": "Action failed.",
       "noStage": "Screening recorded, but no matching pipeline stage was found to move the application."
+    }
+  },
+  "interviews": {
+    "page": {
+      "title": "Interviews",
+      "subtitle": "Schedule and manage candidate interviews, panels, and outcomes."
+    },
+    "backToList": "Back to Interviews",
+    "common": {
+      "loading": "Loading…"
+    },
+    "panel": {
+      "title": "Interviews",
+      "none": "No interviews for this application yet.",
+      "unscheduled": "Not scheduled"
+    },
+    "list": {
+      "all": "All interviews"
+    },
+    "mine": {
+      "title": "My interviews",
+      "signIn": "Sign in to see interviews where you are a panelist.",
+      "none": "You have no interviews to score."
+    },
+    "schedule": {
+      "roundType": "Round",
+      "datetime": "Date & time",
+      "duration": "Duration (min)",
+      "mode": "Mode",
+      "location": "Location",
+      "scorecard": "Scorecard",
+      "panel": "Panel",
+      "noUsers": "No users available.",
+      "recordedInApp": "Recorded in-app (M365 not configured)."
+    },
+    "mode": {
+      "onsite": "On-site",
+      "teams": "Teams",
+      "phone": "Phone"
+    },
+    "status": {
+      "scheduled": "Scheduled",
+      "completed": "Completed",
+      "cancelled": "Cancelled",
+      "no_show": "No show"
+    },
+    "calendar": {
+      "none": "Calendar pending",
+      "skipped": "In-app only",
+      "created": "Calendar created",
+      "failed": "Calendar failed"
+    },
+    "outcome": {
+      "proceed": "Proceed",
+      "reject": "Reject",
+      "hold": "Hold"
+    },
+    "scorecard": {
+      "criterion": "Criterion",
+      "weight": "Weight",
+      "max": "Max",
+      "score": "Score",
+      "note": "Note",
+      "overall": "Overall score",
+      "recommendation": "Recommendation",
+      "notes": "Notes (internal)",
+      "noCriteria": "This interview's scorecard has no criteria."
+    },
+    "adapter": {
+      "title": "Calendar scheduling",
+      "outlook": "Outlook",
+      "teams": "Teams",
+      "dormant": "In-app scheduling active; calendar pending M365 credentials."
+    },
+    "detail": {
+      "notFound": "Interview not found.",
+      "joinTeams": "Join Teams meeting",
+      "candidate": "Candidate",
+      "minutes": "min",
+      "actions": "Actions",
+      "panel": "Panel",
+      "noPanel": "No panelists assigned.",
+      "feedback": "Panel feedback",
+      "panelAverage": "Panel average",
+      "noFeedback": "No scorecards submitted yet.",
+      "myScorecard": "My scorecard",
+      "signInToScore": "Sign in to submit your scorecard.",
+      "audit": "Audit trail"
+    },
+    "actions": {
+      "schedule": "Schedule interview",
+      "reschedule": "Reschedule",
+      "cancel": "Cancel",
+      "cancelInterview": "Cancel interview",
+      "recordOutcome": "Record outcome",
+      "submitScorecard": "Submit scorecard",
+      "saving": "Saving…"
+    },
+    "toasts": {
+      "scheduled": "Interview scheduled.",
+      "rescheduled": "Interview rescheduled.",
+      "cancelled": "Interview cancelled.",
+      "outcomeRecorded": "Outcome recorded.",
+      "scoreSaved": "Scorecard submitted.",
+      "error": "Action failed."
     }
   }
 }

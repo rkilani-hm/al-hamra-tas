@@ -17,6 +17,7 @@ import { Route as AppWorkflowIndexRouteImport } from './routes/app.workflow.inde
 import { Route as AppScreeningIndexRouteImport } from './routes/app.screening.index'
 import { Route as AppRequisitionsIndexRouteImport } from './routes/app.requisitions.index'
 import { Route as AppNotificationsIndexRouteImport } from './routes/app.notifications.index'
+import { Route as AppInterviewsIndexRouteImport } from './routes/app.interviews.index'
 import { Route as AppIdentityIndexRouteImport } from './routes/app.identity.index'
 import { Route as AppDocumentsIndexRouteImport } from './routes/app.documents.index'
 import { Route as AppConfigIndexRouteImport } from './routes/app.config.index'
@@ -31,6 +32,7 @@ import { Route as AppRequisitionsIdRouteImport } from './routes/app.requisitions
 import { Route as AppNotificationsTemplatesRouteImport } from './routes/app.notifications.templates'
 import { Route as AppNotificationsPreferencesRouteImport } from './routes/app.notifications.preferences'
 import { Route as AppNotificationsLogRouteImport } from './routes/app.notifications.log'
+import { Route as AppInterviewsIdRouteImport } from './routes/app.interviews.$id'
 import { Route as AppConfigOrgRouteImport } from './routes/app.config.org'
 import { Route as AppConfigLookupsRouteImport } from './routes/app.config.lookups'
 import { Route as AppConfigJobsRouteImport } from './routes/app.config.jobs'
@@ -78,6 +80,11 @@ const AppRequisitionsIndexRoute = AppRequisitionsIndexRouteImport.update({
 const AppNotificationsIndexRoute = AppNotificationsIndexRouteImport.update({
   id: '/notifications/',
   path: '/notifications/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppInterviewsIndexRoute = AppInterviewsIndexRouteImport.update({
+  id: '/interviews/',
+  path: '/interviews/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppIdentityIndexRoute = AppIdentityIndexRouteImport.update({
@@ -152,6 +159,11 @@ const AppNotificationsLogRoute = AppNotificationsLogRouteImport.update({
   path: '/notifications/log',
   getParentRoute: () => AppRoute,
 } as any)
+const AppInterviewsIdRoute = AppInterviewsIdRouteImport.update({
+  id: '/interviews/$id',
+  path: '/interviews/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppConfigOrgRoute = AppConfigOrgRouteImport.update({
   id: '/config/org',
   path: '/config/org',
@@ -206,6 +218,7 @@ export interface FileRoutesByFullPath {
   '/app/config/jobs': typeof AppConfigJobsRoute
   '/app/config/lookups': typeof AppConfigLookupsRoute
   '/app/config/org': typeof AppConfigOrgRoute
+  '/app/interviews/$id': typeof AppInterviewsIdRoute
   '/app/notifications/log': typeof AppNotificationsLogRoute
   '/app/notifications/preferences': typeof AppNotificationsPreferencesRoute
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
@@ -220,6 +233,7 @@ export interface FileRoutesByFullPath {
   '/app/config/': typeof AppConfigIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
+  '/app/interviews/': typeof AppInterviewsIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
@@ -237,6 +251,7 @@ export interface FileRoutesByTo {
   '/app/config/jobs': typeof AppConfigJobsRoute
   '/app/config/lookups': typeof AppConfigLookupsRoute
   '/app/config/org': typeof AppConfigOrgRoute
+  '/app/interviews/$id': typeof AppInterviewsIdRoute
   '/app/notifications/log': typeof AppNotificationsLogRoute
   '/app/notifications/preferences': typeof AppNotificationsPreferencesRoute
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
@@ -251,6 +266,7 @@ export interface FileRoutesByTo {
   '/app/config': typeof AppConfigIndexRoute
   '/app/documents': typeof AppDocumentsIndexRoute
   '/app/identity': typeof AppIdentityIndexRoute
+  '/app/interviews': typeof AppInterviewsIndexRoute
   '/app/notifications': typeof AppNotificationsIndexRoute
   '/app/requisitions': typeof AppRequisitionsIndexRoute
   '/app/screening': typeof AppScreeningIndexRoute
@@ -270,6 +286,7 @@ export interface FileRoutesById {
   '/app/config/jobs': typeof AppConfigJobsRoute
   '/app/config/lookups': typeof AppConfigLookupsRoute
   '/app/config/org': typeof AppConfigOrgRoute
+  '/app/interviews/$id': typeof AppInterviewsIdRoute
   '/app/notifications/log': typeof AppNotificationsLogRoute
   '/app/notifications/preferences': typeof AppNotificationsPreferencesRoute
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
@@ -284,6 +301,7 @@ export interface FileRoutesById {
   '/app/config/': typeof AppConfigIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
+  '/app/interviews/': typeof AppInterviewsIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
@@ -304,6 +322,7 @@ export interface FileRouteTypes {
     | '/app/config/jobs'
     | '/app/config/lookups'
     | '/app/config/org'
+    | '/app/interviews/$id'
     | '/app/notifications/log'
     | '/app/notifications/preferences'
     | '/app/notifications/templates'
@@ -318,6 +337,7 @@ export interface FileRouteTypes {
     | '/app/config/'
     | '/app/documents/'
     | '/app/identity/'
+    | '/app/interviews/'
     | '/app/notifications/'
     | '/app/requisitions/'
     | '/app/screening/'
@@ -335,6 +355,7 @@ export interface FileRouteTypes {
     | '/app/config/jobs'
     | '/app/config/lookups'
     | '/app/config/org'
+    | '/app/interviews/$id'
     | '/app/notifications/log'
     | '/app/notifications/preferences'
     | '/app/notifications/templates'
@@ -349,6 +370,7 @@ export interface FileRouteTypes {
     | '/app/config'
     | '/app/documents'
     | '/app/identity'
+    | '/app/interviews'
     | '/app/notifications'
     | '/app/requisitions'
     | '/app/screening'
@@ -367,6 +389,7 @@ export interface FileRouteTypes {
     | '/app/config/jobs'
     | '/app/config/lookups'
     | '/app/config/org'
+    | '/app/interviews/$id'
     | '/app/notifications/log'
     | '/app/notifications/preferences'
     | '/app/notifications/templates'
@@ -381,6 +404,7 @@ export interface FileRouteTypes {
     | '/app/config/'
     | '/app/documents/'
     | '/app/identity/'
+    | '/app/interviews/'
     | '/app/notifications/'
     | '/app/requisitions/'
     | '/app/screening/'
@@ -449,6 +473,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/app/notifications/'
       preLoaderRoute: typeof AppNotificationsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/interviews/': {
+      id: '/app/interviews/'
+      path: '/interviews'
+      fullPath: '/app/interviews/'
+      preLoaderRoute: typeof AppInterviewsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/identity/': {
@@ -549,6 +580,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppNotificationsLogRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/interviews/$id': {
+      id: '/app/interviews/$id'
+      path: '/interviews/$id'
+      fullPath: '/app/interviews/$id'
+      preLoaderRoute: typeof AppInterviewsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/config/org': {
       id: '/app/config/org'
       path: '/config/org'
@@ -618,6 +656,7 @@ interface AppRouteChildren {
   AppConfigJobsRoute: typeof AppConfigJobsRoute
   AppConfigLookupsRoute: typeof AppConfigLookupsRoute
   AppConfigOrgRoute: typeof AppConfigOrgRoute
+  AppInterviewsIdRoute: typeof AppInterviewsIdRoute
   AppNotificationsLogRoute: typeof AppNotificationsLogRoute
   AppNotificationsPreferencesRoute: typeof AppNotificationsPreferencesRoute
   AppNotificationsTemplatesRoute: typeof AppNotificationsTemplatesRoute
@@ -632,6 +671,7 @@ interface AppRouteChildren {
   AppConfigIndexRoute: typeof AppConfigIndexRoute
   AppDocumentsIndexRoute: typeof AppDocumentsIndexRoute
   AppIdentityIndexRoute: typeof AppIdentityIndexRoute
+  AppInterviewsIndexRoute: typeof AppInterviewsIndexRoute
   AppNotificationsIndexRoute: typeof AppNotificationsIndexRoute
   AppRequisitionsIndexRoute: typeof AppRequisitionsIndexRoute
   AppScreeningIndexRoute: typeof AppScreeningIndexRoute
@@ -648,6 +688,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppConfigJobsRoute: AppConfigJobsRoute,
   AppConfigLookupsRoute: AppConfigLookupsRoute,
   AppConfigOrgRoute: AppConfigOrgRoute,
+  AppInterviewsIdRoute: AppInterviewsIdRoute,
   AppNotificationsLogRoute: AppNotificationsLogRoute,
   AppNotificationsPreferencesRoute: AppNotificationsPreferencesRoute,
   AppNotificationsTemplatesRoute: AppNotificationsTemplatesRoute,
@@ -662,6 +703,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppConfigIndexRoute: AppConfigIndexRoute,
   AppDocumentsIndexRoute: AppDocumentsIndexRoute,
   AppIdentityIndexRoute: AppIdentityIndexRoute,
+  AppInterviewsIndexRoute: AppInterviewsIndexRoute,
   AppNotificationsIndexRoute: AppNotificationsIndexRoute,
   AppRequisitionsIndexRoute: AppRequisitionsIndexRoute,
   AppScreeningIndexRoute: AppScreeningIndexRoute,
@@ -678,3 +720,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
