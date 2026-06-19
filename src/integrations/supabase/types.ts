@@ -146,6 +146,83 @@ export type Database = {
           },
         ]
       }
+      tas_budgeted_position: {
+        Row: {
+          branch_id: string | null
+          budgeted_count: number
+          created_at: string
+          created_by: string | null
+          department_id: string | null
+          entity_id: string
+          filled_count: number
+          fiscal_year: string | null
+          id: string
+          job_position_id: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          branch_id?: string | null
+          budgeted_count?: number
+          created_at?: string
+          created_by?: string | null
+          department_id?: string | null
+          entity_id: string
+          filled_count?: number
+          fiscal_year?: string | null
+          id?: string
+          job_position_id: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          branch_id?: string | null
+          budgeted_count?: number
+          created_at?: string
+          created_by?: string | null
+          department_id?: string | null
+          entity_id?: string
+          filled_count?: number
+          fiscal_year?: string | null
+          id?: string
+          job_position_id?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_budgeted_position_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "tas_branch"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_budgeted_position_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "tas_department"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_budgeted_position_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "tas_entity"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_budgeted_position_job_position_id_fkey"
+            columns: ["job_position_id"]
+            isOneToOne: false
+            referencedRelation: "tas_job_position"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tas_comm_adapter_config: {
         Row: {
           channel: string
@@ -977,6 +1054,210 @@ export type Database = {
         }
         Relationships: []
       }
+      tas_requisition: {
+        Row: {
+          branch_id: string | null
+          budgeted_position_id: string | null
+          contract_type: string | null
+          created_at: string
+          created_by: string | null
+          department_id: string | null
+          employment_type: string | null
+          entity_id: string
+          headcount: number
+          id: string
+          jd_snapshot_json: Json
+          jd_template_id: string | null
+          job_position_id: string
+          justification_en: string | null
+          reference: string | null
+          requested_by: string | null
+          salary_max: number | null
+          salary_min: number | null
+          status: string
+          target_start_date: string | null
+          title_ar: string | null
+          title_en: string | null
+          updated_at: string
+          updated_by: string | null
+          workflow_instance_id: string | null
+        }
+        Insert: {
+          branch_id?: string | null
+          budgeted_position_id?: string | null
+          contract_type?: string | null
+          created_at?: string
+          created_by?: string | null
+          department_id?: string | null
+          employment_type?: string | null
+          entity_id: string
+          headcount?: number
+          id?: string
+          jd_snapshot_json?: Json
+          jd_template_id?: string | null
+          job_position_id: string
+          justification_en?: string | null
+          reference?: string | null
+          requested_by?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          status?: string
+          target_start_date?: string | null
+          title_ar?: string | null
+          title_en?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          workflow_instance_id?: string | null
+        }
+        Update: {
+          branch_id?: string | null
+          budgeted_position_id?: string | null
+          contract_type?: string | null
+          created_at?: string
+          created_by?: string | null
+          department_id?: string | null
+          employment_type?: string | null
+          entity_id?: string
+          headcount?: number
+          id?: string
+          jd_snapshot_json?: Json
+          jd_template_id?: string | null
+          job_position_id?: string
+          justification_en?: string | null
+          reference?: string | null
+          requested_by?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          status?: string
+          target_start_date?: string | null
+          title_ar?: string | null
+          title_en?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          workflow_instance_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_requisition_branch_id_fkey"
+            columns: ["branch_id"]
+            isOneToOne: false
+            referencedRelation: "tas_branch"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_requisition_budgeted_position_id_fkey"
+            columns: ["budgeted_position_id"]
+            isOneToOne: false
+            referencedRelation: "tas_budgeted_position"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_requisition_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "tas_department"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_requisition_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "tas_entity"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_requisition_jd_template_id_fkey"
+            columns: ["jd_template_id"]
+            isOneToOne: false
+            referencedRelation: "tas_jd_template"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_requisition_job_position_id_fkey"
+            columns: ["job_position_id"]
+            isOneToOne: false
+            referencedRelation: "tas_job_position"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_requisition_requested_by_fkey"
+            columns: ["requested_by"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_requisition_workflow_instance_id_fkey"
+            columns: ["workflow_instance_id"]
+            isOneToOne: false
+            referencedRelation: "tas_workflow_instance"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_requisition_counter: {
+        Row: {
+          fiscal_year: number
+          last_no: number
+        }
+        Insert: {
+          fiscal_year: number
+          last_no?: number
+        }
+        Update: {
+          fiscal_year?: number
+          last_no?: number
+        }
+        Relationships: []
+      }
+      tas_requisition_event: {
+        Row: {
+          actor_user_id: string | null
+          created_at: string
+          detail_json: Json
+          event_type: string | null
+          from_status: string | null
+          id: string
+          requisition_id: string
+          to_status: string | null
+        }
+        Insert: {
+          actor_user_id?: string | null
+          created_at?: string
+          detail_json?: Json
+          event_type?: string | null
+          from_status?: string | null
+          id?: string
+          requisition_id: string
+          to_status?: string | null
+        }
+        Update: {
+          actor_user_id?: string | null
+          created_at?: string
+          detail_json?: Json
+          event_type?: string | null
+          from_status?: string | null
+          id?: string
+          requisition_id?: string
+          to_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_requisition_event_actor_user_id_fkey"
+            columns: ["actor_user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_requisition_event_requisition_id_fkey"
+            columns: ["requisition_id"]
+            isOneToOne: false
+            referencedRelation: "tas_requisition"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tas_role: {
         Row: {
           code: string
@@ -1687,6 +1968,19 @@ export type Database = {
         }
         Returns: string
       }
+      check_budgeted_position: {
+        Args: {
+          p_department_id: string
+          p_headcount: number
+          p_job_position_id: string
+        }
+        Returns: {
+          available: number
+          budgeted: number
+          filled: number
+          over_budget: boolean
+        }[]
+      }
       document_versions: {
         Args: { p_id: string }
         Returns: {
@@ -1703,6 +1997,7 @@ export type Database = {
         Args: { p_condition: Json; p_context: Json }
         Returns: boolean
       }
+      generate_requisition_ref: { Args: never; Returns: string }
       instance_timeline: { Args: { p_instance_id: string }; Returns: Json }
       list_documents: {
         Args: { p_entity_ref: string; p_entity_type: string }
@@ -1722,6 +2017,31 @@ export type Database = {
           title: string
           uploaded_by: string
           version: number
+        }[]
+      }
+      list_requisitions: {
+        Args: {
+          p_department_id?: string
+          p_from?: string
+          p_limit?: number
+          p_mine?: boolean
+          p_offset?: number
+          p_position_id?: string
+          p_status?: string
+          p_to?: string
+        }
+        Returns: {
+          created_at: string
+          department_id: string
+          headcount: number
+          id: string
+          job_position_id: string
+          reference: string
+          requested_by: string
+          status: string
+          title_ar: string
+          title_en: string
+          workflow_instance_id: string
         }[]
       }
       mark_notification_read: { Args: { p_id: string }; Returns: undefined }
@@ -1780,6 +2100,7 @@ export type Database = {
           subject: string
         }[]
       }
+      requisition_detail: { Args: { p_id: string }; Returns: Json }
       resolve_step_approvers: {
         Args: { p_instance_id: string; p_step_no: number }
         Returns: {
@@ -1813,6 +2134,10 @@ export type Database = {
           source: string
         }[]
       }
+      submit_requisition: {
+        Args: { p_requisition_id: string }
+        Returns: string
+      }
       submit_workflow: {
         Args: {
           p_branch_id: string
@@ -1824,6 +2149,14 @@ export type Database = {
           p_requester_id: string
         }
         Returns: string
+      }
+      sync_requisition_status: {
+        Args: { p_requisition_id: string }
+        Returns: string
+      }
+      transition_requisition: {
+        Args: { p_action: string; p_requisition_id: string }
+        Returns: undefined
       }
       unread_count: { Args: { p_user_id: string }; Returns: number }
     }
