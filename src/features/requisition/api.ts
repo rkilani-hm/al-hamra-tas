@@ -1,14 +1,12 @@
 // Module M1.2 — Job Requisition: data-access layer.
 //
-// Strict typed `supabase` client is reused for EXISTING M0.x tables via the
-// config/identity feature APIs (org cascade, job catalog, JD templates, lookups).
-// The brand-new M1.2 tables + RPCs aren't in the generated Database type until
-// Lovable applies this module's migration, so they go through a loosely-typed
-// view of the client:
-//   // INTERIM: swap after apply
-import type { SupabaseClient } from "@supabase/supabase-js";
+// Uses the strict typed `supabase` client (Database types include the M1.2
+// tables + RPCs after the migration was applied). Existing M0.x tables are read
+// via the config/identity feature APIs (org cascade, job catalog, JD templates,
+// lookups), which are already strictly typed.
 
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import type {
   BudgetedCheck,
   RequisitionDetailData,
@@ -18,21 +16,17 @@ import type {
   RequisitionFilter,
 } from "./types";
 
-// INTERIM: swap after apply — remove this cast once tas_requisition /
-// tas_budgeted_position / tas_requisition_event + RPCs land in types.ts.
-const db = supabase as unknown as SupabaseClient;
-
 // --- Reads (RPC) ------------------------------------------------------------
 
 export async function listRequisitions(
   filter: RequisitionFilter,
 ): Promise<RequisitionListRow[]> {
-  const { data, error } = await db.rpc("list_requisitions", {
-    p_status: filter.status ?? null,
-    p_department_id: filter.departmentId ?? null,
-    p_position_id: filter.positionId ?? null,
-    p_from: filter.from ?? null,
-    p_to: filter.to ?? null,
+  const { data, error } = await supabase.rpc("list_requisitions", {
+    p_status: filter.status ?? undefined,
+    p_department_id: filter.departmentId ?? undefined,
+    p_position_id: filter.positionId ?? undefined,
+    p_from: filter.from ?? undefined,
+    p_to: filter.to ?? undefined,
     p_mine: filter.mine ?? false,
     p_limit: filter.limit ?? 50,
     p_offset: filter.offset ?? 0,
@@ -42,14 +36,15 @@ export async function listRequisitions(
 }
 
 export async function requisitionDetail(id: string): Promise<RequisitionDetailData> {
-  const { data, error } = await db.rpc("requisition_detail", { p_id: id });
+  const { data, error } = await supabase.rpc("requisition_detail", { p_id: id });
   if (error) throw error;
-  return (data ?? { requisition: null, jd_snapshot: null, instance: null, events: [] }) as RequisitionDetailData;
+  // requisition_detail returns a Json object — cast to the view model.
+  return (data ?? { requisition: null, jd_snapshot: null, instance: null, events: [] }) as unknown as RequisitionDetailData;
 }
 
 // Derive-on-read: call before rendering the detail to apply terminal transitions.
 export async function syncRequisitionStatus(id: string): Promise<string | null> {
-  const { data, error } = await db.rpc("sync_requisition_status", { p_requisition_id: id });
+  const { data, error } = await supabase.rpc("sync_requisition_status", { p_requisition_id: id });
   if (error) throw error;
   return (data ?? null) as string | null;
 }
@@ -59,9 +54,10 @@ export async function checkBudgetedPosition(
   departmentId: string | null,
   headcount: number,
 ): Promise<BudgetedCheck | null> {
-  const { data, error } = await db.rpc("check_budgeted_position", {
+  const { data, error } = await supabase.rpc("check_budgeted_position", {
     p_job_position_id: positionId,
-    p_department_id: departmentId,
+    // Generated as required string, but the SQL treats null as "no department".
+    p_department_id: (departmentId ?? null) as unknown as string,
     p_headcount: headcount,
   });
   if (error) throw error;
@@ -75,9 +71,13 @@ export async function checkBudgetedPosition(
 export async function createDraftRequisition(
   input: RequisitionDraftInput,
 ): Promise<RequisitionRecord> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_requisition")
-    .insert({ ...input, status: "draft" })
+    .insert({
+      ...input,
+      status: "draft",
+      jd_snapshot_json: (input.jd_snapshot_json ?? {}) as Json,
+    })
     .select("*")
     .single();
   if (error) throw error;
@@ -90,19 +90,24 @@ export async function updateDraftRequisition(
   id: string,
   patch: Partial<RequisitionDraftInput>,
 ): Promise<void> {
-  const { error } = await db.from("tas_requisition").update(patch).eq("id", id);
+  const { jd_snapshot_json, ...rest } = patch;
+  const payload =
+    jd_snapshot_json !== undefined
+      ? { ...rest, jd_snapshot_json: jd_snapshot_json as Json }
+      : rest;
+  const { error } = await supabase.from("tas_requisition").update(payload).eq("id", id);
   if (error) throw error;
 }
 
 // Submit (service-role-guarded RPC; fails-soft for authenticated until M3.1).
 export async function submitRequisition(id: string): Promise<void> {
-  const { error } = await db.rpc("submit_requisition", { p_requisition_id: id });
+  const { error } = await supabase.rpc("submit_requisition", { p_requisition_id: id });
   if (error) throw error;
 }
 
 // Lifecycle transition (service-role-guarded RPC; fails-soft until M3.1).
 export async function transitionRequisition(id: string, action: string): Promise<void> {
-  const { error } = await db.rpc("transition_requisition", {
+  const { error } = await supabase.rpc("transition_requisition", {
     p_requisition_id: id,
     p_action: action,
   });
