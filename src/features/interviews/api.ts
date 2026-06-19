@@ -1,10 +1,9 @@
 // Module M1.7 — Interview Management: data-access layer.
 //
-// Strict typed `supabase` client for EXISTING tables (tas_lookup). INTERIM
-// loose-typed cast for the NEW M1.7 RPCs/tables until Lovable applies the
-// migration and regenerates types.ts — swap `db` back to the strict client then.
-import type { SupabaseClient } from "@supabase/supabase-js";
+// Uses the strict typed `supabase` client (Database types include the M1.7
+// tables + RPCs after Lovable applied the migration and regenerated types.ts).
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import type {
   InterviewDetailData,
   InterviewListFilter,
@@ -15,10 +14,7 @@ import type {
   ScheduleInterviewInput,
 } from "./types";
 
-// INTERIM: swap to strict client after Lovable applies migration (regen types.ts).
-const db = supabase as unknown as SupabaseClient;
-
-// --- Reference data (existing table — strict client) ------------------------
+// --- Reference data ---------------------------------------------------------
 
 export async function listRoundTypes(): Promise<RoundType[]> {
   const { data, error } = await supabase
@@ -31,10 +27,10 @@ export async function listRoundTypes(): Promise<RoundType[]> {
   return (data ?? []) as RoundType[];
 }
 
-// --- Reads (INTERIM new RPCs) -----------------------------------------------
+// --- Reads ------------------------------------------------------------------
 
 export async function listInterviews(filter: InterviewListFilter): Promise<InterviewListRow[]> {
-  const { data, error } = await db.rpc("list_interviews", {
+  const { data, error } = await supabase.rpc("list_interviews", {
     p_application_id: filter.applicationId ?? undefined,
     p_status: filter.status ?? undefined,
     p_mine: filter.mine ?? false,
@@ -48,7 +44,7 @@ export async function listInterviews(filter: InterviewListFilter): Promise<Inter
 }
 
 export async function interviewDetail(id: string): Promise<InterviewDetailData> {
-  const { data, error } = await db.rpc("interview_detail", { p_id: id });
+  const { data, error } = await supabase.rpc("interview_detail", { p_id: id });
   if (error) throw error;
   return (data ?? {
     interview: null, application: null, candidate: null, panelists: [], scores: [], criteria: [],
@@ -56,7 +52,7 @@ export async function interviewDetail(id: string): Promise<InterviewDetailData> 
 }
 
 export async function interviewPanelSummary(id: string): Promise<PanelSummary> {
-  const { data, error } = await db.rpc("interview_panel_summary", { p_interview_id: id });
+  const { data, error } = await supabase.rpc("interview_panel_summary", { p_interview_id: id });
   if (error) throw error;
   return data as unknown as PanelSummary;
 }
@@ -64,18 +60,20 @@ export async function interviewPanelSummary(id: string): Promise<PanelSummary> {
 // --- Writes (recruiter / panelist actions via SECURITY DEFINER RPCs) --------
 
 export async function scheduleInterview(input: ScheduleInterviewInput): Promise<string> {
-  const { data, error } = await db.rpc("schedule_interview", {
+  // p_round_type / p_scheduled_at / p_location are required `string` in the
+  // generated Args but the columns are nullable — pass through as unknown as string.
+  const { data, error } = await supabase.rpc("schedule_interview", {
     p_application_id: input.applicationId,
-    p_round_type: input.roundType ?? undefined,
-    p_scheduled_at: input.scheduledAt ?? undefined,
+    p_round_type: (input.roundType ?? null) as unknown as string,
+    p_scheduled_at: (input.scheduledAt ?? null) as unknown as string,
     p_duration_min: input.durationMin ?? 60,
     p_mode: input.mode,
-    p_location: input.location ?? undefined,
+    p_location: (input.location ?? null) as unknown as string,
     p_panelist_ids: input.panelistIds,
     p_scorecard_id: input.scorecardId ?? undefined,
   });
   if (error) throw error;
-  const id = data as unknown as string;
+  const id = data as string;
   // Best-effort: kick the dormant Graph adapter (fire-and-forget, never blocks).
   void invokeScheduleAdapter(id);
   return id;
@@ -87,21 +85,21 @@ export async function submitInterviewScore(
   recommendation: "proceed" | "reject" | "hold",
   notesEn?: string | null,
 ): Promise<number | null> {
-  const { data, error } = await db.rpc("submit_interview_score", {
+  const { data, error } = await supabase.rpc("submit_interview_score", {
     p_interview_id: interviewId,
-    p_scores: scores,
+    p_scores: scores as unknown as Json,
     p_recommendation: recommendation,
     p_notes_en: notesEn ?? undefined,
   });
   if (error) throw error;
-  return (data ?? null) as unknown as number | null;
+  return data ?? null;
 }
 
 export async function recordInterviewOutcome(
   interviewId: string,
   outcome: "proceed" | "reject" | "hold",
 ): Promise<void> {
-  const { error } = await db.rpc("record_interview_outcome", {
+  const { error } = await supabase.rpc("record_interview_outcome", {
     p_interview_id: interviewId,
     p_outcome: outcome,
   });
@@ -109,7 +107,7 @@ export async function recordInterviewOutcome(
 }
 
 export async function rescheduleInterview(interviewId: string, newDatetime: string): Promise<void> {
-  const { error } = await db.rpc("reschedule_interview", {
+  const { error } = await supabase.rpc("reschedule_interview", {
     p_interview_id: interviewId,
     p_new_datetime: newDatetime,
   });
@@ -118,7 +116,7 @@ export async function rescheduleInterview(interviewId: string, newDatetime: stri
 }
 
 export async function cancelInterview(interviewId: string, reason?: string | null): Promise<void> {
-  const { error } = await db.rpc("cancel_interview", {
+  const { error } = await supabase.rpc("cancel_interview", {
     p_interview_id: interviewId,
     p_reason: reason ?? undefined,
   });
@@ -129,7 +127,7 @@ export async function cancelInterview(interviewId: string, reason?: string | nul
 // errors — in-app scheduling already succeeded; calendar creation is best-effort.
 async function invokeScheduleAdapter(interviewId: string): Promise<void> {
   try {
-    await db.functions.invoke("interview-schedule", { body: { interview_id: interviewId } });
+    await supabase.functions.invoke("interview-schedule", { body: { interview_id: interviewId } });
   } catch (err) {
     console.warn("[interviews] schedule adapter invoke failed (non-blocking):", err);
   }
