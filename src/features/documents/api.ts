@@ -1,16 +1,11 @@
 // Module M0.5 — Documents: data-access layer.
 //
-// INTERIM (same pattern as prior modules): tas_document, tas_storage_adapter_config
-// and the document RPCs are not in the generated Database type until Lovable
-// applies this module's migrations on sync. Until then those go through a loosely-
-// typed view of the client (`db`). The category list reads the EXISTING tas_lookup
-// table via the strict typed `supabase` client. Follow-up: swap `db` -> strict
-// `supabase` (and delete the alias) after the M0.5 migrations apply.
+// Uses the strict typed `supabase` client (Database types include tas_document,
+// tas_storage_adapter_config, and the document RPCs after the M0.5 migrations
+// were applied). Categories read the existing tas_lookup table.
 //
 // Uploads/downloads call the document-upload / document-download edge functions,
 // which run the SharePoint→Supabase-Storage router server-side.
-
-import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { supabase } from "@/integrations/supabase/client";
 import type {
@@ -21,30 +16,30 @@ import type {
   UploadInput,
 } from "./types";
 
-const db = supabase as unknown as SupabaseClient;
-
 // --- Reads (RPC + tables) ---------------------------------------------------
 
 export async function listDocuments(
   entityType: string | null,
   entityRef: string | null,
 ): Promise<DocumentRow[]> {
-  const { data, error } = await db.rpc("list_documents", {
-    p_entity_type: entityType,
-    p_entity_ref: entityRef,
+  // list_documents' args are typed as required strings, but the SQL treats null
+  // as "ignore this filter" — cast the nullable values through.
+  const { data, error } = await supabase.rpc("list_documents", {
+    p_entity_type: (entityType ?? null) as unknown as string,
+    p_entity_ref: (entityRef ?? null) as unknown as string,
   });
   if (error) throw error;
   return (data ?? []) as DocumentRow[];
 }
 
 export async function documentVersions(id: string): Promise<DocumentVersion[]> {
-  const { data, error } = await db.rpc("document_versions", { p_id: id });
+  const { data, error } = await supabase.rpc("document_versions", { p_id: id });
   if (error) throw error;
   return (data ?? []) as DocumentVersion[];
 }
 
 export async function listStorageAdapters(): Promise<StorageAdapterConfig[]> {
-  const { data, error } = await db
+  const { data, error } = await supabase
     .from("tas_storage_adapter_config")
     .select("id, provider, is_enabled, config_status, notes")
     .order("provider");
@@ -67,7 +62,7 @@ export async function listCategories(): Promise<DocumentCategoryOption[]> {
 
 // Archive (soft-delete) via RPC (self-resolves caller + audits).
 export async function archiveDocument(id: string): Promise<void> {
-  const { error } = await db.rpc("archive_document", { p_id: id });
+  const { error } = await supabase.rpc("archive_document", { p_id: id });
   if (error) throw error;
 }
 
