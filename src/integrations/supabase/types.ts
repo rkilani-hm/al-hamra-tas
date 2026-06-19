@@ -2940,6 +2940,7 @@ export type Database = {
         Args: { p_interview_id: string }
         Returns: Json
       }
+      issue_offer: { Args: { p_offer_id: string }; Returns: undefined }
       list_applications: {
         Args: {
           p_candidate_search?: string
@@ -3014,6 +3015,30 @@ export type Database = {
           scheduled_at: string
           status: string
           teams_join_url: string
+        }[]
+      }
+      list_offers: {
+        Args: {
+          p_application_id?: string
+          p_candidate_id?: string
+          p_limit?: number
+          p_mine?: boolean
+          p_offset?: number
+          p_status?: string
+        }
+        Returns: {
+          application_id: string
+          candidate_id: string
+          candidate_name_ar: string
+          candidate_name_en: string
+          created_at: string
+          currency: string
+          esign_status: string
+          id: string
+          onboarding_ready: boolean
+          reference: string
+          salary_amount: number
+          status: string
         }[]
       }
       list_pipeline_stages: {
@@ -3100,6 +3125,7 @@ export type Database = {
         }
         Returns: number
       }
+      offer_detail: { Args: { p_id: string }; Returns: Json }
       preview_template: {
         Args: { p_sample_context: Json; p_template_id: string }
         Returns: {
@@ -3134,6 +3160,15 @@ export type Database = {
           resolved_via: string
           user_id: string
         }[]
+      }
+      respond_to_offer: {
+        Args: {
+          p_decision: string
+          p_offer_id: string
+          p_reason?: string
+          p_signature?: string
+        }
+        Returns: Json
       }
       retry_notification: { Args: { p_id: string }; Returns: undefined }
       save_screening_scores: {
@@ -3192,6 +3227,7 @@ export type Database = {
         }
         Returns: number
       }
+      submit_offer: { Args: { p_offer_id: string }; Returns: string }
       submit_requisition: {
         Args: { p_requisition_id: string }
         Returns: string
@@ -3216,9 +3252,14 @@ export type Database = {
         }
         Returns: string
       }
+      sync_offer_status: { Args: { p_offer_id: string }; Returns: string }
       sync_requisition_status: {
         Args: { p_requisition_id: string }
         Returns: string
+      }
+      transition_offer: {
+        Args: { p_action: string; p_offer_id: string }
+        Returns: undefined
       }
       transition_requisition: {
         Args: { p_action: string; p_requisition_id: string }
