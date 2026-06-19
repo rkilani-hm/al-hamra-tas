@@ -3,6 +3,7 @@
 // and <DocumentPanel> — does NOT rebuild them.
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 
@@ -247,6 +248,16 @@ export function RequisitionDetail({ id, currentUserId = null }: RequisitionDetai
             ))}
           </ul>
         )}
+      </section>
+
+      {/* Applications for this requisition (M1.5 deep link) */}
+      <section className="flex items-center justify-between rounded-md border p-4">
+        <h3 className="font-medium text-foreground">{t("requisition.detail.applications")}</h3>
+        <Button asChild variant="outline" size="sm">
+          <Link to="/app/applications" search={{ requisition: id }}>
+            {t("requisition.detail.viewApplications")}
+          </Link>
+        </Button>
       </section>
 
       {/* Documents (reused M0.5 reusable) + Audit trail (reused M0.5 reusable) */}

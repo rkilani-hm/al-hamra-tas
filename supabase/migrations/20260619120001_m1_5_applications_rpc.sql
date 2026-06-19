@@ -1,0 +1,369 @@
+-- =============================================================================
+-- Al Hamra TAS — Module M1.5: Application Tracking RPC functions
+-- =============================================================================
+-- Paired with 20260619120000_m1_5_applications.sql. SECURITY DEFINER + search_path.
+-- Recruiter actions (upsert_candidate, create_application, move_application_stage,
+-- set_application_status) + reads are granted to authenticated. Pipeline-stage
+-- config writes stay service-role until M3.1. Integrates M0.5 audit_log.
+-- =============================================================================
+
+-- Helper: resolve the caller's tas_user from the Entra JWT (null if service-role).
+-- (Inlined per-function to avoid an extra grantable helper.)
+
+-- -----------------------------------------------------------------------------
+-- upsert_candidate(...) -> uuid. Create (p_id null) or update a candidate.
+-- -----------------------------------------------------------------------------
+create or replace function public.upsert_candidate(
+  p_id                uuid    default null,
+  p_first_name        text    default null,
+  p_last_name         text    default null,
+  p_full_name_en      text    default null,
+  p_full_name_ar      text    default null,
+  p_email             text    default null,
+  p_phone             text    default null,
+  p_nationality       text    default null,
+  p_nationality_class text    default null,
+  p_current_title     text    default null,
+  p_source            text    default null
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_caller uuid;
+  v_id     uuid;
+begin
+  select u.id into v_caller from public.tas_user u
+  where u.entra_object_id = (auth.jwt() ->> 'oid')
+     or u.email = nullif(auth.jwt() ->> 'email','')::citext
+  limit 1;
+
+  if p_id is null then
+    insert into public.tas_candidate
+      (first_name, last_name, full_name_en, full_name_ar, email, phone,
+       nationality, nationality_class, current_title, source, created_by)
+    values
+      (p_first_name, p_last_name, p_full_name_en, p_full_name_ar, nullif(p_email,'')::citext, p_phone,
+       p_nationality, p_nationality_class, p_current_title, p_source, v_caller)
+    returning id into v_id;
+    perform public.audit_log(v_caller, 'M1.5', 'candidate.created', 'candidate', v_id::text,
+      jsonb_build_object('name', coalesce(p_full_name_en, p_full_name_ar)));
+  else
+    update public.tas_candidate set
+      first_name = p_first_name, last_name = p_last_name,
+      full_name_en = p_full_name_en, full_name_ar = p_full_name_ar,
+      email = nullif(p_email,'')::citext, phone = p_phone,
+      nationality = p_nationality, nationality_class = p_nationality_class,
+      current_title = p_current_title, source = p_source, updated_by = v_caller
+    where id = p_id;
+    v_id := p_id;
+    perform public.audit_log(v_caller, 'M1.5', 'candidate.updated', 'candidate', p_id::text, '{}'::jsonb);
+  end if;
+
+  return v_id;
+end;
+$$;
+
+-- -----------------------------------------------------------------------------
+-- create_application(requisition, candidate, source) -> uuid.
+-- Rejects a duplicate ACTIVE application; seeds the lowest-sort active stage +
+-- the initial history row.
+-- -----------------------------------------------------------------------------
+create or replace function public.create_application(
+  p_requisition_id uuid,
+  p_candidate_id   uuid,
+  p_source         text default null
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_caller uuid;
+  v_stage  uuid;
+  v_app    uuid;
+begin
+  if exists (
+    select 1 from public.tas_application
+    where requisition_id = p_requisition_id and candidate_id = p_candidate_id and status = 'active'
+  ) then
+    raise exception 'duplicate_active_application'
+      using message = 'An active application already exists for this candidate and requisition.';
+  end if;
+
+  select u.id into v_caller from public.tas_user u
+  where u.entra_object_id = (auth.jwt() ->> 'oid')
+     or u.email = nullif(auth.jwt() ->> 'email','')::citext
+  limit 1;
+
+  select id into v_stage from public.tas_pipeline_stage
+  where status = 'active' order by sort_order limit 1;
+
+  insert into public.tas_application
+    (requisition_id, candidate_id, current_stage_id, status, source, owner_user_id, created_by)
+  values
+    (p_requisition_id, p_candidate_id, v_stage, 'active', p_source, v_caller, v_caller)
+  returning id into v_app;
+
+  insert into public.tas_application_stage_history
+    (application_id, from_stage_id, to_stage_id, moved_by, note)
+  values (v_app, null, v_stage, v_caller, 'created');
+
+  perform public.audit_log(v_caller, 'M1.5', 'application.created', 'application', v_app::text,
+    jsonb_build_object('requisition_id', p_requisition_id, 'candidate_id', p_candidate_id));
+
+  return v_app;
+end;
+$$;
+
+-- -----------------------------------------------------------------------------
+-- move_application_stage(application, to_stage, note): validate, write history,
+-- update current stage, set terminal status. No-op if already at target.
+-- -----------------------------------------------------------------------------
+create or replace function public.move_application_stage(
+  p_application_id uuid,
+  p_to_stage_id    uuid,
+  p_note           text default null
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_app    public.tas_application;
+  v_to     public.tas_pipeline_stage;
+  v_caller uuid;
+begin
+  select * into v_app from public.tas_application where id = p_application_id;
+  if v_app.id is null then raise exception 'application % not found', p_application_id; end if;
+
+  select * into v_to from public.tas_pipeline_stage where id = p_to_stage_id;
+  if v_to.id is null or v_to.status <> 'active' then
+    raise exception 'target stage is invalid or inactive';
+  end if;
+
+  if v_app.current_stage_id is not distinct from p_to_stage_id then
+    return; -- idempotent no-op
+  end if;
+
+  select u.id into v_caller from public.tas_user u
+  where u.entra_object_id = (auth.jwt() ->> 'oid')
+     or u.email = nullif(auth.jwt() ->> 'email','')::citext
+  limit 1;
+
+  insert into public.tas_application_stage_history
+    (application_id, from_stage_id, to_stage_id, moved_by, note)
+  values (p_application_id, v_app.current_stage_id, p_to_stage_id, v_caller, p_note);
+
+  update public.tas_application set
+    current_stage_id = p_to_stage_id,
+    status = case
+               when v_to.stage_type = 'hired'     then 'hired'
+               when v_to.stage_type = 'rejected'  then 'rejected'
+               when v_to.stage_type = 'withdrawn' then 'withdrawn'
+               else v_app.status
+             end,
+    updated_by = v_caller
+  where id = p_application_id;
+
+  perform public.audit_log(v_caller, 'M1.5', 'application.stage_moved', 'application',
+    p_application_id::text, jsonb_build_object('to_stage', v_to.code, 'stage_type', v_to.stage_type));
+end;
+$$;
+
+-- -----------------------------------------------------------------------------
+-- set_application_status(application, status, reason): hold/withdraw/reject etc.
+-- -----------------------------------------------------------------------------
+create or replace function public.set_application_status(
+  p_application_id uuid,
+  p_status         text,
+  p_reason         text default null
+)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_app    public.tas_application;
+  v_caller uuid;
+begin
+  if p_status not in ('active','hired','rejected','withdrawn','on_hold') then
+    raise exception 'invalid status %', p_status;
+  end if;
+
+  select * into v_app from public.tas_application where id = p_application_id;
+  if v_app.id is null then raise exception 'application % not found', p_application_id; end if;
+
+  select u.id into v_caller from public.tas_user u
+  where u.entra_object_id = (auth.jwt() ->> 'oid')
+     or u.email = nullif(auth.jwt() ->> 'email','')::citext
+  limit 1;
+
+  update public.tas_application set
+    status = p_status,
+    rejection_reason = case when p_status = 'rejected' then p_reason else rejection_reason end,
+    updated_by = v_caller
+  where id = p_application_id;
+
+  insert into public.tas_application_stage_history
+    (application_id, from_stage_id, to_stage_id, moved_by, note)
+  values (p_application_id, v_app.current_stage_id, v_app.current_stage_id, v_caller,
+          coalesce(p_reason, 'status: ' || p_status));
+
+  perform public.audit_log(v_caller, 'M1.5', 'application.status_' || p_status, 'application',
+    p_application_id::text, jsonb_build_object('status', p_status, 'reason', p_reason));
+end;
+$$;
+
+-- -----------------------------------------------------------------------------
+-- list_applications(...) -> enriched paged rows; null filters ignored.
+-- -----------------------------------------------------------------------------
+create or replace function public.list_applications(
+  p_requisition_id   uuid    default null,
+  p_stage_id         uuid    default null,
+  p_status           text    default null,
+  p_candidate_search text    default null,
+  p_mine             boolean default false,
+  p_limit            int     default 50,
+  p_offset           int     default 0
+)
+returns table(
+  id                    uuid,
+  reference             text,
+  requisition_id        uuid,
+  requisition_reference text,
+  candidate_id          uuid,
+  candidate_name_en     text,
+  candidate_name_ar     text,
+  current_stage_id      uuid,
+  stage_name_en         text,
+  stage_name_ar         text,
+  stage_type            text,
+  status                text,
+  owner_user_id         uuid,
+  applied_at            timestamptz,
+  created_at            timestamptz
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select a.id, a.reference, a.requisition_id, r.reference, a.candidate_id,
+         c.full_name_en, c.full_name_ar, a.current_stage_id, s.name_en, s.name_ar, s.stage_type,
+         a.status, a.owner_user_id, a.applied_at, a.created_at
+  from public.tas_application a
+  left join public.tas_requisition r     on r.id = a.requisition_id
+  left join public.tas_candidate c       on c.id = a.candidate_id
+  left join public.tas_pipeline_stage s  on s.id = a.current_stage_id
+  where (p_requisition_id is null or a.requisition_id = p_requisition_id)
+    and (p_stage_id is null or a.current_stage_id = p_stage_id)
+    and (p_status is null or a.status = p_status)
+    and (
+      p_candidate_search is null or p_candidate_search = ''
+      or c.full_name_en ilike '%' || p_candidate_search || '%'
+      or c.full_name_ar ilike '%' || p_candidate_search || '%'
+      or c.email ilike ('%' || p_candidate_search || '%')::citext
+    )
+    and (
+      not coalesce(p_mine, false)
+      or a.owner_user_id in (
+        select u.id from public.tas_user u
+        where u.entra_object_id = (auth.jwt() ->> 'oid')
+           or u.email = nullif(auth.jwt() ->> 'email','')::citext
+      )
+    )
+  order by a.created_at desc
+  limit greatest(coalesce(p_limit, 50), 0)
+  offset greatest(coalesce(p_offset, 0), 0);
+$$;
+
+-- -----------------------------------------------------------------------------
+-- application_detail(id) -> jsonb { application, candidate, current_stage,
+-- requisition, history (with stage names) }.
+-- -----------------------------------------------------------------------------
+create or replace function public.application_detail(p_id uuid)
+returns jsonb
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select jsonb_build_object(
+    'application', (select to_jsonb(a) from public.tas_application a where a.id = p_id),
+    'candidate', (
+      select to_jsonb(c) from public.tas_candidate c
+      join public.tas_application a on a.candidate_id = c.id where a.id = p_id
+    ),
+    'current_stage', (
+      select to_jsonb(s) from public.tas_pipeline_stage s
+      join public.tas_application a on a.current_stage_id = s.id where a.id = p_id
+    ),
+    'requisition', (
+      select jsonb_build_object('id', r.id, 'reference', r.reference,
+                                'title_en', r.title_en, 'title_ar', r.title_ar, 'status', r.status)
+      from public.tas_requisition r
+      join public.tas_application a on a.requisition_id = r.id where a.id = p_id
+    ),
+    'history', coalesce((
+      select jsonb_agg(jsonb_build_object(
+        'id', h.id, 'from_stage_id', h.from_stage_id, 'to_stage_id', h.to_stage_id,
+        'note', h.note, 'moved_by', h.moved_by, 'created_at', h.created_at,
+        'from_stage', (select jsonb_build_object('name_en', fs.name_en, 'name_ar', fs.name_ar)
+                       from public.tas_pipeline_stage fs where fs.id = h.from_stage_id),
+        'to_stage', (select jsonb_build_object('name_en', ts.name_en, 'name_ar', ts.name_ar)
+                     from public.tas_pipeline_stage ts where ts.id = h.to_stage_id)
+      ) order by h.created_at)
+      from public.tas_application_stage_history h where h.application_id = p_id
+    ), '[]'::jsonb)
+  );
+$$;
+
+-- -----------------------------------------------------------------------------
+-- list_pipeline_stages() -> ACTIVE stages ordered by sort_order (for board/moves).
+-- (StageConfig reads ALL stages directly from the table, which has SELECT grant.)
+-- -----------------------------------------------------------------------------
+create or replace function public.list_pipeline_stages()
+returns table(
+  id          uuid,
+  code        text,
+  name_en     text,
+  name_ar     text,
+  sort_order  int,
+  stage_type  text,
+  is_terminal boolean,
+  status      text
+)
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select id, code, name_en, name_ar, sort_order, stage_type, is_terminal, status
+  from public.tas_pipeline_stage
+  where status = 'active'
+  order by sort_order;
+$$;
+
+-- =============================================================================
+-- EXECUTE grants — recruiter actions + reads usable by authenticated.
+-- =============================================================================
+grant execute on function public.upsert_candidate(uuid, text, text, text, text, text, text, text, text, text, text) to authenticated;
+grant execute on function public.create_application(uuid, uuid, text)                 to authenticated;
+grant execute on function public.move_application_stage(uuid, uuid, text)             to authenticated;
+grant execute on function public.set_application_status(uuid, text, text)             to authenticated;
+grant execute on function public.list_applications(uuid, uuid, text, text, boolean, int, int) to authenticated;
+grant execute on function public.application_detail(uuid)                             to authenticated;
+grant execute on function public.list_pipeline_stages()                               to authenticated;
+
+-- Internal ref generator stays service-role only (trigger uses it as definer).
+revoke execute on function public.generate_application_ref() from public;
+
+-- =============================================================================
+-- End of M1.5 RPC functions.
+-- =============================================================================

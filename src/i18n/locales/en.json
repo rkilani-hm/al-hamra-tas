@@ -8,6 +8,8 @@
     "identity": "Identity & Access",
     "config": "Core Configuration",
     "requisitions": "Requisitions",
+    "applications": "Applications",
+    "candidates": "Candidates",
     "workflow": "Workflow & Approvals",
     "notifications": "Notifications",
     "documents": "Documents",
@@ -637,7 +639,141 @@
       "noHistory": "No events yet.",
       "documents": "Documents",
       "audit": "Audit Trail",
+      "applications": "Applications",
+      "viewApplications": "View applications",
       "notFound": "Requisition not found."
+    }
+  },
+  "applications": {
+    "page": {
+      "title": "Applications",
+      "subtitle": "Track candidate applications through the pipeline."
+    },
+    "backToList": "Back to Applications",
+    "common": {
+      "loading": "Loading…",
+      "select": "Select…"
+    },
+    "nav": {
+      "stages": "Stage config"
+    },
+    "list": {
+      "title": "Applications",
+      "board": "Board",
+      "new": "New Application",
+      "empty": "No applications match your filters."
+    },
+    "filter": {
+      "stage": "Stage",
+      "allStages": "All stages",
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "candidate": "Candidate",
+      "candidatePlaceholder": "Search name or email…",
+      "mine": "Mine",
+      "mineSignIn": "Sign in to filter applications you own.",
+      "search": "Search"
+    },
+    "table": {
+      "reference": "Reference",
+      "candidate": "Candidate",
+      "requisition": "Requisition",
+      "stage": "Stage",
+      "status": "Status",
+      "applied": "Applied"
+    },
+    "status": {
+      "active": "Active",
+      "hired": "Hired",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn",
+      "on_hold": "On hold"
+    },
+    "stageType": {
+      "open": "Open",
+      "interview": "Interview",
+      "offer": "Offer",
+      "hired": "Hired",
+      "rejected": "Rejected",
+      "withdrawn": "Withdrawn"
+    },
+    "actions": {
+      "create": "Create",
+      "cancel": "Cancel",
+      "save": "Save",
+      "edit": "Edit",
+      "hold": "Hold",
+      "withdraw": "Withdraw",
+      "reject": "Reject"
+    },
+    "toasts": {
+      "created": "Application created.",
+      "moved": "Stage updated.",
+      "saved": "Saved.",
+      "actionDone": "Done.",
+      "actionError": "Action failed (writes require sign-in / elevated permissions until M3.1).",
+      "saveError": "Could not save."
+    },
+    "validation": {
+      "duplicate": "This candidate already has an active application to this requisition."
+    },
+    "board": {
+      "title": "Pipeline Board",
+      "move": "Move to…",
+      "emptyColumn": "No applications."
+    },
+    "detail": {
+      "notFound": "Application not found.",
+      "moveStage": "Move stage",
+      "candidate": "Candidate",
+      "history": "Stage History",
+      "noHistory": "No stage history yet.",
+      "documents": "Documents",
+      "audit": "Audit Trail"
+    },
+    "stages": {
+      "title": "Pipeline Stages",
+      "pageTitle": "Pipeline Stages",
+      "hint": "Deactivating a stage hides it from new moves; existing applications keep their stage. Stage edits require elevated permissions until M3.1.",
+      "order": "Order",
+      "name": "Stage",
+      "type": "Type",
+      "active": "Active",
+      "reorder": "Reorder",
+      "up": "Move up",
+      "down": "Move down",
+      "empty": "No stages."
+    },
+    "candidate": {
+      "pageTitle": "Candidates",
+      "subtitle": "Candidate directory.",
+      "new": "New Candidate",
+      "searchPlaceholder": "Search name or email…",
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "nationality": "Nationality",
+      "nationalityClass": "Nationality class",
+      "currentTitle": "Current title",
+      "source": "Source",
+      "statusLabel": "Status",
+      "empty": "No candidates yet.",
+      "addTitle": "New Candidate",
+      "editTitle": "Edit Candidate",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "fullNameEn": "Full name (English)",
+      "fullNameAr": "Full name (Arabic)",
+      "saved": "Candidate saved.",
+      "backToList": "Back to Candidates",
+      "notFound": "Candidate not found.",
+      "theirApplications": "Applications",
+      "noApplications": "No applications yet."
+    },
+    "candidateStatus": {
+      "active": "Active",
+      "archived": "Archived",
+      "blacklisted": "Blacklisted"
     }
   },
   "audit": {

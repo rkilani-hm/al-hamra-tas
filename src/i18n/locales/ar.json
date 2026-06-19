@@ -8,6 +8,8 @@
     "identity": "الهوية والوصول",
     "config": "الإعدادات الأساسية",
     "requisitions": "طلبات التوظيف",
+    "applications": "الطلبات",
+    "candidates": "المرشحون",
     "workflow": "سير العمل والموافقات",
     "notifications": "الإشعارات",
     "documents": "المستندات",
@@ -637,7 +639,141 @@
       "noHistory": "لا توجد أحداث بعد.",
       "documents": "المستندات",
       "audit": "مسار التدقيق",
+      "applications": "الطلبات",
+      "viewApplications": "عرض الطلبات",
       "notFound": "الطلب غير موجود."
+    }
+  },
+  "applications": {
+    "page": {
+      "title": "الطلبات",
+      "subtitle": "تتبّع طلبات المرشحين عبر مسار التوظيف."
+    },
+    "backToList": "العودة إلى الطلبات",
+    "common": {
+      "loading": "جارٍ التحميل…",
+      "select": "اختر…"
+    },
+    "nav": {
+      "stages": "إعداد المراحل"
+    },
+    "list": {
+      "title": "الطلبات",
+      "board": "اللوحة",
+      "new": "طلب جديد",
+      "empty": "لا توجد طلبات تطابق عوامل التصفية."
+    },
+    "filter": {
+      "stage": "المرحلة",
+      "allStages": "كل المراحل",
+      "status": "الحالة",
+      "allStatuses": "كل الحالات",
+      "candidate": "المرشح",
+      "candidatePlaceholder": "ابحث بالاسم أو البريد…",
+      "mine": "طلباتي",
+      "mineSignIn": "سجّل الدخول لتصفية الطلبات التي تملكها.",
+      "search": "بحث"
+    },
+    "table": {
+      "reference": "المرجع",
+      "candidate": "المرشح",
+      "requisition": "طلب التوظيف",
+      "stage": "المرحلة",
+      "status": "الحالة",
+      "applied": "تاريخ التقديم"
+    },
+    "status": {
+      "active": "نشط",
+      "hired": "تم التعيين",
+      "rejected": "مرفوض",
+      "withdrawn": "منسحب",
+      "on_hold": "معلّق"
+    },
+    "stageType": {
+      "open": "مفتوح",
+      "interview": "مقابلة",
+      "offer": "عرض",
+      "hired": "تعيين",
+      "rejected": "رفض",
+      "withdrawn": "انسحاب"
+    },
+    "actions": {
+      "create": "إنشاء",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "edit": "تعديل",
+      "hold": "تعليق",
+      "withdraw": "سحب",
+      "reject": "رفض"
+    },
+    "toasts": {
+      "created": "تم إنشاء الطلب.",
+      "moved": "تم تحديث المرحلة.",
+      "saved": "تم الحفظ.",
+      "actionDone": "تم.",
+      "actionError": "فشل الإجراء (تتطلب الكتابة تسجيل الدخول / صلاحيات أعلى حتى الإصدار M3.1).",
+      "saveError": "تعذر الحفظ."
+    },
+    "validation": {
+      "duplicate": "لدى هذا المرشح بالفعل طلب نشط على طلب التوظيف هذا."
+    },
+    "board": {
+      "title": "لوحة المسار",
+      "move": "نقل إلى…",
+      "emptyColumn": "لا توجد طلبات."
+    },
+    "detail": {
+      "notFound": "الطلب غير موجود.",
+      "moveStage": "نقل المرحلة",
+      "candidate": "المرشح",
+      "history": "سجل المراحل",
+      "noHistory": "لا يوجد سجل مراحل بعد.",
+      "documents": "المستندات",
+      "audit": "مسار التدقيق"
+    },
+    "stages": {
+      "title": "مراحل المسار",
+      "pageTitle": "مراحل المسار",
+      "hint": "إلغاء تنشيط مرحلة يخفيها من النقلات الجديدة؛ وتحتفظ الطلبات الحالية بمرحلتها. تتطلب تعديلات المراحل صلاحيات أعلى حتى الإصدار M3.1.",
+      "order": "الترتيب",
+      "name": "المرحلة",
+      "type": "النوع",
+      "active": "نشطة",
+      "reorder": "إعادة الترتيب",
+      "up": "تحريك لأعلى",
+      "down": "تحريك لأسفل",
+      "empty": "لا توجد مراحل."
+    },
+    "candidate": {
+      "pageTitle": "المرشحون",
+      "subtitle": "دليل المرشحين.",
+      "new": "مرشح جديد",
+      "searchPlaceholder": "ابحث بالاسم أو البريد…",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "nationality": "الجنسية",
+      "nationalityClass": "فئة الجنسية",
+      "currentTitle": "المسمى الحالي",
+      "source": "المصدر",
+      "statusLabel": "الحالة",
+      "empty": "لا يوجد مرشحون بعد.",
+      "addTitle": "مرشح جديد",
+      "editTitle": "تعديل المرشح",
+      "firstName": "الاسم الأول",
+      "lastName": "اسم العائلة",
+      "fullNameEn": "الاسم الكامل (إنجليزي)",
+      "fullNameAr": "الاسم الكامل (عربي)",
+      "saved": "تم حفظ المرشح.",
+      "backToList": "العودة إلى المرشحين",
+      "notFound": "المرشح غير موجود.",
+      "theirApplications": "الطلبات",
+      "noApplications": "لا توجد طلبات بعد."
+    },
+    "candidateStatus": {
+      "active": "نشط",
+      "archived": "مؤرشف",
+      "blacklisted": "محظور"
     }
   },
   "audit": {

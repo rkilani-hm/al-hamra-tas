@@ -19,7 +19,9 @@ import { Route as AppNotificationsIndexRouteImport } from './routes/app.notifica
 import { Route as AppIdentityIndexRouteImport } from './routes/app.identity.index'
 import { Route as AppDocumentsIndexRouteImport } from './routes/app.documents.index'
 import { Route as AppConfigIndexRouteImport } from './routes/app.config.index'
+import { Route as AppCandidatesIndexRouteImport } from './routes/app.candidates.index'
 import { Route as AppAuditIndexRouteImport } from './routes/app.audit.index'
+import { Route as AppApplicationsIndexRouteImport } from './routes/app.applications.index'
 import { Route as AppWorkflowInboxRouteImport } from './routes/app.workflow.inbox'
 import { Route as AppWorkflowDefsRouteImport } from './routes/app.workflow.defs'
 import { Route as AppRequisitionsNewRouteImport } from './routes/app.requisitions.new'
@@ -31,6 +33,10 @@ import { Route as AppConfigOrgRouteImport } from './routes/app.config.org'
 import { Route as AppConfigLookupsRouteImport } from './routes/app.config.lookups'
 import { Route as AppConfigJobsRouteImport } from './routes/app.config.jobs'
 import { Route as AppConfigJdRouteImport } from './routes/app.config.jd'
+import { Route as AppCandidatesIdRouteImport } from './routes/app.candidates.$id'
+import { Route as AppApplicationsStagesRouteImport } from './routes/app.applications.stages'
+import { Route as AppApplicationsBoardRouteImport } from './routes/app.applications.board'
+import { Route as AppApplicationsIdRouteImport } from './routes/app.applications.$id'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -82,9 +88,19 @@ const AppConfigIndexRoute = AppConfigIndexRouteImport.update({
   path: '/config/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCandidatesIndexRoute = AppCandidatesIndexRouteImport.update({
+  id: '/candidates/',
+  path: '/candidates/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAuditIndexRoute = AppAuditIndexRouteImport.update({
   id: '/audit/',
   path: '/audit/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppApplicationsIndexRoute = AppApplicationsIndexRouteImport.update({
+  id: '/applications/',
+  path: '/applications/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppWorkflowInboxRoute = AppWorkflowInboxRouteImport.update({
@@ -144,12 +160,36 @@ const AppConfigJdRoute = AppConfigJdRouteImport.update({
   path: '/config/jd',
   getParentRoute: () => AppRoute,
 } as any)
+const AppCandidatesIdRoute = AppCandidatesIdRouteImport.update({
+  id: '/candidates/$id',
+  path: '/candidates/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppApplicationsStagesRoute = AppApplicationsStagesRouteImport.update({
+  id: '/applications/stages',
+  path: '/applications/stages',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppApplicationsBoardRoute = AppApplicationsBoardRouteImport.update({
+  id: '/applications/board',
+  path: '/applications/board',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppApplicationsIdRoute = AppApplicationsIdRouteImport.update({
+  id: '/applications/$id',
+  path: '/applications/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/app/': typeof AppIndexRoute
+  '/app/applications/$id': typeof AppApplicationsIdRoute
+  '/app/applications/board': typeof AppApplicationsBoardRoute
+  '/app/applications/stages': typeof AppApplicationsStagesRoute
+  '/app/candidates/$id': typeof AppCandidatesIdRoute
   '/app/config/jd': typeof AppConfigJdRoute
   '/app/config/jobs': typeof AppConfigJobsRoute
   '/app/config/lookups': typeof AppConfigLookupsRoute
@@ -161,7 +201,9 @@ export interface FileRoutesByFullPath {
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
+  '/app/applications/': typeof AppApplicationsIndexRoute
   '/app/audit/': typeof AppAuditIndexRoute
+  '/app/candidates/': typeof AppCandidatesIndexRoute
   '/app/config/': typeof AppConfigIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
@@ -173,6 +215,10 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/app': typeof AppIndexRoute
+  '/app/applications/$id': typeof AppApplicationsIdRoute
+  '/app/applications/board': typeof AppApplicationsBoardRoute
+  '/app/applications/stages': typeof AppApplicationsStagesRoute
+  '/app/candidates/$id': typeof AppCandidatesIdRoute
   '/app/config/jd': typeof AppConfigJdRoute
   '/app/config/jobs': typeof AppConfigJobsRoute
   '/app/config/lookups': typeof AppConfigLookupsRoute
@@ -184,7 +230,9 @@ export interface FileRoutesByTo {
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
+  '/app/applications': typeof AppApplicationsIndexRoute
   '/app/audit': typeof AppAuditIndexRoute
+  '/app/candidates': typeof AppCandidatesIndexRoute
   '/app/config': typeof AppConfigIndexRoute
   '/app/documents': typeof AppDocumentsIndexRoute
   '/app/identity': typeof AppIdentityIndexRoute
@@ -198,6 +246,10 @@ export interface FileRoutesById {
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
   '/app/': typeof AppIndexRoute
+  '/app/applications/$id': typeof AppApplicationsIdRoute
+  '/app/applications/board': typeof AppApplicationsBoardRoute
+  '/app/applications/stages': typeof AppApplicationsStagesRoute
+  '/app/candidates/$id': typeof AppCandidatesIdRoute
   '/app/config/jd': typeof AppConfigJdRoute
   '/app/config/jobs': typeof AppConfigJobsRoute
   '/app/config/lookups': typeof AppConfigLookupsRoute
@@ -209,7 +261,9 @@ export interface FileRoutesById {
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
+  '/app/applications/': typeof AppApplicationsIndexRoute
   '/app/audit/': typeof AppAuditIndexRoute
+  '/app/candidates/': typeof AppCandidatesIndexRoute
   '/app/config/': typeof AppConfigIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
@@ -224,6 +278,10 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/app/'
+    | '/app/applications/$id'
+    | '/app/applications/board'
+    | '/app/applications/stages'
+    | '/app/candidates/$id'
     | '/app/config/jd'
     | '/app/config/jobs'
     | '/app/config/lookups'
@@ -235,7 +293,9 @@ export interface FileRouteTypes {
     | '/app/requisitions/new'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
+    | '/app/applications/'
     | '/app/audit/'
+    | '/app/candidates/'
     | '/app/config/'
     | '/app/documents/'
     | '/app/identity/'
@@ -247,6 +307,10 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/app'
+    | '/app/applications/$id'
+    | '/app/applications/board'
+    | '/app/applications/stages'
+    | '/app/candidates/$id'
     | '/app/config/jd'
     | '/app/config/jobs'
     | '/app/config/lookups'
@@ -258,7 +322,9 @@ export interface FileRouteTypes {
     | '/app/requisitions/new'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
+    | '/app/applications'
     | '/app/audit'
+    | '/app/candidates'
     | '/app/config'
     | '/app/documents'
     | '/app/identity'
@@ -271,6 +337,10 @@ export interface FileRouteTypes {
     | '/app'
     | '/login'
     | '/app/'
+    | '/app/applications/$id'
+    | '/app/applications/board'
+    | '/app/applications/stages'
+    | '/app/candidates/$id'
     | '/app/config/jd'
     | '/app/config/jobs'
     | '/app/config/lookups'
@@ -282,7 +352,9 @@ export interface FileRouteTypes {
     | '/app/requisitions/new'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
+    | '/app/applications/'
     | '/app/audit/'
+    | '/app/candidates/'
     | '/app/config/'
     | '/app/documents/'
     | '/app/identity/'
@@ -369,11 +441,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppConfigIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/candidates/': {
+      id: '/app/candidates/'
+      path: '/candidates'
+      fullPath: '/app/candidates/'
+      preLoaderRoute: typeof AppCandidatesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/audit/': {
       id: '/app/audit/'
       path: '/audit'
       fullPath: '/app/audit/'
       preLoaderRoute: typeof AppAuditIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/applications/': {
+      id: '/app/applications/'
+      path: '/applications'
+      fullPath: '/app/applications/'
+      preLoaderRoute: typeof AppApplicationsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/workflow/inbox': {
@@ -453,11 +539,43 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppConfigJdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/candidates/$id': {
+      id: '/app/candidates/$id'
+      path: '/candidates/$id'
+      fullPath: '/app/candidates/$id'
+      preLoaderRoute: typeof AppCandidatesIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/applications/stages': {
+      id: '/app/applications/stages'
+      path: '/applications/stages'
+      fullPath: '/app/applications/stages'
+      preLoaderRoute: typeof AppApplicationsStagesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/applications/board': {
+      id: '/app/applications/board'
+      path: '/applications/board'
+      fullPath: '/app/applications/board'
+      preLoaderRoute: typeof AppApplicationsBoardRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/applications/$id': {
+      id: '/app/applications/$id'
+      path: '/applications/$id'
+      fullPath: '/app/applications/$id'
+      preLoaderRoute: typeof AppApplicationsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppApplicationsIdRoute: typeof AppApplicationsIdRoute
+  AppApplicationsBoardRoute: typeof AppApplicationsBoardRoute
+  AppApplicationsStagesRoute: typeof AppApplicationsStagesRoute
+  AppCandidatesIdRoute: typeof AppCandidatesIdRoute
   AppConfigJdRoute: typeof AppConfigJdRoute
   AppConfigJobsRoute: typeof AppConfigJobsRoute
   AppConfigLookupsRoute: typeof AppConfigLookupsRoute
@@ -469,7 +587,9 @@ interface AppRouteChildren {
   AppRequisitionsNewRoute: typeof AppRequisitionsNewRoute
   AppWorkflowDefsRoute: typeof AppWorkflowDefsRoute
   AppWorkflowInboxRoute: typeof AppWorkflowInboxRoute
+  AppApplicationsIndexRoute: typeof AppApplicationsIndexRoute
   AppAuditIndexRoute: typeof AppAuditIndexRoute
+  AppCandidatesIndexRoute: typeof AppCandidatesIndexRoute
   AppConfigIndexRoute: typeof AppConfigIndexRoute
   AppDocumentsIndexRoute: typeof AppDocumentsIndexRoute
   AppIdentityIndexRoute: typeof AppIdentityIndexRoute
@@ -480,6 +600,10 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppApplicationsIdRoute: AppApplicationsIdRoute,
+  AppApplicationsBoardRoute: AppApplicationsBoardRoute,
+  AppApplicationsStagesRoute: AppApplicationsStagesRoute,
+  AppCandidatesIdRoute: AppCandidatesIdRoute,
   AppConfigJdRoute: AppConfigJdRoute,
   AppConfigJobsRoute: AppConfigJobsRoute,
   AppConfigLookupsRoute: AppConfigLookupsRoute,
@@ -491,7 +615,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppRequisitionsNewRoute: AppRequisitionsNewRoute,
   AppWorkflowDefsRoute: AppWorkflowDefsRoute,
   AppWorkflowInboxRoute: AppWorkflowInboxRoute,
+  AppApplicationsIndexRoute: AppApplicationsIndexRoute,
   AppAuditIndexRoute: AppAuditIndexRoute,
+  AppCandidatesIndexRoute: AppCandidatesIndexRoute,
   AppConfigIndexRoute: AppConfigIndexRoute,
   AppDocumentsIndexRoute: AppDocumentsIndexRoute,
   AppIdentityIndexRoute: AppIdentityIndexRoute,
@@ -510,3 +636,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
