@@ -1583,6 +1583,210 @@ export type Database = {
           },
         ]
       }
+      tas_screening: {
+        Row: {
+          application_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          notes_en: string | null
+          overall_score: number | null
+          recommendation: string | null
+          scorecard_id: string | null
+          screened_at: string
+          screened_by: string | null
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes_en?: string | null
+          overall_score?: number | null
+          recommendation?: string | null
+          scorecard_id?: string | null
+          screened_at?: string
+          screened_by?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes_en?: string | null
+          overall_score?: number | null
+          recommendation?: string | null
+          scorecard_id?: string | null
+          screened_at?: string
+          screened_by?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_screening_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "tas_application"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_screening_scorecard_id_fkey"
+            columns: ["scorecard_id"]
+            isOneToOne: false
+            referencedRelation: "tas_screening_scorecard"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_screening_screened_by_fkey"
+            columns: ["screened_by"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_screening_criterion: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          id: string
+          max_score: number
+          name_ar: string
+          name_en: string
+          scorecard_id: string
+          sort_order: number
+          updated_at: string
+          updated_by: string | null
+          weight: number
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          max_score?: number
+          name_ar: string
+          name_en: string
+          scorecard_id: string
+          sort_order?: number
+          updated_at?: string
+          updated_by?: string | null
+          weight?: number
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          max_score?: number
+          name_ar?: string
+          name_en?: string
+          scorecard_id?: string
+          sort_order?: number
+          updated_at?: string
+          updated_by?: string | null
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_screening_criterion_scorecard_id_fkey"
+            columns: ["scorecard_id"]
+            isOneToOne: false
+            referencedRelation: "tas_screening_scorecard"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_screening_score: {
+        Row: {
+          criterion_id: string
+          id: string
+          note: string | null
+          score: number | null
+          screening_id: string
+        }
+        Insert: {
+          criterion_id: string
+          id?: string
+          note?: string | null
+          score?: number | null
+          screening_id: string
+        }
+        Update: {
+          criterion_id?: string
+          id?: string
+          note?: string | null
+          score?: number | null
+          screening_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_screening_score_criterion_id_fkey"
+            columns: ["criterion_id"]
+            isOneToOne: false
+            referencedRelation: "tas_screening_criterion"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_screening_score_screening_id_fkey"
+            columns: ["screening_id"]
+            isOneToOne: false
+            referencedRelation: "tas_screening"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_screening_scorecard: {
+        Row: {
+          code: string
+          created_at: string
+          created_by: string | null
+          description_ar: string | null
+          description_en: string | null
+          id: string
+          name_ar: string
+          name_en: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          name_ar: string
+          name_en: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          id?: string
+          name_ar?: string
+          name_en?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       tas_session: {
         Row: {
           expires_at: string | null
@@ -2246,6 +2450,10 @@ export type Database = {
         }
         Returns: string
       }
+      create_screening: {
+        Args: { p_application_id: string; p_scorecard_id?: string }
+        Returns: string
+      }
       document_versions: {
         Args: { p_id: string }
         Returns: {
@@ -2351,6 +2559,7 @@ export type Database = {
           workflow_instance_id: string
         }[]
       }
+      list_screening_scorecards: { Args: never; Returns: Json }
       mark_notification_read: { Args: { p_id: string }; Returns: undefined }
       move_application_stage: {
         Args: {
@@ -2424,6 +2633,11 @@ export type Database = {
         }[]
       }
       retry_notification: { Args: { p_id: string }; Returns: undefined }
+      save_screening_scores: {
+        Args: { p_scores: Json; p_screening_id: string }
+        Returns: number
+      }
+      screening_detail: { Args: { p_application_id: string }; Returns: Json }
       search_audit: {
         Args: {
           p_actor?: string
@@ -2456,6 +2670,14 @@ export type Database = {
       submit_requisition: {
         Args: { p_requisition_id: string }
         Returns: string
+      }
+      submit_screening: {
+        Args: {
+          p_notes_en?: string
+          p_recommendation: string
+          p_screening_id: string
+        }
+        Returns: Json
       }
       submit_workflow: {
         Args: {
