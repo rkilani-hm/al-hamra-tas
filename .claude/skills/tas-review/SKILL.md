@@ -73,6 +73,15 @@ Verify each rule. Any failure blocks PASS.
 11. **No unsupported integrations.** No SAP / Oracle / Workday / Dynamics / Power BI; no M365
     surface beyond Outlook / Teams / SharePoint / Entra; HRMS references are **MenaME only**.
     (Grep code, SQL, deps, and copy.)
+12. **ON CONFLICT matches the target index.** Every `ON CONFLICT (cols)` must match a real
+    unique index/constraint on exactly those columns. If that index is **PARTIAL** (has a
+    `WHERE` predicate), the `ON CONFLICT` **must repeat the same `WHERE` predicate** — e.g. an
+    index `... (email) WHERE email IS NOT NULL` requires `on conflict (email) where email is
+    not null ...`. Otherwise Postgres throws **42P10** ("no unique or exclusion constraint
+    matching the ON CONFLICT specification") and the whole migration is rejected at apply.
+    Grep `on conflict` across `supabase/migrations/`, cross-check each against its
+    index's definition (especially the `create unique index ... where ...` partials this
+    module adds), and flag any mismatch.
 
 ## Verdict
 
