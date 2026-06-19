@@ -1,4 +1,4 @@
-import { LayoutDashboard, FileBarChart, Settings, Settings2, ShieldCheck, Workflow, Bell, ScrollText, FolderArchive } from "lucide-react";
+import { LayoutDashboard, FileBarChart, Settings, Settings2, ShieldCheck, Workflow, Bell, ScrollText, FolderArchive, ClipboardList } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
@@ -21,6 +21,7 @@ export function AppSidebar() {
     { title: t("nav.dashboard"), url: "/app", icon: LayoutDashboard },
     { title: t("nav.identity"), url: "/app/identity", icon: ShieldCheck },
     { title: t("nav.config"), url: "/app/config", icon: Settings2 },
+    { title: t("nav.requisitions"), url: "/app/requisitions", icon: ClipboardList },
     { title: t("nav.workflow"), url: "/app/workflow", icon: Workflow },
     { title: t("nav.notifications"), url: "/app/notifications", icon: Bell },
     { title: t("nav.documents"), url: "/app/documents", icon: FolderArchive },

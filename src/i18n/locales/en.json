@@ -7,6 +7,7 @@
     "dashboard": "Dashboard",
     "identity": "Identity & Access",
     "config": "Core Configuration",
+    "requisitions": "Requisitions",
     "workflow": "Workflow & Approvals",
     "notifications": "Notifications",
     "documents": "Documents",
@@ -526,6 +527,117 @@
       "actions": "Actions",
       "empty": "No delivery records.",
       "retry": "Retry"
+    }
+  },
+  "requisition": {
+    "page": {
+      "title": "Job Requisitions",
+      "subtitle": "Raise and track job requisitions through approval."
+    },
+    "backToList": "Back to Requisitions",
+    "common": {
+      "loading": "Loading…"
+    },
+    "list": {
+      "title": "Requisitions",
+      "new": "New Requisition",
+      "empty": "No requisitions match your filters."
+    },
+    "filter": {
+      "status": "Status",
+      "allStatuses": "All statuses",
+      "department": "Department",
+      "allDepartments": "All departments",
+      "position": "Position",
+      "allPositions": "All positions",
+      "from": "From",
+      "to": "To",
+      "mine": "Mine",
+      "mineSignIn": "Sign in to filter your own requisitions.",
+      "search": "Search"
+    },
+    "table": {
+      "reference": "Reference",
+      "title": "Title",
+      "position": "Position",
+      "department": "Department",
+      "headcount": "Headcount",
+      "status": "Status",
+      "created": "Created"
+    },
+    "status": {
+      "draft": "Draft",
+      "submitted": "Submitted",
+      "in_approval": "In approval",
+      "approved": "Approved",
+      "published": "Published",
+      "on_hold": "On hold",
+      "cancelled": "Cancelled",
+      "closed": "Closed"
+    },
+    "form": {
+      "newTitle": "New Requisition",
+      "orgContext": "Organization",
+      "entity": "Entity",
+      "branch": "Branch",
+      "department": "Department",
+      "select": "Select…",
+      "position": "Position",
+      "selectPosition": "Select a position",
+      "templateSuggested": "A matching job-description template was applied.",
+      "jd": "Job Description",
+      "titleEn": "Title (English)",
+      "titleAr": "Title (Arabic)",
+      "summaryEn": "Summary (English)",
+      "summaryAr": "Summary (Arabic)",
+      "jdHint": "Edits here are captured into the requisition's frozen JD snapshot at submit.",
+      "details": "Details",
+      "headcount": "Headcount",
+      "employmentType": "Employment type",
+      "contractType": "Contract type",
+      "targetStart": "Target start date",
+      "salaryMin": "Salary (min)",
+      "salaryMax": "Salary (max)",
+      "justification": "Justification",
+      "justificationInternal": "Internal — English only, not shown to candidates."
+    },
+    "budget": {
+      "budgeted": "Budgeted",
+      "filled": "Filled",
+      "available": "Available",
+      "overBudget": "Over budget"
+    },
+    "validation": {
+      "required": "Please complete the required fields (entity, position, title, headcount)."
+    },
+    "toasts": {
+      "draftSaved": "Draft saved.",
+      "saveError": "Could not save (writes require sign-in / elevated permissions until M3.1).",
+      "submitted": "Requisition submitted for approval.",
+      "submitError": "Could not submit (submission requires elevated permissions until M3.1).",
+      "actionDone": "Done.",
+      "actionError": "Action failed (writes require elevated permissions until M3.1)."
+    },
+    "actions": {
+      "saveDraft": "Save draft",
+      "submit": "Submit",
+      "edit": "Edit",
+      "cancelEdit": "Cancel",
+      "publish": "Publish",
+      "hold": "Hold",
+      "cancel": "Cancel",
+      "close": "Close"
+    },
+    "detail": {
+      "approval": "Approval",
+      "editDraft": "Edit draft",
+      "jd": "Job Description",
+      "noJd": "No job-description content captured.",
+      "history": "Requisition History",
+      "noHistory": "No events yet.",
+      "documents": "Documents",
+      "audit": "Audit Trail",
+      "notFound": "Requisition not found."
     }
   },
   "audit": {
