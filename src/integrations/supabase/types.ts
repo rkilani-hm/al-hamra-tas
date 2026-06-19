@@ -1498,6 +1498,205 @@ export type Database = {
         }
         Relationships: []
       }
+      tas_offer: {
+        Row: {
+          accepted_at: string | null
+          application_id: string
+          candidate_id: string
+          contract_type: string | null
+          created_at: string
+          created_by: string | null
+          currency: string
+          declined_reason: string | null
+          employment_type: string | null
+          esign_status: string
+          expiry_date: string | null
+          id: string
+          job_grade_id: string | null
+          job_position_id: string | null
+          letter_snapshot_json: Json
+          letter_template_id: string | null
+          onboarding_ready: boolean
+          probation_months: number | null
+          reference: string | null
+          salary_amount: number | null
+          salary_components_json: Json
+          start_date: string | null
+          status: string
+          terms_ar: string | null
+          terms_en: string | null
+          updated_at: string
+          updated_by: string | null
+          workflow_instance_id: string | null
+        }
+        Insert: {
+          accepted_at?: string | null
+          application_id: string
+          candidate_id: string
+          contract_type?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          declined_reason?: string | null
+          employment_type?: string | null
+          esign_status?: string
+          expiry_date?: string | null
+          id?: string
+          job_grade_id?: string | null
+          job_position_id?: string | null
+          letter_snapshot_json?: Json
+          letter_template_id?: string | null
+          onboarding_ready?: boolean
+          probation_months?: number | null
+          reference?: string | null
+          salary_amount?: number | null
+          salary_components_json?: Json
+          start_date?: string | null
+          status?: string
+          terms_ar?: string | null
+          terms_en?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          workflow_instance_id?: string | null
+        }
+        Update: {
+          accepted_at?: string | null
+          application_id?: string
+          candidate_id?: string
+          contract_type?: string | null
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          declined_reason?: string | null
+          employment_type?: string | null
+          esign_status?: string
+          expiry_date?: string | null
+          id?: string
+          job_grade_id?: string | null
+          job_position_id?: string | null
+          letter_snapshot_json?: Json
+          letter_template_id?: string | null
+          onboarding_ready?: boolean
+          probation_months?: number | null
+          reference?: string | null
+          salary_amount?: number | null
+          salary_components_json?: Json
+          start_date?: string | null
+          status?: string
+          terms_ar?: string | null
+          terms_en?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          workflow_instance_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_offer_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "tas_application"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_offer_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "tas_candidate"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_offer_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_offer_job_grade_id_fkey"
+            columns: ["job_grade_id"]
+            isOneToOne: false
+            referencedRelation: "tas_job_grade"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_offer_job_position_id_fkey"
+            columns: ["job_position_id"]
+            isOneToOne: false
+            referencedRelation: "tas_job_position"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_offer_workflow_instance_id_fkey"
+            columns: ["workflow_instance_id"]
+            isOneToOne: false
+            referencedRelation: "tas_workflow_instance"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_offer_counter: {
+        Row: {
+          fiscal_year: number
+          last_no: number
+        }
+        Insert: {
+          fiscal_year: number
+          last_no?: number
+        }
+        Update: {
+          fiscal_year?: number
+          last_no?: number
+        }
+        Relationships: []
+      }
+      tas_offer_event: {
+        Row: {
+          actor_user_id: string | null
+          created_at: string
+          detail_json: Json
+          event_type: string | null
+          from_status: string | null
+          id: string
+          offer_id: string
+          to_status: string | null
+        }
+        Insert: {
+          actor_user_id?: string | null
+          created_at?: string
+          detail_json?: Json
+          event_type?: string | null
+          from_status?: string | null
+          id?: string
+          offer_id: string
+          to_status?: string | null
+        }
+        Update: {
+          actor_user_id?: string | null
+          created_at?: string
+          detail_json?: Json
+          event_type?: string | null
+          from_status?: string | null
+          id?: string
+          offer_id?: string
+          to_status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_offer_event_actor_user_id_fkey"
+            columns: ["actor_user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_offer_event_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "tas_offer"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tas_permission: {
         Row: {
           action: string
@@ -2733,6 +2932,7 @@ export type Database = {
       }
       generate_application_ref: { Args: never; Returns: string }
       generate_interview_ref: { Args: never; Returns: string }
+      generate_offer_ref: { Args: never; Returns: string }
       generate_requisition_ref: { Args: never; Returns: string }
       instance_timeline: { Args: { p_instance_id: string }; Returns: Json }
       interview_detail: { Args: { p_id: string }; Returns: Json }
@@ -2740,6 +2940,7 @@ export type Database = {
         Args: { p_interview_id: string }
         Returns: Json
       }
+      issue_offer: { Args: { p_offer_id: string }; Returns: undefined }
       list_applications: {
         Args: {
           p_candidate_search?: string
@@ -2814,6 +3015,30 @@ export type Database = {
           scheduled_at: string
           status: string
           teams_join_url: string
+        }[]
+      }
+      list_offers: {
+        Args: {
+          p_application_id?: string
+          p_candidate_id?: string
+          p_limit?: number
+          p_mine?: boolean
+          p_offset?: number
+          p_status?: string
+        }
+        Returns: {
+          application_id: string
+          candidate_id: string
+          candidate_name_ar: string
+          candidate_name_en: string
+          created_at: string
+          currency: string
+          esign_status: string
+          id: string
+          onboarding_ready: boolean
+          reference: string
+          salary_amount: number
+          status: string
         }[]
       }
       list_pipeline_stages: {
@@ -2900,6 +3125,7 @@ export type Database = {
         }
         Returns: number
       }
+      offer_detail: { Args: { p_id: string }; Returns: Json }
       preview_template: {
         Args: { p_sample_context: Json; p_template_id: string }
         Returns: {
@@ -2934,6 +3160,15 @@ export type Database = {
           resolved_via: string
           user_id: string
         }[]
+      }
+      respond_to_offer: {
+        Args: {
+          p_decision: string
+          p_offer_id: string
+          p_reason?: string
+          p_signature?: string
+        }
+        Returns: Json
       }
       retry_notification: { Args: { p_id: string }; Returns: undefined }
       save_screening_scores: {
@@ -2992,6 +3227,7 @@ export type Database = {
         }
         Returns: number
       }
+      submit_offer: { Args: { p_offer_id: string }; Returns: string }
       submit_requisition: {
         Args: { p_requisition_id: string }
         Returns: string
@@ -3016,9 +3252,14 @@ export type Database = {
         }
         Returns: string
       }
+      sync_offer_status: { Args: { p_offer_id: string }; Returns: string }
       sync_requisition_status: {
         Args: { p_requisition_id: string }
         Returns: string
+      }
+      transition_offer: {
+        Args: { p_action: string; p_offer_id: string }
+        Returns: undefined
       }
       transition_requisition: {
         Args: { p_action: string; p_requisition_id: string }
