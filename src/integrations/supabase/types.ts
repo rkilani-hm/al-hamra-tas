@@ -2834,6 +2834,9 @@ export type Database = {
       }
     }
     Functions: {
+      _active_admin_count: { Args: never; Returns: number }
+      _admin_caller_id: { Args: never; Returns: string }
+      _is_system_admin: { Args: never; Returns: boolean }
       _wf_advance: {
         Args: { p_actor: string; p_from_step: number; p_instance: string }
         Returns: undefined
@@ -2871,6 +2874,50 @@ export type Database = {
       activate_workflow: {
         Args: { p_definition_id: string }
         Returns: undefined
+      }
+      admin_assign_role: {
+        Args: { p_role_id: string; p_user_id: string }
+        Returns: undefined
+      }
+      admin_assign_scope: {
+        Args: {
+          p_branch_id?: string
+          p_department_id?: string
+          p_entity_id: string
+          p_user_id: string
+        }
+        Returns: string
+      }
+      admin_get_user: { Args: { p_user_id: string }; Returns: Json }
+      admin_list_roles: { Args: never; Returns: Json }
+      admin_list_users: {
+        Args: {
+          p_limit?: number
+          p_offset?: number
+          p_search?: string
+          p_status?: string
+        }
+        Returns: Json
+      }
+      admin_remove_role: {
+        Args: { p_role_id: string; p_user_id: string }
+        Returns: undefined
+      }
+      admin_remove_scope: { Args: { p_scope_id: string }; Returns: undefined }
+      admin_set_user_status: {
+        Args: { p_status: string; p_user_id: string }
+        Returns: undefined
+      }
+      admin_upsert_user: {
+        Args: {
+          p_default_locale?: string
+          p_display_name_ar?: string
+          p_display_name_en?: string
+          p_email?: string
+          p_id?: string
+          p_status?: string
+        }
+        Returns: string
       }
       application_detail: { Args: { p_id: string }; Returns: Json }
       archive_document: { Args: { p_id: string }; Returns: undefined }
