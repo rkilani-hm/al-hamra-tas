@@ -1,11 +1,8 @@
 // Module M0.1-admin-ui — User & Access Administration: data-access layer.
 //
-// INTERIM: the M0.1-admin RPCs (admin_list_users, admin_get_user,
-// admin_upsert_user, admin_set_user_status, admin_assign_role/remove_role,
-// admin_assign_scope/remove_scope, admin_list_roles) are NOT yet in the generated
-// Database types. Route them through a loosely typed client until Lovable applies
-// the migration and regenerates types.ts — then swap `db` back to strict `supabase`.
-import type { SupabaseClient } from "@supabase/supabase-js";
+// Uses the strict typed `supabase` client (Database types include the admin_*
+// RPCs after Lovable applied the migration and regenerated types.ts). The in-RPC
+// SYSTEM_ADMIN check is the authorization gate; non-admin calls raise not_authorized.
 import { supabase } from "@/integrations/supabase/client";
 import type {
   AdminRole,
@@ -14,9 +11,6 @@ import type {
   AdminUserRow,
   UpsertUserInput,
 } from "./types";
-
-// INTERIM: swap to strict client after Lovable applies migration (regen types.ts).
-const db = supabase as unknown as SupabaseClient;
 
 // Map a raised RPC token (error.message) to a known admin error code, else null.
 const KNOWN_ERRORS = [
@@ -36,7 +30,7 @@ export function adminErrorCode(err: unknown): AdminErrorCode | null {
 // --- Reads ------------------------------------------------------------------
 
 export async function adminListUsers(filter: AdminUserFilter): Promise<AdminUserRow[]> {
-  const { data, error } = await db.rpc("admin_list_users", {
+  const { data, error } = await supabase.rpc("admin_list_users", {
     p_search: filter.search ?? undefined,
     p_status: filter.status ?? undefined,
     p_limit: filter.limit ?? 50,
@@ -47,13 +41,13 @@ export async function adminListUsers(filter: AdminUserFilter): Promise<AdminUser
 }
 
 export async function adminGetUser(userId: string): Promise<AdminUserDetail> {
-  const { data, error } = await db.rpc("admin_get_user", { p_user_id: userId });
+  const { data, error } = await supabase.rpc("admin_get_user", { p_user_id: userId });
   if (error) throw error;
   return (data ?? { user: null, roles: [], scopes: [], delegations: [] }) as unknown as AdminUserDetail;
 }
 
 export async function adminListRoles(): Promise<AdminRole[]> {
-  const { data, error } = await db.rpc("admin_list_roles");
+  const { data, error } = await supabase.rpc("admin_list_roles");
   if (error) throw error;
   return (data ?? []) as unknown as AdminRole[];
 }
@@ -61,7 +55,7 @@ export async function adminListRoles(): Promise<AdminRole[]> {
 // --- Writes -----------------------------------------------------------------
 
 export async function adminUpsertUser(input: UpsertUserInput): Promise<string> {
-  const { data, error } = await db.rpc("admin_upsert_user", {
+  const { data, error } = await supabase.rpc("admin_upsert_user", {
     p_id: input.id ?? undefined,
     p_email: input.email ?? undefined,
     p_display_name_en: input.display_name_en ?? undefined,
@@ -70,21 +64,21 @@ export async function adminUpsertUser(input: UpsertUserInput): Promise<string> {
     p_default_locale: input.default_locale ?? undefined,
   });
   if (error) throw error;
-  return data as unknown as string;
+  return data as string;
 }
 
 export async function adminSetUserStatus(userId: string, status: string): Promise<void> {
-  const { error } = await db.rpc("admin_set_user_status", { p_user_id: userId, p_status: status });
+  const { error } = await supabase.rpc("admin_set_user_status", { p_user_id: userId, p_status: status });
   if (error) throw error;
 }
 
 export async function adminAssignRole(userId: string, roleId: string): Promise<void> {
-  const { error } = await db.rpc("admin_assign_role", { p_user_id: userId, p_role_id: roleId });
+  const { error } = await supabase.rpc("admin_assign_role", { p_user_id: userId, p_role_id: roleId });
   if (error) throw error;
 }
 
 export async function adminRemoveRole(userId: string, roleId: string): Promise<void> {
-  const { error } = await db.rpc("admin_remove_role", { p_user_id: userId, p_role_id: roleId });
+  const { error } = await supabase.rpc("admin_remove_role", { p_user_id: userId, p_role_id: roleId });
   if (error) throw error;
 }
 
@@ -94,18 +88,18 @@ export async function adminAssignScope(
   branchId?: string | null,
   departmentId?: string | null,
 ): Promise<string> {
-  const { data, error } = await db.rpc("admin_assign_scope", {
+  const { data, error } = await supabase.rpc("admin_assign_scope", {
     p_user_id: userId,
     p_entity_id: entityId,
     p_branch_id: branchId ?? undefined,
     p_department_id: departmentId ?? undefined,
   });
   if (error) throw error;
-  return data as unknown as string;
+  return data as string;
 }
 
 export async function adminRemoveScope(scopeId: string): Promise<void> {
-  const { error } = await db.rpc("admin_remove_scope", { p_scope_id: scopeId });
+  const { error } = await supabase.rpc("admin_remove_scope", { p_scope_id: scopeId });
   if (error) throw error;
 }
 
