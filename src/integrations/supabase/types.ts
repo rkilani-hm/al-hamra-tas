@@ -2914,6 +2914,23 @@ export type Database = {
         Args: { p_application_id: string; p_scorecard_id?: string }
         Returns: string
       }
+      current_user_roles: {
+        Args: never
+        Returns: {
+          name_ar: string
+          name_en: string
+          role_code: string
+        }[]
+      }
+      current_user_scopes: {
+        Args: never
+        Returns: {
+          branch_id: string
+          department_id: string
+          entity_id: string
+          is_crossdept_readonly: boolean
+        }[]
+      }
       document_versions: {
         Args: { p_id: string }
         Returns: {
@@ -3153,6 +3170,17 @@ export type Database = {
       reschedule_interview: {
         Args: { p_interview_id: string; p_new_datetime: string }
         Returns: undefined
+      }
+      resolve_current_user: {
+        Args: never
+        Returns: {
+          default_locale: string
+          display_name_ar: string
+          display_name_en: string
+          email: string
+          id: string
+          status: string
+        }[]
       }
       resolve_step_approvers: {
         Args: { p_instance_id: string; p_step_no: number }
