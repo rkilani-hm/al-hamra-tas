@@ -47,6 +47,9 @@ import { Route as AppCandidatesIdRouteImport } from './routes/app.candidates.$id
 import { Route as AppApplicationsStagesRouteImport } from './routes/app.applications.stages'
 import { Route as AppApplicationsBoardRouteImport } from './routes/app.applications.board'
 import { Route as AppApplicationsIdRouteImport } from './routes/app.applications.$id'
+import { Route as AppAdminUsersIndexRouteImport } from './routes/app.admin.users.index'
+import { Route as AppAdminUsersNewRouteImport } from './routes/app.admin.users.new'
+import { Route as AppAdminUsersIdRouteImport } from './routes/app.admin.users.$id'
 
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
@@ -240,6 +243,21 @@ const AppApplicationsIdRoute = AppApplicationsIdRouteImport.update({
   path: '/applications/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminUsersIndexRoute = AppAdminUsersIndexRouteImport.update({
+  id: '/admin/users/',
+  path: '/admin/users/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdminUsersNewRoute = AppAdminUsersNewRouteImport.update({
+  id: '/admin/users/new',
+  path: '/admin/users/new',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdminUsersIdRoute = AppAdminUsersIdRouteImport.update({
+  id: '/admin/users/$id',
+  path: '/admin/users/$id',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -280,6 +298,9 @@ export interface FileRoutesByFullPath {
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
+  '/app/admin/users/$id': typeof AppAdminUsersIdRoute
+  '/app/admin/users/new': typeof AppAdminUsersNewRoute
+  '/app/admin/users/': typeof AppAdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -319,6 +340,9 @@ export interface FileRoutesByTo {
   '/app/requisitions': typeof AppRequisitionsIndexRoute
   '/app/screening': typeof AppScreeningIndexRoute
   '/app/workflow': typeof AppWorkflowIndexRoute
+  '/app/admin/users/$id': typeof AppAdminUsersIdRoute
+  '/app/admin/users/new': typeof AppAdminUsersNewRoute
+  '/app/admin/users': typeof AppAdminUsersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -360,6 +384,9 @@ export interface FileRoutesById {
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
+  '/app/admin/users/$id': typeof AppAdminUsersIdRoute
+  '/app/admin/users/new': typeof AppAdminUsersNewRoute
+  '/app/admin/users/': typeof AppAdminUsersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -402,6 +429,9 @@ export interface FileRouteTypes {
     | '/app/requisitions/'
     | '/app/screening/'
     | '/app/workflow/'
+    | '/app/admin/users/$id'
+    | '/app/admin/users/new'
+    | '/app/admin/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -441,6 +471,9 @@ export interface FileRouteTypes {
     | '/app/requisitions'
     | '/app/screening'
     | '/app/workflow'
+    | '/app/admin/users/$id'
+    | '/app/admin/users/new'
+    | '/app/admin/users'
   id:
     | '__root__'
     | '/'
@@ -481,6 +514,9 @@ export interface FileRouteTypes {
     | '/app/requisitions/'
     | '/app/screening/'
     | '/app/workflow/'
+    | '/app/admin/users/$id'
+    | '/app/admin/users/new'
+    | '/app/admin/users/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -760,6 +796,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppApplicationsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/admin/users/': {
+      id: '/app/admin/users/'
+      path: '/admin/users'
+      fullPath: '/app/admin/users/'
+      preLoaderRoute: typeof AppAdminUsersIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/admin/users/new': {
+      id: '/app/admin/users/new'
+      path: '/admin/users/new'
+      fullPath: '/app/admin/users/new'
+      preLoaderRoute: typeof AppAdminUsersNewRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/admin/users/$id': {
+      id: '/app/admin/users/$id'
+      path: '/admin/users/$id'
+      fullPath: '/app/admin/users/$id'
+      preLoaderRoute: typeof AppAdminUsersIdRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
@@ -796,6 +853,9 @@ interface AppRouteChildren {
   AppRequisitionsIndexRoute: typeof AppRequisitionsIndexRoute
   AppScreeningIndexRoute: typeof AppScreeningIndexRoute
   AppWorkflowIndexRoute: typeof AppWorkflowIndexRoute
+  AppAdminUsersIdRoute: typeof AppAdminUsersIdRoute
+  AppAdminUsersNewRoute: typeof AppAdminUsersNewRoute
+  AppAdminUsersIndexRoute: typeof AppAdminUsersIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
@@ -831,6 +891,9 @@ const AppRouteChildren: AppRouteChildren = {
   AppRequisitionsIndexRoute: AppRequisitionsIndexRoute,
   AppScreeningIndexRoute: AppScreeningIndexRoute,
   AppWorkflowIndexRoute: AppWorkflowIndexRoute,
+  AppAdminUsersIdRoute: AppAdminUsersIdRoute,
+  AppAdminUsersNewRoute: AppAdminUsersNewRoute,
+  AppAdminUsersIndexRoute: AppAdminUsersIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
@@ -846,3 +909,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

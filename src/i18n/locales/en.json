@@ -17,6 +17,7 @@
     "notifications": "Notifications",
     "documents": "Documents",
     "audit": "Audit Log",
+    "admin": "User Administration",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -1148,6 +1149,82 @@
     "errors": {
       "signInFailed": "Sign-in failed. Please try again.",
       "sessionExpired": "Your session expired. Please sign in again."
+    }
+  },
+  "admin": {
+    "page": {
+      "title": "User Administration",
+      "subtitle": "Provision users, assign roles, and set org scope."
+    },
+    "backToList": "Back to Users",
+    "common": {
+      "loading": "Loading…"
+    },
+    "list": {
+      "search": "Search name or email…",
+      "allStatuses": "All statuses",
+      "empty": "No users match your filters.",
+      "roles": "Roles",
+      "scopes": "Scopes"
+    },
+    "status": {
+      "active": "Active",
+      "inactive": "Inactive",
+      "unprovisioned": "Unprovisioned"
+    },
+    "form": {
+      "name": "Name",
+      "email": "Email",
+      "emailHint": "Must match the person's Entra / Microsoft sign-in email.",
+      "nameEn": "Name (EN)",
+      "nameAr": "Name (AR)",
+      "status": "Status",
+      "locale": "Default language"
+    },
+    "locale": {
+      "en": "English",
+      "ar": "Arabic"
+    },
+    "actions": {
+      "newUser": "New user",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "deactivate": "Deactivate",
+      "activate": "Activate",
+      "remove": "Remove"
+    },
+    "detail": {
+      "notFound": "User not found.",
+      "roles": "Roles",
+      "scope": "Org scope",
+      "delegations": "Delegations",
+      "noDelegations": "No delegations.",
+      "audit": "Audit trail"
+    },
+    "scope": {
+      "help": "Entity only = whole entity; + branch = that branch; + department = that department.",
+      "none": "No scope assigned.",
+      "entity": "Entity",
+      "branch": "Branch",
+      "department": "Department",
+      "wholeEntity": "Whole entity",
+      "wholeBranch": "Whole branch",
+      "add": "Add scope"
+    },
+    "toasts": {
+      "userSaved": "User saved.",
+      "rolesUpdated": "Roles updated.",
+      "scopeUpdated": "Scope updated."
+    },
+    "errors": {
+      "not_authorized": "You are not authorized to perform this action.",
+      "cannot_remove_last_admin": "Cannot remove the last active system administrator.",
+      "email_exists": "A user with this email already exists.",
+      "email_required": "Email is required to create a user.",
+      "entity_required": "An entity is required for a scope.",
+      "generic": "Action failed. Please try again."
     }
   }
 }

@@ -1,4 +1,4 @@
-import { LayoutDashboard, FileBarChart, Settings, Settings2, ShieldCheck, Workflow, Bell, ScrollText, FolderArchive, ClipboardList, KanbanSquare, UserSearch, ClipboardCheck, CalendarClock, FileSignature } from "lucide-react";
+import { LayoutDashboard, FileBarChart, Settings, Settings2, ShieldCheck, Workflow, Bell, ScrollText, FolderArchive, ClipboardList, KanbanSquare, UserSearch, ClipboardCheck, CalendarClock, FileSignature, UserCog } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
@@ -12,9 +12,12 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/features/auth/AuthProvider";
+import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 
 export function AppSidebar() {
   const { t } = useTranslation();
+  const { roles } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   const items = [
@@ -31,6 +34,8 @@ export function AppSidebar() {
     { title: t("nav.notifications"), url: "/app/notifications", icon: Bell },
     { title: t("nav.documents"), url: "/app/documents", icon: FolderArchive },
     { title: t("nav.audit"), url: "/app/audit", icon: ScrollText },
+    // Admin-only: hidden from non-SYSTEM_ADMIN users (route + RPC also enforce).
+    ...(isSystemAdmin(roles) ? [{ title: t("nav.admin"), url: "/app/admin/users", icon: UserCog }] : []),
     { title: t("nav.reports"), url: "/app", icon: FileBarChart },
     { title: t("nav.settings"), url: "/app", icon: Settings },
   ];
