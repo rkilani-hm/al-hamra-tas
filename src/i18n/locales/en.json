@@ -1129,5 +1129,25 @@
       "actionError": "Action failed.",
       "responseRecorded": "Response recorded."
     }
+  },
+  "auth": {
+    "loading": "Loading…",
+    "signedInAs": "Signed in as",
+    "signOut": "Sign out",
+    "signin": {
+      "title": "Sign in to Al Hamra TAS",
+      "subtitle": "Use your Al Hamra organization account to continue.",
+      "button": "Sign in with Al Hamra account",
+      "signingIn": "Signing in…"
+    },
+    "noAccess": {
+      "title": "No access yet",
+      "message": "Your account is not provisioned in the Talent Acquisition System.",
+      "contact": "Please contact your administrator to request access."
+    },
+    "errors": {
+      "signInFailed": "Sign-in failed. Please try again.",
+      "sessionExpired": "Your session expired. Please sign in again."
+    }
   }
 }

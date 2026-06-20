@@ -5,6 +5,7 @@ import { KanbanSquare, SlidersHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { ApplicationList } from "@/features/applications/components/ApplicationList";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/app/applications/")({
   validateSearch: (s: Record<string, unknown>): { requisition?: string } => ({
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/app/applications/")({
 function ApplicationsPage() {
   const { t } = useTranslation();
   const { requisition } = Route.useSearch();
-  const currentUserId: string | null = null;
+  const { currentUserId } = useAuth();
 
   return (
     <div className="space-y-6">

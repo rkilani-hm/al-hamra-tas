@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { RequisitionForm } from "@/features/requisition/components/RequisitionForm";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/app/requisitions/new")({
   head: () => ({ meta: [{ title: "New Requisition — Al Hamra TAS" }] }),
@@ -15,7 +16,7 @@ function NewRequisitionPage() {
   const { t } = useTranslation();
   const { direction } = useLanguage();
   const Chevron = direction === "rtl" ? ChevronRight : ChevronLeft;
-  const currentUserId: string | null = null;
+  const { currentUserId } = useAuth();
 
   return (
     <div className="space-y-4">

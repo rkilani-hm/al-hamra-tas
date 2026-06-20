@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { OfferForm } from "@/features/offers/components/OfferForm";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/app/offers/new")({
   validateSearch: (s: Record<string, unknown>): { application?: string; candidate?: string } => ({
@@ -22,7 +23,7 @@ function NewOfferPage() {
   const { application, candidate } = Route.useSearch();
   const navigate = useNavigate();
   const Chevron = direction === "rtl" ? ChevronRight : ChevronLeft;
-  const currentUserId: string | null = null; // Entra sign-in wired last.
+  const { currentUserId } = useAuth();
 
   return (
     <div className="space-y-4">

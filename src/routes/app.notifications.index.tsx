@@ -5,6 +5,7 @@ import { Bell, ListChecks, Settings2, SlidersHorizontal } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { NotificationCenter } from "@/features/notifications/components/NotificationCenter";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/app/notifications/")({
   head: () => ({
@@ -18,8 +19,7 @@ export const Route = createFileRoute("/app/notifications/")({
 
 function NotificationsPage() {
   const { t } = useTranslation();
-  // Gated like the workflow inbox until Entra sign-in resolves the tas_user id.
-  const currentUserId: string | null = null;
+  const { currentUserId } = useAuth();
 
   return (
     <div className="space-y-6">

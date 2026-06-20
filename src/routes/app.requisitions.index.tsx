@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { ClipboardList } from "lucide-react";
 
 import { RequisitionList } from "@/features/requisition/components/RequisitionList";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/app/requisitions/")({
   head: () => ({
@@ -17,8 +18,7 @@ export const Route = createFileRoute("/app/requisitions/")({
 
 function RequisitionsPage() {
   const { t } = useTranslation();
-  // Gated like other recipient-scoped views until Entra sign-in resolves the id.
-  const currentUserId: string | null = null;
+  const { currentUserId } = useAuth();
 
   return (
     <div className="space-y-6">

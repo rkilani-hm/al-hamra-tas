@@ -1,4 +1,5 @@
 import { User } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
@@ -13,13 +14,25 @@ import {
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { LanguageToggle } from "@/components/layout/LanguageToggle";
 import { NotificationBell } from "@/features/notifications/components/NotificationBell";
+import { useAuth } from "@/features/auth/AuthProvider";
+import { useLanguage } from "@/hooks/use-language";
 
 export function TopBar() {
   const { t } = useTranslation();
-  // Real Entra sign-in wiring lands later; no resolved tas_user id yet, so the
-  // bell renders its "sign in" state. Pass the id here once auth is wired
-  // (same gating as the workflow inbox).
-  const currentUserId: string | null = null;
+  const { language } = useLanguage();
+  const { currentUserId, tasUser, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const displayName =
+    (language === "ar" ? tasUser?.display_name_ar : tasUser?.display_name_en) ||
+    tasUser?.display_name_en ||
+    tasUser?.email ||
+    "";
+
+  const onSignOut = async () => {
+    await signOut();
+    void navigate({ to: "/signin" });
+  };
 
   return (
     <header className="flex h-14 items-center gap-3 border-b bg-card px-4">
@@ -41,19 +54,18 @@ export function TopBar() {
         <LanguageToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              aria-label={t("topbar.userMenu")}
-            >
+            <Button variant="ghost" size="icon" aria-label={t("topbar.userMenu")}>
               <User className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
-            <DropdownMenuLabel>{t("topbar.userMenu")}</DropdownMenuLabel>
+            <DropdownMenuLabel className="font-normal">
+              <span className="block text-xs text-muted-foreground">{t("auth.signedInAs")}</span>
+              <span className="block truncate text-sm font-medium text-foreground">{displayName || "—"}</span>
+            </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem disabled>{t("topbar.profile")}</DropdownMenuItem>
-            <DropdownMenuItem disabled>{t("topbar.signOut")}</DropdownMenuItem>
+            <DropdownMenuItem onClick={onSignOut}>{t("topbar.signOut")}</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>

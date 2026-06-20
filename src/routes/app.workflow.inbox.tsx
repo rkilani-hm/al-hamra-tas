@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { ApprovalInbox } from "@/features/workflow/components/ApprovalInbox";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/app/workflow/inbox")({
   head: () => ({ meta: [{ title: "My Approvals — Al Hamra TAS" }] }),
@@ -16,9 +17,7 @@ function InboxPage() {
   const { direction } = useLanguage();
   const Chevron = direction === "rtl" ? ChevronRight : ChevronLeft;
 
-  // Real Entra sign-in wiring lands later; no resolved tas_user id yet, so the
-  // inbox renders its sign-in notice. Pass the id here once auth is wired.
-  const currentUserId: string | null = null;
+  const { currentUserId } = useAuth();
 
   return (
     <div className="space-y-4">

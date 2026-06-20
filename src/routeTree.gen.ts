@@ -9,10 +9,13 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SigninRouteImport } from './routes/signin'
+import { Route as NoAccessRouteImport } from './routes/no-access'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AppWorkflowIndexRouteImport } from './routes/app.workflow.index'
 import { Route as AppScreeningIndexRouteImport } from './routes/app.screening.index'
 import { Route as AppRequisitionsIndexRouteImport } from './routes/app.requisitions.index'
@@ -45,6 +48,16 @@ import { Route as AppApplicationsStagesRouteImport } from './routes/app.applicat
 import { Route as AppApplicationsBoardRouteImport } from './routes/app.applications.board'
 import { Route as AppApplicationsIdRouteImport } from './routes/app.applications.$id'
 
+const SigninRoute = SigninRouteImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NoAccessRoute = NoAccessRouteImport.update({
+  id: '/no-access',
+  path: '/no-access',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -64,6 +77,11 @@ const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const AuthCallbackRoute = AuthCallbackRouteImport.update({
+  id: '/auth/callback',
+  path: '/auth/callback',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AppWorkflowIndexRoute = AppWorkflowIndexRouteImport.update({
   id: '/workflow/',
@@ -227,6 +245,9 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/no-access': typeof NoAccessRoute
+  '/signin': typeof SigninRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
@@ -263,6 +284,9 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/no-access': typeof NoAccessRoute
+  '/signin': typeof SigninRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/app': typeof AppIndexRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
@@ -301,6 +325,9 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/app': typeof AppRouteWithChildren
   '/login': typeof LoginRoute
+  '/no-access': typeof NoAccessRoute
+  '/signin': typeof SigninRoute
+  '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
@@ -340,6 +367,9 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/login'
+    | '/no-access'
+    | '/signin'
+    | '/auth/callback'
     | '/app/'
     | '/app/applications/$id'
     | '/app/applications/board'
@@ -376,6 +406,9 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/login'
+    | '/no-access'
+    | '/signin'
+    | '/auth/callback'
     | '/app'
     | '/app/applications/$id'
     | '/app/applications/board'
@@ -413,6 +446,9 @@ export interface FileRouteTypes {
     | '/'
     | '/app'
     | '/login'
+    | '/no-access'
+    | '/signin'
+    | '/auth/callback'
     | '/app/'
     | '/app/applications/$id'
     | '/app/applications/board'
@@ -451,10 +487,27 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
   LoginRoute: typeof LoginRoute
+  NoAccessRoute: typeof NoAccessRoute
+  SigninRoute: typeof SigninRoute
+  AuthCallbackRoute: typeof AuthCallbackRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/signin': {
+      id: '/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof SigninRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/no-access': {
+      id: '/no-access'
+      path: '/no-access'
+      fullPath: '/no-access'
+      preLoaderRoute: typeof NoAccessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -482,6 +535,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/auth/callback': {
+      id: '/auth/callback'
+      path: '/auth/callback'
+      fullPath: '/auth/callback'
+      preLoaderRoute: typeof AuthCallbackRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/app/workflow/': {
       id: '/app/workflow/'
@@ -779,7 +839,20 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
   LoginRoute: LoginRoute,
+  NoAccessRoute: NoAccessRoute,
+  SigninRoute: SigninRoute,
+  AuthCallbackRoute: AuthCallbackRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

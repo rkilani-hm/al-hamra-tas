@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { InterviewDetail } from "@/features/interviews/components/InterviewDetail";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/app/interviews/$id")({
   head: () => ({ meta: [{ title: "Interview — Al Hamra TAS" }] }),
@@ -16,7 +17,7 @@ function InterviewDetailPage() {
   const { direction } = useLanguage();
   const { id } = useParams({ from: "/app/interviews/$id" });
   const Chevron = direction === "rtl" ? ChevronRight : ChevronLeft;
-  const currentUserId: string | null = null; // Entra sign-in wired last.
+  const { currentUserId } = useAuth();
 
   return (
     <div className="space-y-4">

@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { ApplicationDetail } from "@/features/applications/components/ApplicationDetail";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/app/applications/$id")({
   head: () => ({ meta: [{ title: "Application — Al Hamra TAS" }] }),
@@ -16,7 +17,7 @@ function ApplicationDetailPage() {
   const { direction } = useLanguage();
   const { id } = useParams({ from: "/app/applications/$id" });
   const Chevron = direction === "rtl" ? ChevronRight : ChevronLeft;
-  const currentUserId: string | null = null;
+  const { currentUserId } = useAuth();
 
   return (
     <div className="space-y-4">

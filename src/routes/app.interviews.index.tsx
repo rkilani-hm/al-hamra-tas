@@ -9,6 +9,7 @@ import { useLanguage } from "@/hooks/use-language";
 import { AdapterStatus } from "@/features/interviews/components/AdapterStatus";
 import { MyInterviews } from "@/features/interviews/components/MyInterviews";
 import { listInterviews, safe } from "@/features/interviews/api";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/app/interviews/")({
   head: () => ({
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/app/interviews/")({
 function InterviewsPage() {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const currentUserId: string | null = null; // Entra sign-in wired last.
+  const { currentUserId } = useAuth();
 
   const allQ = useQuery({ queryKey: ["interviews", "all"], queryFn: safe(() => listInterviews({ limit: 50 })) });
   const all = allQ.data ?? [];

@@ -7,6 +7,7 @@ import { FolderArchive } from "lucide-react";
 
 import { DocumentPanel } from "@/features/documents/components/DocumentPanel";
 import { StorageAdapterStatus } from "@/features/documents/components/StorageAdapterStatus";
+import { useAuth } from "@/features/auth/AuthProvider";
 
 export const Route = createFileRoute("/app/documents/")({
   head: () => ({
@@ -20,8 +21,7 @@ export const Route = createFileRoute("/app/documents/")({
 
 function DocumentsPage() {
   const { t } = useTranslation();
-  // Gated like other recipient-scoped views until Entra sign-in resolves the id.
-  const currentUserId: string | null = null;
+  const { currentUserId } = useAuth();
 
   return (
     <div className="space-y-6">
