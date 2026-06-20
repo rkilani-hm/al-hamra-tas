@@ -2949,6 +2949,160 @@ export type Database = {
           over_budget: boolean
         }[]
       }
+      config_attach_competency: {
+        Args: {
+          p_competency_id: string
+          p_jd_template_id: string
+          p_proficiency_level?: number
+        }
+        Returns: undefined
+      }
+      config_delete_lookup: { Args: { p_id: string }; Returns: undefined }
+      config_detach_competency: {
+        Args: { p_competency_id: string; p_jd_template_id: string }
+        Returns: undefined
+      }
+      config_save_jd_sections: {
+        Args: { p_jd_template_id: string; p_sections: Json }
+        Returns: undefined
+      }
+      config_upsert_branch: {
+        Args: {
+          p_address_ar?: string
+          p_address_en?: string
+          p_code?: string
+          p_entity_id?: string
+          p_id?: string
+          p_name_ar?: string
+          p_name_en?: string
+          p_paci_area?: string
+          p_status?: string
+        }
+        Returns: string
+      }
+      config_upsert_criterion: {
+        Args: {
+          p_code?: string
+          p_id?: string
+          p_max_score?: number
+          p_name_ar?: string
+          p_name_en?: string
+          p_scorecard_id?: string
+          p_sort_order?: number
+          p_weight?: number
+        }
+        Returns: string
+      }
+      config_upsert_department: {
+        Args: {
+          p_branch_id?: string
+          p_code?: string
+          p_function_code?: string
+          p_id?: string
+          p_name_ar?: string
+          p_name_en?: string
+          p_parent_department_id?: string
+          p_status?: string
+        }
+        Returns: string
+      }
+      config_upsert_entity: {
+        Args: {
+          p_code?: string
+          p_commercial_reg_no?: string
+          p_id?: string
+          p_kuwaitization_target_pct?: number
+          p_name_ar?: string
+          p_name_en?: string
+          p_status?: string
+        }
+        Returns: string
+      }
+      config_upsert_jd_template: {
+        Args: {
+          p_code?: string
+          p_id?: string
+          p_job_position_id?: string
+          p_status?: string
+          p_summary_ar?: string
+          p_summary_en?: string
+          p_title_ar?: string
+          p_title_en?: string
+          p_version?: number
+        }
+        Returns: string
+      }
+      config_upsert_job_family: {
+        Args: {
+          p_code?: string
+          p_id?: string
+          p_name_ar?: string
+          p_name_en?: string
+          p_status?: string
+        }
+        Returns: string
+      }
+      config_upsert_job_grade: {
+        Args: {
+          p_code?: string
+          p_id?: string
+          p_name_ar?: string
+          p_name_en?: string
+          p_rank?: number
+          p_status?: string
+        }
+        Returns: string
+      }
+      config_upsert_job_position: {
+        Args: {
+          p_code?: string
+          p_id?: string
+          p_is_kuwaitization_targeted?: boolean
+          p_job_family_id?: string
+          p_job_grade_id?: string
+          p_name_ar?: string
+          p_name_en?: string
+          p_status?: string
+        }
+        Returns: string
+      }
+      config_upsert_lookup: {
+        Args: {
+          p_code?: string
+          p_id?: string
+          p_lookup_type?: string
+          p_name_ar?: string
+          p_name_en?: string
+          p_sort_order?: number
+          p_status?: string
+        }
+        Returns: string
+      }
+      config_upsert_pipeline_stage: {
+        Args: {
+          p_code?: string
+          p_id?: string
+          p_is_terminal?: boolean
+          p_name_ar?: string
+          p_name_en?: string
+          p_sort_order?: number
+          p_stage_type?: string
+          p_status?: string
+        }
+        Returns: string
+      }
+      config_upsert_scorecard: {
+        Args: {
+          p_code?: string
+          p_description_ar?: string
+          p_description_en?: string
+          p_id?: string
+          p_name_ar?: string
+          p_name_en?: string
+          p_status?: string
+        }
+        Returns: string
+      }
       create_application: {
         Args: {
           p_candidate_id: string
