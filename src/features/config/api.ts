@@ -1,14 +1,11 @@
 // Module M0.2 — Core Configuration: typed Supabase data-access layer.
 //
 // Reads use the strict typed `supabase` client (authenticated SELECT is live).
-// WRITES now flow through M3.1-step1 SECURITY DEFINER config_* RPCs that assert
-// the caller is SYSTEM_ADMIN (so the signed-in admin can edit config now).
-//
-// INTERIM: the config_* RPCs are NOT yet in the generated Database types. Route
-// them through a loosely typed client until Lovable applies the migration and
-// regenerates types.ts — then swap `db` back to the strict `supabase` client.
-import type { SupabaseClient } from "@supabase/supabase-js";
+// WRITES flow through M3.1-step1 SECURITY DEFINER config_* RPCs that assert the
+// caller is SYSTEM_ADMIN (so the signed-in admin can edit config). The RPCs are
+// in the generated Database types, so these calls are strictly typed.
 import { supabase } from "@/integrations/supabase/client";
+import type { Json } from "@/integrations/supabase/types";
 import type {
   Branch,
   Competency,
@@ -22,9 +19,6 @@ import type {
   JobPosition,
   Lookup,
 } from "./types";
-
-// INTERIM: swap to strict client after Lovable applies migration (regen types.ts).
-const db = supabase as unknown as SupabaseClient;
 
 // =========================================================================
 // Org master data
@@ -40,7 +34,7 @@ export async function listEntities(): Promise<Entity[]> {
 }
 
 export async function createEntity(input: Omit<Entity, "id">): Promise<Entity> {
-  const { data, error } = await db.rpc("config_upsert_entity", {
+  const { data, error } = await supabase.rpc("config_upsert_entity", {
     p_code: input.code,
     p_name_en: input.name_en,
     p_name_ar: input.name_ar,
@@ -53,7 +47,7 @@ export async function createEntity(input: Omit<Entity, "id">): Promise<Entity> {
 }
 
 export async function updateEntity(id: string, patch: Partial<Omit<Entity, "id">>): Promise<void> {
-  const { error } = await db.rpc("config_upsert_entity", {
+  const { error } = await supabase.rpc("config_upsert_entity", {
     p_id: id,
     p_code: patch.code ?? undefined,
     p_name_en: patch.name_en ?? undefined,
@@ -77,7 +71,7 @@ export async function listBranches(entityId?: string): Promise<Branch[]> {
 }
 
 export async function createBranch(input: Omit<Branch, "id">): Promise<Branch> {
-  const { data, error } = await db.rpc("config_upsert_branch", {
+  const { data, error } = await supabase.rpc("config_upsert_branch", {
     p_entity_id: input.entity_id,
     p_code: input.code,
     p_name_en: input.name_en,
@@ -92,7 +86,7 @@ export async function createBranch(input: Omit<Branch, "id">): Promise<Branch> {
 }
 
 export async function updateBranch(id: string, patch: Partial<Omit<Branch, "id">>): Promise<void> {
-  const { error } = await db.rpc("config_upsert_branch", {
+  const { error } = await supabase.rpc("config_upsert_branch", {
     p_id: id,
     p_entity_id: patch.entity_id ?? undefined,
     p_code: patch.code ?? undefined,
@@ -118,7 +112,7 @@ export async function listDepartments(branchId?: string): Promise<Department[]> 
 }
 
 export async function createDepartment(input: Omit<Department, "id">): Promise<Department> {
-  const { data, error } = await db.rpc("config_upsert_department", {
+  const { data, error } = await supabase.rpc("config_upsert_department", {
     p_branch_id: input.branch_id,
     p_code: input.code,
     p_name_en: input.name_en,
@@ -132,7 +126,7 @@ export async function createDepartment(input: Omit<Department, "id">): Promise<D
 }
 
 export async function updateDepartment(id: string, patch: Partial<Omit<Department, "id">>): Promise<void> {
-  const { error } = await db.rpc("config_upsert_department", {
+  const { error } = await supabase.rpc("config_upsert_department", {
     p_id: id,
     p_branch_id: patch.branch_id ?? undefined,
     p_code: patch.code ?? undefined,
@@ -159,7 +153,7 @@ export async function listJobFamilies(): Promise<JobFamily[]> {
 }
 
 export async function createJobFamily(input: Omit<JobFamily, "id">): Promise<JobFamily> {
-  const { data, error } = await db.rpc("config_upsert_job_family", {
+  const { data, error } = await supabase.rpc("config_upsert_job_family", {
     p_code: input.code, p_name_en: input.name_en, p_name_ar: input.name_ar, p_status: input.status ?? undefined,
   });
   if (error) throw error;
@@ -167,7 +161,7 @@ export async function createJobFamily(input: Omit<JobFamily, "id">): Promise<Job
 }
 
 export async function updateJobFamily(id: string, patch: Partial<Omit<JobFamily, "id">>): Promise<void> {
-  const { error } = await db.rpc("config_upsert_job_family", {
+  const { error } = await supabase.rpc("config_upsert_job_family", {
     p_id: id, p_code: patch.code ?? undefined, p_name_en: patch.name_en ?? undefined,
     p_name_ar: patch.name_ar ?? undefined, p_status: patch.status ?? undefined,
   });
@@ -184,7 +178,7 @@ export async function listJobGrades(): Promise<JobGrade[]> {
 }
 
 export async function createJobGrade(input: Omit<JobGrade, "id">): Promise<JobGrade> {
-  const { data, error } = await db.rpc("config_upsert_job_grade", {
+  const { data, error } = await supabase.rpc("config_upsert_job_grade", {
     p_code: input.code, p_name_en: input.name_en, p_name_ar: input.name_ar,
     p_rank: input.rank ?? undefined, p_status: input.status ?? undefined,
   });
@@ -193,7 +187,7 @@ export async function createJobGrade(input: Omit<JobGrade, "id">): Promise<JobGr
 }
 
 export async function updateJobGrade(id: string, patch: Partial<Omit<JobGrade, "id">>): Promise<void> {
-  const { error } = await db.rpc("config_upsert_job_grade", {
+  const { error } = await supabase.rpc("config_upsert_job_grade", {
     p_id: id, p_code: patch.code ?? undefined, p_name_en: patch.name_en ?? undefined,
     p_name_ar: patch.name_ar ?? undefined, p_rank: patch.rank ?? undefined, p_status: patch.status ?? undefined,
   });
@@ -210,7 +204,7 @@ export async function listJobPositions(): Promise<JobPosition[]> {
 }
 
 export async function createJobPosition(input: Omit<JobPosition, "id">): Promise<JobPosition> {
-  const { data, error } = await db.rpc("config_upsert_job_position", {
+  const { data, error } = await supabase.rpc("config_upsert_job_position", {
     p_code: input.code, p_name_en: input.name_en, p_name_ar: input.name_ar,
     p_job_family_id: input.job_family_id ?? undefined, p_job_grade_id: input.job_grade_id ?? undefined,
     p_is_kuwaitization_targeted: input.is_kuwaitization_targeted ?? undefined, p_status: input.status ?? undefined,
@@ -220,7 +214,7 @@ export async function createJobPosition(input: Omit<JobPosition, "id">): Promise
 }
 
 export async function updateJobPosition(id: string, patch: Partial<Omit<JobPosition, "id">>): Promise<void> {
-  const { error } = await db.rpc("config_upsert_job_position", {
+  const { error } = await supabase.rpc("config_upsert_job_position", {
     p_id: id, p_code: patch.code ?? undefined, p_name_en: patch.name_en ?? undefined,
     p_name_ar: patch.name_ar ?? undefined, p_job_family_id: patch.job_family_id ?? undefined,
     p_job_grade_id: patch.job_grade_id ?? undefined,
@@ -280,7 +274,7 @@ export async function getJdTemplate(id: string): Promise<JdTemplateDetail | null
 }
 
 export async function createJdTemplate(input: Omit<JdTemplate, "id">): Promise<JdTemplate> {
-  const { data, error } = await db.rpc("config_upsert_jd_template", {
+  const { data, error } = await supabase.rpc("config_upsert_jd_template", {
     p_code: input.code, p_job_position_id: input.job_position_id ?? undefined,
     p_title_en: input.title_en, p_title_ar: input.title_ar,
     p_summary_en: input.summary_en ?? undefined, p_summary_ar: input.summary_ar ?? undefined,
@@ -291,7 +285,7 @@ export async function createJdTemplate(input: Omit<JdTemplate, "id">): Promise<J
 }
 
 export async function updateJdTemplate(id: string, patch: Partial<Omit<JdTemplate, "id">>): Promise<void> {
-  const { error } = await db.rpc("config_upsert_jd_template", {
+  const { error } = await supabase.rpc("config_upsert_jd_template", {
     p_id: id, p_code: patch.code ?? undefined, p_job_position_id: patch.job_position_id ?? undefined,
     p_title_en: patch.title_en ?? undefined, p_title_ar: patch.title_ar ?? undefined,
     p_summary_en: patch.summary_en ?? undefined, p_summary_ar: patch.summary_ar ?? undefined,
@@ -305,9 +299,9 @@ export async function saveJdSections(
   jdTemplateId: string,
   sections: Omit<JdSection, "id" | "jd_template_id">[],
 ): Promise<void> {
-  const { error } = await db.rpc("config_save_jd_sections", {
+  const { error } = await supabase.rpc("config_save_jd_sections", {
     p_jd_template_id: jdTemplateId,
-    p_sections: sections as unknown as object,
+    p_sections: sections as unknown as Json,
   });
   if (error) throw error;
 }
@@ -326,7 +320,7 @@ export async function attachCompetency(
   competencyId: string,
   proficiencyLevel: number | null,
 ): Promise<void> {
-  const { error } = await db.rpc("config_attach_competency", {
+  const { error } = await supabase.rpc("config_attach_competency", {
     p_jd_template_id: jdTemplateId,
     p_competency_id: competencyId,
     p_proficiency_level: proficiencyLevel ?? undefined,
@@ -335,7 +329,7 @@ export async function attachCompetency(
 }
 
 export async function detachCompetency(jdTemplateId: string, competencyId: string): Promise<void> {
-  const { error } = await db.rpc("config_detach_competency", {
+  const { error } = await supabase.rpc("config_detach_competency", {
     p_jd_template_id: jdTemplateId,
     p_competency_id: competencyId,
   });
@@ -357,7 +351,7 @@ export async function listLookups(lookupType: string): Promise<Lookup[]> {
 }
 
 export async function createLookup(input: Omit<Lookup, "id">): Promise<Lookup> {
-  const { data, error } = await db.rpc("config_upsert_lookup", {
+  const { data, error } = await supabase.rpc("config_upsert_lookup", {
     p_lookup_type: input.lookup_type, p_code: input.code, p_name_en: input.name_en, p_name_ar: input.name_ar,
     p_sort_order: input.sort_order ?? undefined, p_status: input.status ?? undefined,
   });
@@ -366,7 +360,7 @@ export async function createLookup(input: Omit<Lookup, "id">): Promise<Lookup> {
 }
 
 export async function updateLookup(id: string, patch: Partial<Omit<Lookup, "id">>): Promise<void> {
-  const { error } = await db.rpc("config_upsert_lookup", {
+  const { error } = await supabase.rpc("config_upsert_lookup", {
     p_id: id, p_lookup_type: patch.lookup_type ?? undefined, p_code: patch.code ?? undefined,
     p_name_en: patch.name_en ?? undefined, p_name_ar: patch.name_ar ?? undefined,
     p_sort_order: patch.sort_order ?? undefined, p_status: patch.status ?? undefined,
@@ -375,7 +369,7 @@ export async function updateLookup(id: string, patch: Partial<Omit<Lookup, "id">
 }
 
 export async function deleteLookup(id: string): Promise<void> {
-  const { error } = await db.rpc("config_delete_lookup", { p_id: id });
+  const { error } = await supabase.rpc("config_delete_lookup", { p_id: id });
   if (error) throw error;
 }
 

@@ -2,7 +2,6 @@
 //
 // Uses the strict typed `supabase` client (Database types include the M1.6
 // tables + RPCs after Lovable applied the migration and regenerated types.ts).
-import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import type {
@@ -11,11 +10,6 @@ import type {
   ScreeningScoreInput,
   SubmitScreeningResult,
 } from "./types";
-
-// INTERIM: the M3.1-step1 config_upsert_scorecard/criterion RPCs are not yet in
-// the generated types — route the ScorecardConfig writes through a loose-typed
-// client until Lovable applies the migration + regenerates types.ts.
-const db = supabase as unknown as SupabaseClient;
 
 // --- Reads ------------------------------------------------------------------
 
@@ -85,7 +79,7 @@ export interface ScorecardInput {
 }
 
 export async function upsertScorecard(input: ScorecardInput): Promise<string> {
-  const { data, error } = await db.rpc("config_upsert_scorecard", {
+  const { data, error } = await supabase.rpc("config_upsert_scorecard", {
     p_id: input.id ?? undefined,
     p_code: input.code,
     p_name_en: input.name_en,
@@ -110,7 +104,7 @@ export interface CriterionInput {
 }
 
 export async function upsertCriterion(input: CriterionInput): Promise<string> {
-  const { data, error } = await db.rpc("config_upsert_criterion", {
+  const { data, error } = await supabase.rpc("config_upsert_criterion", {
     p_id: input.id ?? undefined,
     p_scorecard_id: input.scorecard_id,
     p_code: input.code,
