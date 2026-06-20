@@ -1,16 +1,11 @@
 // Module M3.1-step2a — Dynamic Permissions: data-access layer.
 //
-// INTERIM: the M3.1-step2a RPCs (my_capabilities, perm_list_catalog,
-// roleperm_list_matrix, role_upsert, role_delete, roleperm_grant, roleperm_revoke)
-// are NOT yet in the generated Database types. Route them through a loosely typed
-// client until Lovable applies the migration and regenerates types.ts — then swap
-// `db` back to the strict `supabase` client.
-import type { SupabaseClient } from "@supabase/supabase-js";
+// Uses the strict typed `supabase` client (Database types include the perm_*/
+// roleperm_* / my_capabilities RPCs after Lovable applied the migration and
+// regenerated types.ts). Management RPCs are SYSTEM_ADMIN-gated in-RPC;
+// my_capabilities resolves the caller's own keys (granted to authenticated).
 import { supabase } from "@/integrations/supabase/client";
 import type { CatalogPermission, MatrixData, RoleUpsertInput } from "./types";
-
-// INTERIM: swap to strict client after Lovable applies migration (regen types.ts).
-const db = supabase as unknown as SupabaseClient;
 
 // Map a raised RPC token (error.message) to a known permissions error code.
 const KNOWN_ERRORS = [
@@ -31,21 +26,21 @@ export function permissionErrorCode(err: unknown): PermissionErrorCode | null {
 // --- Caller capabilities (granted to authenticated; every user resolves own) ---
 
 export async function myCapabilities(): Promise<string[]> {
-  const { data, error } = await db.rpc("my_capabilities");
+  const { data, error } = await supabase.rpc("my_capabilities");
   if (error) throw error;
-  return (data ?? []) as unknown as string[];
+  return data ?? [];
 }
 
 // --- Reads (admin-gated) ----------------------------------------------------
 
 export async function permListCatalog(): Promise<CatalogPermission[]> {
-  const { data, error } = await db.rpc("perm_list_catalog");
+  const { data, error } = await supabase.rpc("perm_list_catalog");
   if (error) throw error;
   return (data ?? []) as unknown as CatalogPermission[];
 }
 
 export async function rolepermListMatrix(): Promise<MatrixData> {
-  const { data, error } = await db.rpc("roleperm_list_matrix");
+  const { data, error } = await supabase.rpc("roleperm_list_matrix");
   if (error) throw error;
   return (data ?? { roles: [], permissions: [], grants: [] }) as unknown as MatrixData;
 }
@@ -53,7 +48,7 @@ export async function rolepermListMatrix(): Promise<MatrixData> {
 // --- Writes (admin-gated) ---------------------------------------------------
 
 export async function roleUpsert(input: RoleUpsertInput): Promise<string> {
-  const { data, error } = await db.rpc("role_upsert", {
+  const { data, error } = await supabase.rpc("role_upsert", {
     p_id: input.id ?? undefined,
     p_code: input.code ?? undefined,
     p_name_en: input.name_en ?? undefined,
@@ -62,21 +57,21 @@ export async function roleUpsert(input: RoleUpsertInput): Promise<string> {
     p_description_ar: input.description_ar ?? undefined,
   });
   if (error) throw error;
-  return data as unknown as string;
+  return data as string;
 }
 
 export async function roleDelete(roleId: string): Promise<void> {
-  const { error } = await db.rpc("role_delete", { p_role_id: roleId });
+  const { error } = await supabase.rpc("role_delete", { p_role_id: roleId });
   if (error) throw error;
 }
 
 export async function rolepermGrant(roleId: string, permissionId: string): Promise<void> {
-  const { error } = await db.rpc("roleperm_grant", { p_role_id: roleId, p_permission_id: permissionId });
+  const { error } = await supabase.rpc("roleperm_grant", { p_role_id: roleId, p_permission_id: permissionId });
   if (error) throw error;
 }
 
 export async function rolepermRevoke(roleId: string, permissionId: string): Promise<void> {
-  const { error } = await db.rpc("roleperm_revoke", { p_role_id: roleId, p_permission_id: permissionId });
+  const { error } = await supabase.rpc("roleperm_revoke", { p_role_id: roleId, p_permission_id: permissionId });
   if (error) throw error;
 }
 
