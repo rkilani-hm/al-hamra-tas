@@ -18,12 +18,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
+import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import { listAllStages, safe, updateStage } from "../api";
 import type { PipelineStage } from "../types";
 
 export function StageConfig() {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { roles } = useAuth();
+  const canWrite = isSystemAdmin(roles);
   const qc = useQueryClient();
 
   const q = useQuery({ queryKey: ["applications", "allStages"], queryFn: safe(listAllStages) });
@@ -87,14 +91,14 @@ export function StageConfig() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Switch checked={s.status === "active"} onCheckedChange={(v) => toggle(s, v)} aria-label={s.code} />
+                    <Switch checked={s.status === "active"} onCheckedChange={(v) => toggle(s, v)} aria-label={s.code} disabled={!canWrite} />
                   </TableCell>
                   <TableCell className="text-end">
                     <div className="flex justify-end gap-1">
-                      <Button variant="ghost" size="icon" className="h-7 w-7" aria-label={t("applications.stages.up")} onClick={() => move(i, -1)} disabled={i === 0}>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" aria-label={t("applications.stages.up")} onClick={() => move(i, -1)} disabled={i === 0 || !canWrite}>
                         <ArrowUp className="h-3.5 w-3.5" />
                       </Button>
-                      <Button variant="ghost" size="icon" className="h-7 w-7" aria-label={t("applications.stages.down")} onClick={() => move(i, 1)} disabled={i === stages.length - 1}>
+                      <Button variant="ghost" size="icon" className="h-7 w-7" aria-label={t("applications.stages.down")} onClick={() => move(i, 1)} disabled={i === stages.length - 1 || !canWrite}>
                         <ArrowDown className="h-3.5 w-3.5" />
                       </Button>
                     </div>

@@ -27,6 +27,8 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
+import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import {
   attachCompetency,
   createJdTemplate,
@@ -75,6 +77,8 @@ export function JdTemplateEditor({
 }: JdTemplateEditorProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { roles } = useAuth();
+  const canWrite = isSystemAdmin(roles);
 
   const competenciesQ = useQuery({
     queryKey: ["config", "competencies"],
@@ -407,7 +411,7 @@ export function JdTemplateEditor({
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>
             {t("config.buttons.cancel")}
           </Button>
-          <Button onClick={submit} disabled={!canSave}>
+          <Button onClick={submit} disabled={!canSave || !canWrite}>
             {t("config.buttons.save")}
           </Button>
         </DialogFooter>

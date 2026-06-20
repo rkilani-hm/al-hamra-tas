@@ -10,6 +10,8 @@ import { Building2, GitBranch, Plus, Pencil, Network } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
+import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import {
   createBranch,
   createDepartment,
@@ -30,6 +32,8 @@ import { DepartmentForm, type DepartmentFormValues } from "./DepartmentForm";
 export function OrgTree() {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { roles } = useAuth();
+  const canWrite = isSystemAdmin(roles);
   const qc = useQueryClient();
 
   const entitiesQ = useQuery({ queryKey: ["config", "entities"], queryFn: safe(listEntities) });
@@ -149,15 +153,17 @@ export function OrgTree() {
             {name(d)}
             <span className="text-xs text-muted-foreground">({d.code})</span>
           </span>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="h-7 w-7"
-            aria-label={t("config.buttons.edit")}
-            onClick={() => setDeptForm({ open: true, branchId, initial: d })}
-          >
-            <Pencil className="h-3.5 w-3.5" />
-          </Button>
+          {canWrite && (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-7 w-7"
+              aria-label={t("config.buttons.edit")}
+              onClick={() => setDeptForm({ open: true, branchId, initial: d })}
+            >
+              <Pencil className="h-3.5 w-3.5" />
+            </Button>
+          )}
         </div>
         {childrenOf(d.id).map((c) => row(c, depth + 1))}
       </div>
@@ -172,15 +178,17 @@ export function OrgTree() {
         ) : (
           roots.map((d) => row(d, 0))
         )}
-        <Button
-          variant="ghost"
-          size="sm"
-          className="gap-1 text-xs"
-          onClick={() => setDeptForm({ open: true, branchId, initial: null })}
-        >
-          <Plus className="h-3.5 w-3.5" />
-          {t("config.org.addDepartment")}
-        </Button>
+        {canWrite && (
+          <Button
+            variant="ghost"
+            size="sm"
+            className="gap-1 text-xs"
+            onClick={() => setDeptForm({ open: true, branchId, initial: null })}
+          >
+            <Plus className="h-3.5 w-3.5" />
+            {t("config.org.addDepartment")}
+          </Button>
+        )}
       </div>
     );
   };
@@ -189,10 +197,12 @@ export function OrgTree() {
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-foreground">{t("config.org.title")}</h2>
-        <Button onClick={() => setEntityForm({ open: true, initial: null })} className="gap-1">
-          <Plus className="h-4 w-4" />
-          {t("config.org.addEntity")}
-        </Button>
+        {canWrite && (
+          <Button onClick={() => setEntityForm({ open: true, initial: null })} className="gap-1">
+            <Plus className="h-4 w-4" />
+            {t("config.org.addEntity")}
+          </Button>
+        )}
       </div>
 
       {entitiesQ.isLoading ? (
@@ -216,26 +226,28 @@ export function OrgTree() {
                     </Badge>
                   )}
                 </span>
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-7 w-7"
-                    aria-label={t("config.buttons.edit")}
-                    onClick={() => setEntityForm({ open: true, initial: ent })}
-                  >
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    className="gap-1 text-xs"
-                    onClick={() => setBranchForm({ open: true, entityId: ent.id, initial: null })}
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                    {t("config.org.addBranch")}
-                  </Button>
-                </div>
+                {canWrite && (
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-7 w-7"
+                      aria-label={t("config.buttons.edit")}
+                      onClick={() => setEntityForm({ open: true, initial: ent })}
+                    >
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-1 text-xs"
+                      onClick={() => setBranchForm({ open: true, entityId: ent.id, initial: null })}
+                    >
+                      <Plus className="h-3.5 w-3.5" />
+                      {t("config.org.addBranch")}
+                    </Button>
+                  </div>
+                )}
               </div>
 
               <div className="space-y-3 p-3">
@@ -250,15 +262,17 @@ export function OrgTree() {
                           {name(br)}
                           <span className="text-xs text-muted-foreground">({br.code})</span>
                         </span>
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-7 w-7"
-                          aria-label={t("config.buttons.edit")}
-                          onClick={() => setBranchForm({ open: true, entityId: ent.id, initial: br })}
-                        >
-                          <Pencil className="h-3.5 w-3.5" />
-                        </Button>
+                        {canWrite && (
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            aria-label={t("config.buttons.edit")}
+                            onClick={() => setBranchForm({ open: true, entityId: ent.id, initial: br })}
+                          >
+                            <Pencil className="h-3.5 w-3.5" />
+                          </Button>
+                        )}
                       </div>
                       <div className="p-2">{renderDepartments(br.id)}</div>
                     </div>

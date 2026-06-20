@@ -14,6 +14,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
+import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import { listJdTemplates, safe } from "../api";
 import type { JdStatus, JdTemplate } from "../types";
 
@@ -31,6 +33,8 @@ interface JdTemplateListProps {
 export function JdTemplateList({ onOpen, onCreate }: JdTemplateListProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { roles } = useAuth();
+  const canWrite = isSystemAdmin(roles);
   const q = useQuery({ queryKey: ["config", "jdTemplates"], queryFn: safe(listJdTemplates) });
   const templates = q.data ?? [];
   const title = (tpl: JdTemplate) => (language === "ar" ? tpl.title_ar : tpl.title_en);
@@ -42,9 +46,11 @@ export function JdTemplateList({ onOpen, onCreate }: JdTemplateListProps) {
           <FileText className="h-5 w-5 text-primary" />
           {t("config.jd.title")}
         </h2>
-        <Button size="sm" className="gap-1" onClick={onCreate}>
-          <Plus className="h-4 w-4" /> {t("config.jd.add")}
-        </Button>
+        {canWrite && (
+          <Button size="sm" className="gap-1" onClick={onCreate}>
+            <Plus className="h-4 w-4" /> {t("config.jd.add")}
+          </Button>
+        )}
       </div>
 
       <div className="rounded-md border">

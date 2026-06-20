@@ -34,6 +34,8 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
+import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import {
   createLookup,
   deleteLookup,
@@ -46,6 +48,8 @@ import { LOOKUP_TYPES, type Lookup } from "../types";
 export function LookupManager() {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { roles } = useAuth();
+  const canWrite = isSystemAdmin(roles);
   const qc = useQueryClient();
 
   const [lookupType, setLookupType] = useState<string>(LOOKUP_TYPES[0]);
@@ -128,15 +132,17 @@ export function LookupManager() {
             </SelectContent>
           </Select>
         </div>
-        <Button
-          className="gap-1"
-          onClick={() => {
-            setEditing(null);
-            setOpen(true);
-          }}
-        >
-          <Plus className="h-4 w-4" /> {t("config.lookups.add")}
-        </Button>
+        {canWrite && (
+          <Button
+            className="gap-1"
+            onClick={() => {
+              setEditing(null);
+              setOpen(true);
+            }}
+          >
+            <Plus className="h-4 w-4" /> {t("config.lookups.add")}
+          </Button>
+        )}
       </div>
 
       <div className="rounded-md border">
@@ -169,29 +175,33 @@ export function LookupManager() {
                   <TableCell dir="rtl">{l.name_ar}</TableCell>
                   <TableCell className="text-muted-foreground">{l.sort_order}</TableCell>
                   <TableCell className="text-end">
-                    <div className="flex justify-end gap-1">
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7"
-                        aria-label={t("config.buttons.edit")}
-                        onClick={() => {
-                          setEditing(l);
-                          setOpen(true);
-                        }}
-                      >
-                        <Pencil className="h-3.5 w-3.5" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-7 w-7 text-destructive"
-                        aria-label={t("config.buttons.delete")}
-                        onClick={() => remove(l)}
-                      >
-                        <Trash2 className="h-3.5 w-3.5" />
-                      </Button>
-                    </div>
+                    {canWrite ? (
+                      <div className="flex justify-end gap-1">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7"
+                          aria-label={t("config.buttons.edit")}
+                          onClick={() => {
+                            setEditing(l);
+                            setOpen(true);
+                          }}
+                        >
+                          <Pencil className="h-3.5 w-3.5" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-7 w-7 text-destructive"
+                          aria-label={t("config.buttons.delete")}
+                          onClick={() => remove(l)}
+                        >
+                          <Trash2 className="h-3.5 w-3.5" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <span className="text-muted-foreground">—</span>
+                    )}
                   </TableCell>
                 </TableRow>
               ))

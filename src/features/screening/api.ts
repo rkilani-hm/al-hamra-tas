@@ -2,6 +2,7 @@
 //
 // Uses the strict typed `supabase` client (Database types include the M1.6
 // tables + RPCs after Lovable applied the migration and regenerated types.ts).
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
 import type {
@@ -10,6 +11,11 @@ import type {
   ScreeningScoreInput,
   SubmitScreeningResult,
 } from "./types";
+
+// INTERIM: the M3.1-step1 config_upsert_scorecard/criterion RPCs are not yet in
+// the generated types — route the ScorecardConfig writes through a loose-typed
+// client until Lovable applies the migration + regenerates types.ts.
+const db = supabase as unknown as SupabaseClient;
 
 // --- Reads ------------------------------------------------------------------
 
@@ -64,6 +70,58 @@ export async function submitScreening(
   });
   if (error) throw error;
   return data as unknown as SubmitScreeningResult;
+}
+
+// --- Config writes (M3.1-step1, SYSTEM_ADMIN-gated RPCs) ---------------------
+
+export interface ScorecardInput {
+  id?: string | null;
+  code: string;
+  name_en: string;
+  name_ar: string;
+  description_en?: string | null;
+  description_ar?: string | null;
+  status?: string | null;
+}
+
+export async function upsertScorecard(input: ScorecardInput): Promise<string> {
+  const { data, error } = await db.rpc("config_upsert_scorecard", {
+    p_id: input.id ?? undefined,
+    p_code: input.code,
+    p_name_en: input.name_en,
+    p_name_ar: input.name_ar,
+    p_description_en: input.description_en ?? undefined,
+    p_description_ar: input.description_ar ?? undefined,
+    p_status: input.status ?? undefined,
+  });
+  if (error) throw error;
+  return data as unknown as string;
+}
+
+export interface CriterionInput {
+  id?: string | null;
+  scorecard_id: string;
+  code: string;
+  name_en: string;
+  name_ar: string;
+  weight?: number | null;
+  max_score?: number | null;
+  sort_order?: number | null;
+}
+
+export async function upsertCriterion(input: CriterionInput): Promise<string> {
+  const { data, error } = await db.rpc("config_upsert_criterion", {
+    p_id: input.id ?? undefined,
+    p_scorecard_id: input.scorecard_id,
+    p_code: input.code,
+    p_name_en: input.name_en,
+    p_name_ar: input.name_ar,
+    p_weight: input.weight ?? undefined,
+    p_max_score: input.max_score ?? undefined,
+    p_sort_order: input.sort_order ?? undefined,
+  });
+  if (error) throw error;
+  return data as unknown as string;
 }
 
 // --- Shared helper: degrade a read to empty on error ------------------------

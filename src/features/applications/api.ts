@@ -4,6 +4,7 @@
 // tables + RPCs after the migration + corrective realign were applied). Existing
 // tables are also read via the config/requisition feature APIs.
 
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import type {
   ApplicationDetailData,
@@ -13,6 +14,11 @@ import type {
   CandidateInput,
   PipelineStage,
 } from "./types";
+
+// INTERIM: the M3.1-step1 config_upsert_pipeline_stage RPC is not yet in the
+// generated types — route the StageConfig write through a loose-typed client
+// until Lovable applies the migration + regenerates types.ts.
+const db = supabase as unknown as SupabaseClient;
 
 // --- Pipeline stages --------------------------------------------------------
 
@@ -33,12 +39,19 @@ export async function listAllStages(): Promise<PipelineStage[]> {
   return (data ?? []) as PipelineStage[];
 }
 
-// Stage config write (service-role until M3.1 — fails-soft for authenticated).
+// Stage config write — M3.1-step1 SYSTEM_ADMIN-gated RPC (coalesce-on-update, so
+// partial patches keep existing fields).
 export async function updateStage(
   id: string,
   patch: Partial<Pick<PipelineStage, "sort_order" | "status" | "name_en" | "name_ar">>,
 ): Promise<void> {
-  const { error } = await supabase.from("tas_pipeline_stage").update(patch).eq("id", id);
+  const { error } = await db.rpc("config_upsert_pipeline_stage", {
+    p_id: id,
+    p_sort_order: patch.sort_order ?? undefined,
+    p_status: patch.status ?? undefined,
+    p_name_en: patch.name_en ?? undefined,
+    p_name_ar: patch.name_ar ?? undefined,
+  });
   if (error) throw error;
 }
 

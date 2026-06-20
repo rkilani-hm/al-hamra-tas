@@ -918,6 +918,8 @@
       "subtitle": "Manage screening scorecards and their criteria.",
       "criteria": "Criteria",
       "addCriterion": "Add criterion",
+      "addScorecard": "Add scorecard",
+      "cancel": "Cancel",
       "code": "Code",
       "nameEn": "Name (EN)",
       "nameAr": "Name (AR)",

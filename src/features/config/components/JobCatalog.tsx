@@ -36,6 +36,8 @@ import {
 } from "@/components/ui/table";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
+import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import {
   createJobFamily,
   createJobGrade,
@@ -55,6 +57,8 @@ type Kind = "family" | "grade" | "position";
 export function JobCatalog() {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { roles } = useAuth();
+  const canWrite = isSystemAdmin(roles);
   const qc = useQueryClient();
 
   const familiesQ = useQuery({ queryKey: ["config", "jobFamilies"], queryFn: safe(listJobFamilies) });
@@ -175,11 +179,13 @@ export function JobCatalog() {
 
         {/* Families */}
         <TabsContent value="families" className="space-y-3">
-          <div className="flex justify-end">
-            <Button size="sm" className="gap-1" onClick={() => openForm("family", null)}>
-              <Plus className="h-4 w-4" /> {addLabel.family}
-            </Button>
-          </div>
+          {canWrite && (
+            <div className="flex justify-end">
+              <Button size="sm" className="gap-1" onClick={() => openForm("family", null)}>
+                <Plus className="h-4 w-4" /> {addLabel.family}
+              </Button>
+            </div>
+          )}
           <SimpleTable
             cols={[t("config.fields.code"), t("config.fields.name"), ""]}
             empty={t("config.jobs.emptyFamilies")}
@@ -190,16 +196,19 @@ export function JobCatalog() {
               onEdit: () => openForm("family", f),
             }))}
             editLabel={t("config.buttons.edit")}
+            canEdit={canWrite}
           />
         </TabsContent>
 
         {/* Grades */}
         <TabsContent value="grades" className="space-y-3">
-          <div className="flex justify-end">
-            <Button size="sm" className="gap-1" onClick={() => openForm("grade", null)}>
-              <Plus className="h-4 w-4" /> {addLabel.grade}
-            </Button>
-          </div>
+          {canWrite && (
+            <div className="flex justify-end">
+              <Button size="sm" className="gap-1" onClick={() => openForm("grade", null)}>
+                <Plus className="h-4 w-4" /> {addLabel.grade}
+              </Button>
+            </div>
+          )}
           <SimpleTable
             cols={[t("config.fields.code"), t("config.fields.name"), t("config.fields.rank"), ""]}
             empty={t("config.jobs.emptyGrades")}
@@ -210,16 +219,19 @@ export function JobCatalog() {
               onEdit: () => openForm("grade", g),
             }))}
             editLabel={t("config.buttons.edit")}
+            canEdit={canWrite}
           />
         </TabsContent>
 
         {/* Positions */}
         <TabsContent value="positions" className="space-y-3">
-          <div className="flex justify-end">
-            <Button size="sm" className="gap-1" onClick={() => openForm("position", null)}>
-              <Plus className="h-4 w-4" /> {addLabel.position}
-            </Button>
-          </div>
+          {canWrite && (
+            <div className="flex justify-end">
+              <Button size="sm" className="gap-1" onClick={() => openForm("position", null)}>
+                <Plus className="h-4 w-4" /> {addLabel.position}
+              </Button>
+            </div>
+          )}
           <SimpleTable
             cols={[
               t("config.fields.code"),
@@ -243,6 +255,7 @@ export function JobCatalog() {
               onEdit: () => openForm("position", p),
             }))}
             editLabel={t("config.buttons.edit")}
+            canEdit={canWrite}
           />
         </TabsContent>
       </Tabs>
@@ -321,7 +334,7 @@ export function JobCatalog() {
             <Button variant="outline" onClick={() => setOpen(false)} disabled={saving}>
               {t("config.buttons.cancel")}
             </Button>
-            <Button onClick={submit} disabled={!canSave}>
+            <Button onClick={submit} disabled={!canSave || !canWrite}>
               {t("config.buttons.save")}
             </Button>
           </DialogFooter>
@@ -343,12 +356,14 @@ function SimpleTable({
   empty,
   loading,
   editLabel,
+  canEdit,
 }: {
   cols: string[];
   rows: SimpleRow[];
   empty: string;
   loading?: boolean;
   editLabel: string;
+  canEdit: boolean;
 }) {
   return (
     <div className="rounded-md border">
@@ -384,9 +399,13 @@ function SimpleTable({
                   </TableCell>
                 ))}
                 <TableCell className="text-end">
-                  <Button variant="ghost" size="icon" className="h-7 w-7" aria-label={editLabel} onClick={r.onEdit}>
-                    <Pencil className="h-3.5 w-3.5" />
-                  </Button>
+                  {canEdit ? (
+                    <Button variant="ghost" size="icon" className="h-7 w-7" aria-label={editLabel} onClick={r.onEdit}>
+                      <Pencil className="h-3.5 w-3.5" />
+                    </Button>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
                 </TableCell>
               </TableRow>
             ))
