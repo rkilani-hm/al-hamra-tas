@@ -1699,23 +1699,38 @@ export type Database = {
       }
       tas_permission: {
         Row: {
-          action: string
+          action: string | null
+          area: string | null
+          description_ar: string | null
+          description_en: string | null
           id: string
-          module_code: string
+          is_system: boolean
+          key: string | null
+          module_code: string | null
           name_ar: string | null
           name_en: string | null
         }
         Insert: {
-          action: string
+          action?: string | null
+          area?: string | null
+          description_ar?: string | null
+          description_en?: string | null
           id?: string
-          module_code: string
+          is_system?: boolean
+          key?: string | null
+          module_code?: string | null
           name_ar?: string | null
           name_en?: string | null
         }
         Update: {
-          action?: string
+          action?: string | null
+          area?: string | null
+          description_ar?: string | null
+          description_en?: string | null
           id?: string
-          module_code?: string
+          is_system?: boolean
+          key?: string | null
+          module_code?: string | null
           name_ar?: string | null
           name_en?: string | null
         }
@@ -1975,6 +1990,8 @@ export type Database = {
           code: string
           created_at: string
           created_by: string | null
+          description_ar: string | null
+          description_en: string | null
           id: string
           is_system: boolean
           name_ar: string
@@ -1987,6 +2004,8 @@ export type Database = {
           code: string
           created_at?: string
           created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
           id?: string
           is_system?: boolean
           name_ar: string
@@ -1999,6 +2018,8 @@ export type Database = {
           code?: string
           created_at?: string
           created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
           id?: string
           is_system?: boolean
           name_ar?: string
@@ -2836,6 +2857,8 @@ export type Database = {
     Functions: {
       _active_admin_count: { Args: never; Returns: number }
       _admin_caller_id: { Args: never; Returns: string }
+      _caller_permissions: { Args: never; Returns: string[] }
+      _has_permission: { Args: { p_key: string }; Returns: boolean }
       _is_system_admin: { Args: never; Returns: boolean }
       _wf_advance: {
         Args: { p_actor: string; p_from_step: number; p_instance: string }
@@ -3307,6 +3330,7 @@ export type Database = {
         }
         Returns: undefined
       }
+      my_capabilities: { Args: never; Returns: string[] }
       my_notifications: {
         Args: { p_unread_only?: boolean; p_user_id: string }
         Returns: {
@@ -3344,6 +3368,7 @@ export type Database = {
         Returns: number
       }
       offer_detail: { Args: { p_id: string }; Returns: Json }
+      perm_list_catalog: { Args: never; Returns: Json }
       preview_template: {
         Args: { p_sample_context: Json; p_template_id: string }
         Returns: {
@@ -3400,6 +3425,27 @@ export type Database = {
         Returns: Json
       }
       retry_notification: { Args: { p_id: string }; Returns: undefined }
+      role_delete: { Args: { p_role_id: string }; Returns: undefined }
+      role_upsert: {
+        Args: {
+          p_code?: string
+          p_description_ar?: string
+          p_description_en?: string
+          p_id?: string
+          p_name_ar?: string
+          p_name_en?: string
+        }
+        Returns: string
+      }
+      roleperm_grant: {
+        Args: { p_permission_id: string; p_role_id: string }
+        Returns: undefined
+      }
+      roleperm_list_matrix: { Args: never; Returns: Json }
+      roleperm_revoke: {
+        Args: { p_permission_id: string; p_role_id: string }
+        Returns: undefined
+      }
       save_screening_scores: {
         Args: { p_scores: Json; p_screening_id: string }
         Returns: number
