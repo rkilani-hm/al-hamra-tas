@@ -18,6 +18,7 @@
     "documents": "Documents",
     "audit": "Audit Log",
     "admin": "User Administration",
+    "roles": "Roles & Permissions",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -1226,6 +1227,72 @@
       "email_exists": "A user with this email already exists.",
       "email_required": "Email is required to create a user.",
       "entity_required": "An entity is required for a scope.",
+      "generic": "Action failed. Please try again."
+    }
+  },
+  "permissions": {
+    "common": { "loading": "Loading…" },
+    "backToRoles": "Back to Roles",
+    "page": {
+      "rolesTitle": "Roles & Permissions",
+      "rolesSubtitle": "Manage roles and what each can do.",
+      "matrixTitle": "Permission Matrix",
+      "matrixSubtitle": "Grant or revoke each role's permissions.",
+      "catalogTitle": "Permission Catalog",
+      "catalogSubtitle": "The capabilities roles can be granted."
+    },
+    "nav": {
+      "matrix": "Permission matrix",
+      "catalog": "Catalog"
+    },
+    "area": {
+      "config": "Configuration",
+      "identity": "Identity & Access",
+      "requisition": "Requisitions",
+      "application": "Applications",
+      "screening": "Screening",
+      "interview": "Interviews",
+      "offer": "Offers",
+      "approval": "Approvals",
+      "reporting": "Reporting"
+    },
+    "catalog": {
+      "empty": "No permissions in the catalog.",
+      "system": "System"
+    },
+    "role": {
+      "code": "Code",
+      "codeImmutable": "Code cannot be changed after creation.",
+      "nameEn": "Name (EN)",
+      "nameAr": "Name (AR)",
+      "descEn": "Description (EN)",
+      "descAr": "Description (AR)",
+      "system": "System",
+      "userCount": "{{count}} users"
+    },
+    "matrix": {
+      "permission": "Permission",
+      "locked": "This permission is locked on for the system administrator."
+    },
+    "actions": {
+      "newRole": "New role",
+      "save": "Save",
+      "saving": "Saving…",
+      "cancel": "Cancel",
+      "edit": "Edit",
+      "delete": "Delete"
+    },
+    "toasts": {
+      "roleSaved": "Role saved.",
+      "roleDeleted": "Role deleted."
+    },
+    "errors": {
+      "not_authorized": "You are not authorized to perform this action.",
+      "role_in_use": "This role is assigned to users — reassign them first.",
+      "cannot_delete_system_role": "System roles cannot be deleted.",
+      "cannot_revoke_core_admin": "The system administrator's core permissions cannot be revoked.",
+      "role_code_exists": "A role with this code already exists.",
+      "role_code_required": "A role code is required.",
       "generic": "Action failed. Please try again."
     }
   }

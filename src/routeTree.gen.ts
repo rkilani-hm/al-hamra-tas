@@ -47,9 +47,12 @@ import { Route as AppCandidatesIdRouteImport } from './routes/app.candidates.$id
 import { Route as AppApplicationsStagesRouteImport } from './routes/app.applications.stages'
 import { Route as AppApplicationsBoardRouteImport } from './routes/app.applications.board'
 import { Route as AppApplicationsIdRouteImport } from './routes/app.applications.$id'
+import { Route as AppAdminPermissionsRouteImport } from './routes/app.admin.permissions'
 import { Route as AppAdminUsersIndexRouteImport } from './routes/app.admin.users.index'
+import { Route as AppAdminRolesIndexRouteImport } from './routes/app.admin.roles.index'
 import { Route as AppAdminUsersNewRouteImport } from './routes/app.admin.users.new'
 import { Route as AppAdminUsersIdRouteImport } from './routes/app.admin.users.$id'
+import { Route as AppAdminRolesMatrixRouteImport } from './routes/app.admin.roles.matrix'
 
 const SigninRoute = SigninRouteImport.update({
   id: '/signin',
@@ -243,9 +246,19 @@ const AppApplicationsIdRoute = AppApplicationsIdRouteImport.update({
   path: '/applications/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminPermissionsRoute = AppAdminPermissionsRouteImport.update({
+  id: '/admin/permissions',
+  path: '/admin/permissions',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAdminUsersIndexRoute = AppAdminUsersIndexRouteImport.update({
   id: '/admin/users/',
   path: '/admin/users/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAdminRolesIndexRoute = AppAdminRolesIndexRouteImport.update({
+  id: '/admin/roles/',
+  path: '/admin/roles/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppAdminUsersNewRoute = AppAdminUsersNewRouteImport.update({
@@ -258,6 +271,11 @@ const AppAdminUsersIdRoute = AppAdminUsersIdRouteImport.update({
   path: '/admin/users/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminRolesMatrixRoute = AppAdminRolesMatrixRouteImport.update({
+  id: '/admin/roles/matrix',
+  path: '/admin/roles/matrix',
+  getParentRoute: () => AppRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -267,6 +285,7 @@ export interface FileRoutesByFullPath {
   '/signin': typeof SigninRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
+  '/app/admin/permissions': typeof AppAdminPermissionsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
   '/app/applications/stages': typeof AppApplicationsStagesRoute
@@ -298,8 +317,10 @@ export interface FileRoutesByFullPath {
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
+  '/app/admin/roles/matrix': typeof AppAdminRolesMatrixRoute
   '/app/admin/users/$id': typeof AppAdminUsersIdRoute
   '/app/admin/users/new': typeof AppAdminUsersNewRoute
+  '/app/admin/roles/': typeof AppAdminRolesIndexRoute
   '/app/admin/users/': typeof AppAdminUsersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -309,6 +330,7 @@ export interface FileRoutesByTo {
   '/signin': typeof SigninRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app': typeof AppIndexRoute
+  '/app/admin/permissions': typeof AppAdminPermissionsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
   '/app/applications/stages': typeof AppApplicationsStagesRoute
@@ -340,8 +362,10 @@ export interface FileRoutesByTo {
   '/app/requisitions': typeof AppRequisitionsIndexRoute
   '/app/screening': typeof AppScreeningIndexRoute
   '/app/workflow': typeof AppWorkflowIndexRoute
+  '/app/admin/roles/matrix': typeof AppAdminRolesMatrixRoute
   '/app/admin/users/$id': typeof AppAdminUsersIdRoute
   '/app/admin/users/new': typeof AppAdminUsersNewRoute
+  '/app/admin/roles': typeof AppAdminRolesIndexRoute
   '/app/admin/users': typeof AppAdminUsersIndexRoute
 }
 export interface FileRoutesById {
@@ -353,6 +377,7 @@ export interface FileRoutesById {
   '/signin': typeof SigninRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/app/': typeof AppIndexRoute
+  '/app/admin/permissions': typeof AppAdminPermissionsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
   '/app/applications/stages': typeof AppApplicationsStagesRoute
@@ -384,8 +409,10 @@ export interface FileRoutesById {
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
+  '/app/admin/roles/matrix': typeof AppAdminRolesMatrixRoute
   '/app/admin/users/$id': typeof AppAdminUsersIdRoute
   '/app/admin/users/new': typeof AppAdminUsersNewRoute
+  '/app/admin/roles/': typeof AppAdminRolesIndexRoute
   '/app/admin/users/': typeof AppAdminUsersIndexRoute
 }
 export interface FileRouteTypes {
@@ -398,6 +425,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/auth/callback'
     | '/app/'
+    | '/app/admin/permissions'
     | '/app/applications/$id'
     | '/app/applications/board'
     | '/app/applications/stages'
@@ -429,8 +457,10 @@ export interface FileRouteTypes {
     | '/app/requisitions/'
     | '/app/screening/'
     | '/app/workflow/'
+    | '/app/admin/roles/matrix'
     | '/app/admin/users/$id'
     | '/app/admin/users/new'
+    | '/app/admin/roles/'
     | '/app/admin/users/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -440,6 +470,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/auth/callback'
     | '/app'
+    | '/app/admin/permissions'
     | '/app/applications/$id'
     | '/app/applications/board'
     | '/app/applications/stages'
@@ -471,8 +502,10 @@ export interface FileRouteTypes {
     | '/app/requisitions'
     | '/app/screening'
     | '/app/workflow'
+    | '/app/admin/roles/matrix'
     | '/app/admin/users/$id'
     | '/app/admin/users/new'
+    | '/app/admin/roles'
     | '/app/admin/users'
   id:
     | '__root__'
@@ -483,6 +516,7 @@ export interface FileRouteTypes {
     | '/signin'
     | '/auth/callback'
     | '/app/'
+    | '/app/admin/permissions'
     | '/app/applications/$id'
     | '/app/applications/board'
     | '/app/applications/stages'
@@ -514,8 +548,10 @@ export interface FileRouteTypes {
     | '/app/requisitions/'
     | '/app/screening/'
     | '/app/workflow/'
+    | '/app/admin/roles/matrix'
     | '/app/admin/users/$id'
     | '/app/admin/users/new'
+    | '/app/admin/roles/'
     | '/app/admin/users/'
   fileRoutesById: FileRoutesById
 }
@@ -796,11 +832,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppApplicationsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/admin/permissions': {
+      id: '/app/admin/permissions'
+      path: '/admin/permissions'
+      fullPath: '/app/admin/permissions'
+      preLoaderRoute: typeof AppAdminPermissionsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/admin/users/': {
       id: '/app/admin/users/'
       path: '/admin/users'
       fullPath: '/app/admin/users/'
       preLoaderRoute: typeof AppAdminUsersIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/admin/roles/': {
+      id: '/app/admin/roles/'
+      path: '/admin/roles'
+      fullPath: '/app/admin/roles/'
+      preLoaderRoute: typeof AppAdminRolesIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/admin/users/new': {
@@ -817,11 +867,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminUsersIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/admin/roles/matrix': {
+      id: '/app/admin/roles/matrix'
+      path: '/admin/roles/matrix'
+      fullPath: '/app/admin/roles/matrix'
+      preLoaderRoute: typeof AppAdminRolesMatrixRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppAdminPermissionsRoute: typeof AppAdminPermissionsRoute
   AppApplicationsIdRoute: typeof AppApplicationsIdRoute
   AppApplicationsBoardRoute: typeof AppApplicationsBoardRoute
   AppApplicationsStagesRoute: typeof AppApplicationsStagesRoute
@@ -853,13 +911,16 @@ interface AppRouteChildren {
   AppRequisitionsIndexRoute: typeof AppRequisitionsIndexRoute
   AppScreeningIndexRoute: typeof AppScreeningIndexRoute
   AppWorkflowIndexRoute: typeof AppWorkflowIndexRoute
+  AppAdminRolesMatrixRoute: typeof AppAdminRolesMatrixRoute
   AppAdminUsersIdRoute: typeof AppAdminUsersIdRoute
   AppAdminUsersNewRoute: typeof AppAdminUsersNewRoute
+  AppAdminRolesIndexRoute: typeof AppAdminRolesIndexRoute
   AppAdminUsersIndexRoute: typeof AppAdminUsersIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppAdminPermissionsRoute: AppAdminPermissionsRoute,
   AppApplicationsIdRoute: AppApplicationsIdRoute,
   AppApplicationsBoardRoute: AppApplicationsBoardRoute,
   AppApplicationsStagesRoute: AppApplicationsStagesRoute,
@@ -891,8 +952,10 @@ const AppRouteChildren: AppRouteChildren = {
   AppRequisitionsIndexRoute: AppRequisitionsIndexRoute,
   AppScreeningIndexRoute: AppScreeningIndexRoute,
   AppWorkflowIndexRoute: AppWorkflowIndexRoute,
+  AppAdminRolesMatrixRoute: AppAdminRolesMatrixRoute,
   AppAdminUsersIdRoute: AppAdminUsersIdRoute,
   AppAdminUsersNewRoute: AppAdminUsersNewRoute,
+  AppAdminRolesIndexRoute: AppAdminRolesIndexRoute,
   AppAdminUsersIndexRoute: AppAdminUsersIndexRoute,
 }
 
@@ -909,3 +972,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

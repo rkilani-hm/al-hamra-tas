@@ -1,4 +1,4 @@
-import { LayoutDashboard, FileBarChart, Settings, Settings2, ShieldCheck, Workflow, Bell, ScrollText, FolderArchive, ClipboardList, KanbanSquare, UserSearch, ClipboardCheck, CalendarClock, FileSignature, UserCog } from "lucide-react";
+import { LayoutDashboard, FileBarChart, Settings, Settings2, ShieldCheck, Workflow, Bell, ScrollText, FolderArchive, ClipboardList, KanbanSquare, UserSearch, ClipboardCheck, CalendarClock, FileSignature, UserCog, KeyRound } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
@@ -35,7 +35,12 @@ export function AppSidebar() {
     { title: t("nav.documents"), url: "/app/documents", icon: FolderArchive },
     { title: t("nav.audit"), url: "/app/audit", icon: ScrollText },
     // Admin-only: hidden from non-SYSTEM_ADMIN users (route + RPC also enforce).
-    ...(isSystemAdmin(roles) ? [{ title: t("nav.admin"), url: "/app/admin/users", icon: UserCog }] : []),
+    ...(isSystemAdmin(roles)
+      ? [
+          { title: t("nav.admin"), url: "/app/admin/users", icon: UserCog },
+          { title: t("nav.roles"), url: "/app/admin/roles", icon: KeyRound },
+        ]
+      : []),
     { title: t("nav.reports"), url: "/app", icon: FileBarChart },
     { title: t("nav.settings"), url: "/app", icon: Settings },
   ];

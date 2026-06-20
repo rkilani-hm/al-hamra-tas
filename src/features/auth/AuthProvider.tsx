@@ -13,6 +13,7 @@ import {
   signInWithSso,
   signOutSso,
 } from "./api";
+import { myCapabilities } from "@/features/permissions/api";
 import type { CurrentUserRole, CurrentUserScope, TasUserResolution } from "./types";
 
 interface AuthContextValue {
@@ -21,6 +22,7 @@ interface AuthContextValue {
   currentUserId: string | null;
   roles: CurrentUserRole[];
   scopes: CurrentUserScope[];
+  capabilities: string[];
   loading: boolean;
   signIn: () => Promise<void>;
   signOut: () => Promise<void>;
@@ -33,31 +35,36 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [tasUser, setTasUser] = useState<TasUserResolution | null>(null);
   const [roles, setRoles] = useState<CurrentUserRole[]>([]);
   const [scopes, setScopes] = useState<CurrentUserScope[]>([]);
+  const [capabilities, setCapabilities] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Resolve the tas_user + roles + scopes for a present session.
+  // Resolve the tas_user + roles + scopes + capabilities for a present session.
   const resolve = useCallback(async (sess: Session | null) => {
     if (!sess) {
       setTasUser(null);
       setRoles([]);
       setScopes([]);
+      setCapabilities([]);
       setLoading(false);
       return;
     }
     try {
-      const [user, r, s] = await Promise.all([
+      const [user, r, s, caps] = await Promise.all([
         resolveCurrentUser(),
         currentUserRoles(),
         currentUserScopes(),
+        myCapabilities().catch(() => [] as string[]),
       ]);
       setTasUser(user);
       setRoles(r);
       setScopes(s);
+      setCapabilities(caps);
     } catch (err) {
       console.warn("[auth] identity resolution failed:", err);
       setTasUser(null);
       setRoles([]);
       setScopes([]);
+      setCapabilities([]);
     } finally {
       setLoading(false);
     }
@@ -95,6 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setTasUser(null);
     setRoles([]);
     setScopes([]);
+    setCapabilities([]);
   }, []);
 
   const value: AuthContextValue = {
@@ -103,6 +111,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     currentUserId: tasUser?.id ?? null,
     roles,
     scopes,
+    capabilities,
     loading,
     signIn,
     signOut,
