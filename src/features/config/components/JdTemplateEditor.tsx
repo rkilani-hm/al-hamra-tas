@@ -28,7 +28,6 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/hooks/use-language";
 import { useAuth } from "@/features/auth/AuthProvider";
-import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import {
   attachCompetency,
   createJdTemplate,
@@ -77,8 +76,8 @@ export function JdTemplateEditor({
 }: JdTemplateEditorProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { roles } = useAuth();
-  const canWrite = isSystemAdmin(roles);
+  const { capabilities } = useAuth();
+  const canWrite = capabilities.includes("config.manage");
 
   const competenciesQ = useQuery({
     queryKey: ["config", "competencies"],

@@ -28,15 +28,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLanguage } from "@/hooks/use-language";
 import { useAuth } from "@/features/auth/AuthProvider";
-import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import { adminErrorCode } from "@/features/admin/api";
 import { listScreeningScorecards, safe, upsertCriterion, upsertScorecard } from "../api";
 
 export function ScorecardConfig() {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { roles } = useAuth();
-  const canWrite = isSystemAdmin(roles);
+  const { capabilities } = useAuth();
+  const canWrite = capabilities.includes("config.manage");
   const qc = useQueryClient();
 
   const cardsQ = useQuery({

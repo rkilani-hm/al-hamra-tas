@@ -11,7 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks/use-language";
 import { useAuth } from "@/features/auth/AuthProvider";
-import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import {
   createBranch,
   createDepartment,
@@ -32,8 +31,8 @@ import { DepartmentForm, type DepartmentFormValues } from "./DepartmentForm";
 export function OrgTree() {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { roles } = useAuth();
-  const canWrite = isSystemAdmin(roles);
+  const { capabilities } = useAuth();
+  const canWrite = capabilities.includes("config.manage");
   const qc = useQueryClient();
 
   const entitiesQ = useQuery({ queryKey: ["config", "entities"], queryFn: safe(listEntities) });

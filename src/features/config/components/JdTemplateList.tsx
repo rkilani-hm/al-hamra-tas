@@ -15,7 +15,6 @@ import {
 } from "@/components/ui/table";
 import { useLanguage } from "@/hooks/use-language";
 import { useAuth } from "@/features/auth/AuthProvider";
-import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import { listJdTemplates, safe } from "../api";
 import type { JdStatus, JdTemplate } from "../types";
 
@@ -33,8 +32,8 @@ interface JdTemplateListProps {
 export function JdTemplateList({ onOpen, onCreate }: JdTemplateListProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { roles } = useAuth();
-  const canWrite = isSystemAdmin(roles);
+  const { capabilities } = useAuth();
+  const canWrite = capabilities.includes("config.manage");
   const q = useQuery({ queryKey: ["config", "jdTemplates"], queryFn: safe(listJdTemplates) });
   const templates = q.data ?? [];
   const title = (tpl: JdTemplate) => (language === "ar" ? tpl.title_ar : tpl.title_en);

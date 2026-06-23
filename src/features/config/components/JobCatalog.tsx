@@ -37,7 +37,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useLanguage } from "@/hooks/use-language";
 import { useAuth } from "@/features/auth/AuthProvider";
-import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import {
   createJobFamily,
   createJobGrade,
@@ -57,8 +56,8 @@ type Kind = "family" | "grade" | "position";
 export function JobCatalog() {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { roles } = useAuth();
-  const canWrite = isSystemAdmin(roles);
+  const { capabilities } = useAuth();
+  const canWrite = capabilities.includes("config.manage");
   const qc = useQueryClient();
 
   const familiesQ = useQuery({ queryKey: ["config", "jobFamilies"], queryFn: safe(listJobFamilies) });

@@ -19,15 +19,14 @@ import {
 } from "@/components/ui/table";
 import { useLanguage } from "@/hooks/use-language";
 import { useAuth } from "@/features/auth/AuthProvider";
-import { isSystemAdmin } from "@/features/admin/RequireAdmin";
 import { listAllStages, safe, updateStage } from "../api";
 import type { PipelineStage } from "../types";
 
 export function StageConfig() {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { roles } = useAuth();
-  const canWrite = isSystemAdmin(roles);
+  const { capabilities } = useAuth();
+  const canWrite = capabilities.includes("config.manage");
   const qc = useQueryClient();
 
   const q = useQuery({ queryKey: ["applications", "allStages"], queryFn: safe(listAllStages) });
