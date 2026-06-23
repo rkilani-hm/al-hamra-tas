@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { WorkflowStatusBadge } from "@/features/workflow/components/WorkflowStatusBadge";
 import { ApprovalTimeline } from "@/features/workflow/components/ApprovalTimeline";
 import type { InstanceStatus } from "@/features/workflow/types";
@@ -51,6 +52,9 @@ const ACTIONS_BY_STATUS: Record<RequisitionStatus, (RequisitionAction | "submit"
 export function RequisitionDetail({ id, currentUserId = null }: RequisitionDetailProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canWriteReq = capabilities.includes("requisition.write");
+  const canSubmitReq = capabilities.includes("requisition.submit");
   const qc = useQueryClient();
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -155,14 +159,18 @@ export function RequisitionDetail({ id, currentUserId = null }: RequisitionDetai
           )}
         </div>
         <div className="flex flex-wrap gap-2">
-          {req.status === "draft" && !editing && (
+          {req.status === "draft" && !editing && canWriteReq && (
             <Button variant="outline" onClick={beginEdit} disabled={busy}>{t("requisition.actions.edit")}</Button>
           )}
-          {actions.map((a) => (
-            <Button key={a} variant={a === "cancel" ? "destructive" : a === "submit" ? "default" : "outline"} onClick={() => runAction(a)} disabled={busy}>
-              {t(`requisition.actions.${a}`)}
-            </Button>
-          ))}
+          {actions.map((a) => {
+            const allowed = a === "submit" ? canSubmitReq : canWriteReq;
+            if (!allowed) return null;
+            return (
+              <Button key={a} variant={a === "cancel" ? "destructive" : a === "submit" ? "default" : "outline"} onClick={() => runAction(a)} disabled={busy}>
+                {t(`requisition.actions.${a}`)}
+              </Button>
+            );
+          })}
         </div>
       </header>
 
@@ -192,7 +200,7 @@ export function RequisitionDetail({ id, currentUserId = null }: RequisitionDetai
           </div>
           <div className="flex justify-end gap-2">
             <Button variant="outline" onClick={() => setEditing(false)} disabled={busy}>{t("requisition.actions.cancelEdit")}</Button>
-            <Button onClick={saveEdit} disabled={busy}>{t("requisition.actions.saveDraft")}</Button>
+            <Button onClick={saveEdit} disabled={busy || !canWriteReq}>{t("requisition.actions.saveDraft")}</Button>
           </div>
         </section>
       )}

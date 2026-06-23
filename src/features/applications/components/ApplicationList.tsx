@@ -34,6 +34,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { listRequisitions } from "@/features/requisition/api";
 import {
   createApplication,
@@ -56,6 +57,8 @@ interface ApplicationListProps {
 export function ApplicationList({ requisitionId = null, currentUserId = null }: ApplicationListProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canWriteApp = capabilities.includes("application.write");
   const qc = useQueryClient();
 
   const [stageId, setStageId] = useState<string>(ALL);
@@ -123,9 +126,11 @@ export function ApplicationList({ requisitionId = null, currentUserId = null }: 
           <Button asChild variant="outline" className="gap-1">
             <Link to="/app/applications/board">{t("applications.list.board")}</Link>
           </Button>
-          <Button className="gap-1" onClick={() => { setNewReq(requisitionId ?? ""); setNewOpen(true); }}>
-            <Plus className="h-4 w-4" /> {t("applications.list.new")}
-          </Button>
+          {canWriteApp && (
+            <Button className="gap-1" onClick={() => { setNewReq(requisitionId ?? ""); setNewOpen(true); }}>
+              <Plus className="h-4 w-4" /> {t("applications.list.new")}
+            </Button>
+          )}
         </div>
       </div>
 
@@ -235,7 +240,7 @@ export function ApplicationList({ requisitionId = null, currentUserId = null }: 
           </div>
           <DialogFooter className="gap-2">
             <Button variant="outline" onClick={() => setNewOpen(false)} disabled={creating}>{t("applications.actions.cancel")}</Button>
-            <Button onClick={createNew} disabled={creating || !newReq || !newCand}>{t("applications.actions.create")}</Button>
+            <Button onClick={createNew} disabled={creating || !newReq || !newCand || !canWriteApp}>{t("applications.actions.create")}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

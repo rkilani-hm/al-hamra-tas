@@ -16,6 +16,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { createScreening, listScreeningScorecards, safe, screeningDetail } from "../api";
 import type { ScreeningRecord } from "../types";
 import { ScreeningForm } from "./ScreeningForm";
@@ -27,6 +28,8 @@ interface ScreeningPanelProps {
 export function ScreeningPanel({ applicationId }: ScreeningPanelProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canWriteScr = capabilities.includes("screening.write");
   const qc = useQueryClient();
   const [scorecardId, setScorecardId] = useState<string | undefined>(undefined);
   const [busy, setBusy] = useState(false);
@@ -90,7 +93,7 @@ export function ScreeningPanel({ applicationId }: ScreeningPanelProps) {
               </SelectContent>
             </Select>
           </div>
-          <Button onClick={onStart} disabled={busy}>
+          <Button onClick={onStart} disabled={busy || !canWriteScr}>
             {t("screening.panel.start")}
           </Button>
         </div>

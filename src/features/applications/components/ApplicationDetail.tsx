@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { DocumentPanel } from "@/features/documents/components/DocumentPanel";
 import { AuditTrail } from "@/features/audit/components/AuditTrail";
 import { ScreeningPanel } from "@/features/screening/components/ScreeningPanel";
@@ -37,6 +38,8 @@ interface ApplicationDetailProps {
 export function ApplicationDetail({ id, currentUserId = null }: ApplicationDetailProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canWriteApp = capabilities.includes("application.write");
   const qc = useQueryClient();
 
   const q = useQuery({ queryKey: ["applications", "detail", id], queryFn: () => applicationDetail(id) });
@@ -90,17 +93,19 @@ export function ApplicationDetail({ id, currentUserId = null }: ApplicationDetai
           <Badge variant="outline">{stageName(currentStage)}</Badge>
           <ApplicationStatusBadge status={app.status} />
         </div>
-        <div className="flex flex-wrap items-center gap-2">
-          <Select value={app.current_stage_id ?? undefined} onValueChange={onMove}>
-            <SelectTrigger className="h-9 w-44"><SelectValue placeholder={t("applications.detail.moveStage")} /></SelectTrigger>
-            <SelectContent>
-              {stages.map((s) => <SelectItem key={s.id} value={s.id}>{language === "ar" ? s.name_ar : s.name_en}</SelectItem>)}
-            </SelectContent>
-          </Select>
-          <Button variant="outline" onClick={() => onStatus("on_hold")}>{t("applications.actions.hold")}</Button>
-          <Button variant="outline" onClick={() => onStatus("withdrawn")}>{t("applications.actions.withdraw")}</Button>
-          <Button variant="destructive" onClick={() => onStatus("rejected")}>{t("applications.actions.reject")}</Button>
-        </div>
+        {canWriteApp && (
+          <div className="flex flex-wrap items-center gap-2">
+            <Select value={app.current_stage_id ?? undefined} onValueChange={onMove}>
+              <SelectTrigger className="h-9 w-44"><SelectValue placeholder={t("applications.detail.moveStage")} /></SelectTrigger>
+              <SelectContent>
+                {stages.map((s) => <SelectItem key={s.id} value={s.id}>{language === "ar" ? s.name_ar : s.name_en}</SelectItem>)}
+              </SelectContent>
+            </Select>
+            <Button variant="outline" onClick={() => onStatus("on_hold")}>{t("applications.actions.hold")}</Button>
+            <Button variant="outline" onClick={() => onStatus("withdrawn")}>{t("applications.actions.withdraw")}</Button>
+            <Button variant="destructive" onClick={() => onStatus("rejected")}>{t("applications.actions.reject")}</Button>
+          </div>
+        )}
       </header>
 
       {/* Candidate + requisition */}

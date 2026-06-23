@@ -22,6 +22,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import {
   listBranches,
   listDepartments,
@@ -45,6 +46,9 @@ interface RequisitionFormProps {
 export function RequisitionForm({ currentUserId = null }: RequisitionFormProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canWriteReq = capabilities.includes("requisition.write");
+  const canSubmitReq = capabilities.includes("requisition.submit");
   const navigate = useNavigate();
 
   // Reference data (existing M0.x tables, strict client via config API).
@@ -326,10 +330,10 @@ export function RequisitionForm({ currentUserId = null }: RequisitionFormProps) 
 
       {/* Actions */}
       <div className="flex justify-end gap-2">
-        <Button variant="outline" onClick={onSaveDraft} disabled={saving || !valid}>
+        <Button variant="outline" onClick={onSaveDraft} disabled={saving || !valid || !canWriteReq}>
           {t("requisition.actions.saveDraft")}
         </Button>
-        <Button onClick={onSubmit} disabled={saving || !valid}>
+        <Button onClick={onSubmit} disabled={saving || !valid || !canSubmitReq}>
           {t("requisition.actions.submit")}
         </Button>
       </div>

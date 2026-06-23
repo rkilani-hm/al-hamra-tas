@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { saveScreeningScores, submitScreening } from "../api";
 import type {
   ScreeningRecommendation,
@@ -38,6 +39,8 @@ interface ScoreState {
 export function ScreeningForm({ screening, onSaved }: ScreeningFormProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canWriteScr = capabilities.includes("screening.write");
 
   const criteria = screening.criteria;
   const [scores, setScores] = useState<Record<string, ScoreState>>(() => {
@@ -195,10 +198,10 @@ export function ScreeningForm({ screening, onSaved }: ScreeningFormProps) {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button variant="outline" onClick={onSaveDraft} disabled={busy}>
+        <Button variant="outline" onClick={onSaveDraft} disabled={busy || !canWriteScr}>
           {busy ? t("screening.form.saving") : t("screening.form.saveDraft")}
         </Button>
-        <Button onClick={onSubmit} disabled={busy || !recommendation}>
+        <Button onClick={onSubmit} disabled={busy || !recommendation || !canWriteScr}>
           {t("screening.form.submit")}
         </Button>
       </div>

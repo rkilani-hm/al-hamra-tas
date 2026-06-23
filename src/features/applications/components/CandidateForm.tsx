@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { listLookups, safe as configSafe } from "@/features/config/api";
 import { upsertCandidate } from "../api";
 import type { Candidate } from "../types";
@@ -36,6 +37,8 @@ interface CandidateFormProps {
 export function CandidateForm({ open, onOpenChange, initial = null, onSaved }: CandidateFormProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canWriteCand = capabilities.includes("candidate.write");
 
   const natClassQ = useQuery({ queryKey: ["applications", "lk", "nationality_class"], queryFn: configSafe(() => listLookups("nationality_class")) });
   const natClasses = natClassQ.data ?? [];
@@ -151,7 +154,7 @@ export function CandidateForm({ open, onOpenChange, initial = null, onSaved }: C
         </div>
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={() => onOpenChange(false)} disabled={saving}>{t("applications.actions.cancel")}</Button>
-          <Button onClick={submit} disabled={!canSave}>{t("applications.actions.save")}</Button>
+          <Button onClick={submit} disabled={!canSave || !canWriteCand}>{t("applications.actions.save")}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

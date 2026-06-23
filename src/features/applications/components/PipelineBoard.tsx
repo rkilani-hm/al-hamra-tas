@@ -15,6 +15,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { listApplications, listPipelineStages, moveApplicationStage, safe } from "../api";
 import type { ApplicationListRow, PipelineStage } from "../types";
 
@@ -25,6 +26,8 @@ interface PipelineBoardProps {
 export function PipelineBoard({ requisitionId = null }: PipelineBoardProps) {
   const { t } = useTranslation();
   const { language, direction } = useLanguage();
+  const { capabilities } = useAuth();
+  const canWriteApp = capabilities.includes("application.write");
   const qc = useQueryClient();
 
   const stagesQ = useQuery({ queryKey: ["applications", "stages"], queryFn: safe(listPipelineStages) });
@@ -87,7 +90,7 @@ export function PipelineBoard({ requisitionId = null }: PipelineBoardProps) {
                       {candName(a)}
                     </Link>
                     <p className="text-xs text-muted-foreground">{a.reference}</p>
-                    <Select value={a.current_stage_id ?? undefined} onValueChange={(v) => move(a.id, v)}>
+                    <Select value={a.current_stage_id ?? undefined} onValueChange={(v) => move(a.id, v)} disabled={!canWriteApp}>
                       <SelectTrigger className="h-7 text-xs"><SelectValue placeholder={t("applications.board.move")} /></SelectTrigger>
                       <SelectContent>
                         {stages.map((st) => (

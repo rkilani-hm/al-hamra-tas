@@ -24,6 +24,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { listDepartments, listJobPositions, safe as configSafe } from "@/features/config/api";
 import { listRequisitions, safe } from "../api";
 import type { RequisitionFilter, RequisitionStatus } from "../types";
@@ -41,6 +42,8 @@ interface RequisitionListProps {
 export function RequisitionList({ currentUserId = null }: RequisitionListProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canWriteReq = capabilities.includes("requisition.write");
 
   const [status, setStatus] = useState<string>(ALL);
   const [departmentId, setDepartmentId] = useState<string>(ALL);
@@ -89,9 +92,11 @@ export function RequisitionList({ currentUserId = null }: RequisitionListProps) 
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-foreground">{t("requisition.list.title")}</h2>
-        <Button asChild className="gap-1">
-          <Link to="/app/requisitions/new"><Plus className="h-4 w-4" /> {t("requisition.list.new")}</Link>
-        </Button>
+        {canWriteReq && (
+          <Button asChild className="gap-1">
+            <Link to="/app/requisitions/new"><Plus className="h-4 w-4" /> {t("requisition.list.new")}</Link>
+          </Button>
+        )}
       </div>
 
       {/* Filters */}
