@@ -38,6 +38,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { listUsers } from "@/features/identity/api";
 import { actOnTask, myPendingTasks, safe } from "../api";
 import type { PendingTask, TaskAction } from "../types";
@@ -56,6 +57,8 @@ const ACTION_META: Record<TaskAction, { icon: typeof Check; needsTarget?: boolea
 export function ApprovalInbox({ currentUserId }: ApprovalInboxProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canAct = capabilities.includes("approval.act");
   const qc = useQueryClient();
 
   const q = useQuery({
@@ -159,9 +162,11 @@ export function ApprovalInbox({ currentUserId }: ApprovalInboxProps) {
                     ) : "—"}
                   </TableCell>
                   <TableCell className="text-end">
-                    <Button variant="ghost" size="sm" onClick={() => openDecide(tk)}>
-                      {t("workflow.inbox.decide")}
-                    </Button>
+                    {canAct && (
+                      <Button variant="ghost" size="sm" onClick={() => openDecide(tk)}>
+                        {t("workflow.inbox.decide")}
+                      </Button>
+                    )}
                   </TableCell>
                 </TableRow>
               ))
@@ -223,7 +228,7 @@ export function ApprovalInbox({ currentUserId }: ApprovalInboxProps) {
             <Button variant="outline" onClick={() => setTask(null)} disabled={saving}>
               {t("workflow.buttons.cancel")}
             </Button>
-            <Button onClick={submit} disabled={saving || (ACTION_META[action].needsTarget && !target)}>
+            <Button onClick={submit} disabled={saving || !canAct || (ACTION_META[action].needsTarget && !target)}>
               {t("workflow.inbox.submitDecision")}
             </Button>
           </DialogFooter>

@@ -1115,7 +1115,8 @@
       "history": "History",
       "noHistory": "No events yet.",
       "audit": "Audit trail",
-      "notFound": "Offer not found."
+      "notFound": "Offer not found.",
+      "noViewPermission": "You don't have permission to view offers."
     },
     "letter": {
       "notIssued": "The letter is generated when the offer is issued."

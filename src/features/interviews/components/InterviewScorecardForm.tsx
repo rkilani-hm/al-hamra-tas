@@ -17,6 +17,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { submitInterviewScore } from "../api";
 import type {
   InterviewCriterion,
@@ -40,6 +41,8 @@ interface ScoreState {
 export function InterviewScorecardForm({ criteria, interviewId, existing, onSaved }: InterviewScorecardFormProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canScore = capabilities.includes("interview.score");
 
   const [scores, setScores] = useState<Record<string, ScoreState>>(() => {
     const init: Record<string, ScoreState> = {};
@@ -178,7 +181,7 @@ export function InterviewScorecardForm({ criteria, interviewId, existing, onSave
         <Textarea value={notes} onChange={(e) => setNotes(e.target.value)} rows={2} />
       </div>
 
-      <Button onClick={onSubmit} disabled={busy || !recommendation}>
+      <Button onClick={onSubmit} disabled={busy || !recommendation || !canScore}>
         {busy ? t("interviews.actions.saving") : t("interviews.actions.submitScorecard")}
       </Button>
     </div>

@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { WorkflowStatusBadge } from "@/features/workflow/components/WorkflowStatusBadge";
 import { ApprovalTimeline } from "@/features/workflow/components/ApprovalTimeline";
 import type { InstanceStatus } from "@/features/workflow/types";
@@ -44,6 +45,12 @@ interface OfferDetailProps {
 export function OfferDetail({ id, currentUserId = null }: OfferDetailProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canViewOffer = capabilities.includes("offer.view");
+  const canWriteOffer = capabilities.includes("offer.write");
+  const canSubmitOffer = capabilities.includes("offer.submit");
+  const canIssueOffer = capabilities.includes("offer.issue");
+  const canRespondOffer = capabilities.includes("offer.respond");
   const qc = useQueryClient();
   const [busy, setBusy] = useState(false);
   const [editing, setEditing] = useState(false);
@@ -52,6 +59,7 @@ export function OfferDetail({ id, currentUserId = null }: OfferDetailProps) {
 
   const q = useQuery({
     queryKey: ["offers", "detail", id],
+    enabled: canViewOffer,
     queryFn: async () => {
       try {
         await syncOfferStatus(id);
@@ -95,6 +103,7 @@ export function OfferDetail({ id, currentUserId = null }: OfferDetailProps) {
     setReason("");
   };
 
+  if (!canViewOffer) return <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">{t("offers.detail.noViewPermission")}</p>;
   if (q.isLoading) return <p className="text-sm text-muted-foreground">{t("offers.common.loading")}</p>;
   if (!offer) {
     return <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">{t("offers.detail.notFound")}</p>;
@@ -118,19 +127,19 @@ export function OfferDetail({ id, currentUserId = null }: OfferDetailProps) {
           <Badge variant="secondary">{t(`offers.esign.${offer.esign_status}`)}</Badge>
         </div>
         <div className="flex flex-wrap gap-2">
-          {status === "draft" && !editing && (
+          {status === "draft" && !editing && canWriteOffer && (
             <Button variant="outline" onClick={() => setEditing(true)} disabled={busy}>{t("offers.actions.edit")}</Button>
           )}
-          {status === "draft" && (
+          {status === "draft" && canSubmitOffer && (
             <Button onClick={() => runAction(() => submitOffer(id), "offers.toasts.submitted")} disabled={busy}>{t("offers.actions.submit")}</Button>
           )}
-          {status === "approved" && (
+          {status === "approved" && canIssueOffer && (
             <Button onClick={() => runAction(() => issueOffer(id), "offers.toasts.issued")} disabled={busy}>{t("offers.actions.issue")}</Button>
           )}
-          {(status === "in_approval" || status === "approved" || status === "issued") && (
+          {(status === "in_approval" || status === "approved" || status === "issued") && canWriteOffer && (
             <Button variant="destructive" onClick={() => runAction(() => transitionOffer(id, "cancel"), "offers.toasts.actionDone")} disabled={busy}>{t("offers.actions.cancel")}</Button>
           )}
-          {status === "issued" && (
+          {status === "issued" && canWriteOffer && (
             <Button variant="outline" onClick={() => runAction(() => transitionOffer(id, "expire"), "offers.toasts.actionDone")} disabled={busy}>{t("offers.actions.expire")}</Button>
           )}
         </div>
@@ -166,7 +175,7 @@ export function OfferDetail({ id, currentUserId = null }: OfferDetailProps) {
       )}
 
       {/* Record candidate response (recruiter-recorded) — issued offers only */}
-      {status === "issued" && (
+      {status === "issued" && canRespondOffer && (
         <section className="space-y-3 rounded-md border p-4">
           <h3 className="font-medium text-foreground">{t("offers.detail.recordResponse")}</h3>
           <div className="flex flex-wrap items-end gap-3">

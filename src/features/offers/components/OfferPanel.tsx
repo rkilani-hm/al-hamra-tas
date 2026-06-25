@@ -9,6 +9,7 @@ import { FileSignature } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { listOffers, safe } from "../api";
 import { OfferForm } from "./OfferForm";
 
@@ -20,21 +21,29 @@ interface OfferPanelProps {
 
 export function OfferPanel({ applicationId, candidateId = null, currentUserId = null }: OfferPanelProps) {
   const { t } = useTranslation();
+  const { capabilities } = useAuth();
+  const canViewOffer = capabilities.includes("offer.view");
+  const canWriteOffer = capabilities.includes("offer.write");
   const qc = useQueryClient();
   const [creating, setCreating] = useState(false);
 
   const q = useQuery({
     queryKey: ["offers", "byApplication", applicationId],
+    enabled: canViewOffer,
     queryFn: safe(() => listOffers({ applicationId, limit: 50 })),
   });
   const offers = q.data ?? [];
 
   const refresh = () => qc.invalidateQueries({ queryKey: ["offers", "byApplication", applicationId] });
 
+  if (!canViewOffer) {
+    return <p className="text-sm text-muted-foreground">{t("offers.detail.noViewPermission")}</p>;
+  }
+
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-end gap-2">
-        {!creating && candidateId && (
+        {!creating && candidateId && canWriteOffer && (
           <Button size="sm" className="gap-1" onClick={() => setCreating(true)}>
             <FileSignature className="h-4 w-4" /> {t("offers.actions.create")}
           </Button>

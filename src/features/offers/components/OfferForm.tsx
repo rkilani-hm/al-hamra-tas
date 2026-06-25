@@ -19,6 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import {
   createDraftOffer,
   listJobGrades,
@@ -41,6 +42,9 @@ interface OfferFormProps {
 export function OfferForm({ applicationId, candidateId, offer = null, currentUserId = null, onSaved, onCancel }: OfferFormProps) {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canWriteOffer = capabilities.includes("offer.write");
+  const canSubmitOffer = capabilities.includes("offer.submit");
   const editing = !!offer;
 
   const gradesQ = useQuery({ queryKey: ["offers", "grades"], queryFn: safe(listJobGrades) });
@@ -177,10 +181,10 @@ export function OfferForm({ applicationId, candidateId, offer = null, currentUse
       </div>
 
       <div className="flex flex-wrap gap-2">
-        <Button variant="outline" onClick={onSaveDraft} disabled={busy}>
+        <Button variant="outline" onClick={onSaveDraft} disabled={busy || !canWriteOffer}>
           {busy ? t("offers.actions.saving") : t("offers.actions.saveDraft")}
         </Button>
-        <Button onClick={onSubmit} disabled={busy || salary === ""}>
+        <Button onClick={onSubmit} disabled={busy || salary === "" || !canWriteOffer || !canSubmitOffer}>
           {t("offers.actions.submit")}
         </Button>
         {onCancel && (

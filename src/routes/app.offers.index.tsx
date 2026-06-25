@@ -6,6 +6,7 @@ import { FileSignature } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks/use-language";
+import { useAuth } from "@/features/auth/AuthProvider";
 import { AdapterStatus } from "@/features/offers/components/AdapterStatus";
 import { listOffers, safe } from "@/features/offers/api";
 
@@ -22,8 +23,10 @@ export const Route = createFileRoute("/app/offers/")({
 function OffersPage() {
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { capabilities } = useAuth();
+  const canViewOffer = capabilities.includes("offer.view");
 
-  const q = useQuery({ queryKey: ["offers", "all"], queryFn: safe(() => listOffers({ limit: 50 })) });
+  const q = useQuery({ queryKey: ["offers", "all"], enabled: canViewOffer, queryFn: safe(() => listOffers({ limit: 50 })) });
   const offers = q.data ?? [];
 
   return (
@@ -39,7 +42,9 @@ function OffersPage() {
         <AdapterStatus />
       </header>
 
-      {q.isLoading ? (
+      {!canViewOffer ? (
+        <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">{t("offers.detail.noViewPermission")}</p>
+      ) : q.isLoading ? (
         <p className="text-sm text-muted-foreground">{t("offers.common.loading")}</p>
       ) : offers.length === 0 ? (
         <p className="rounded-md border border-dashed p-6 text-center text-sm text-muted-foreground">{t("offers.panel.none")}</p>
