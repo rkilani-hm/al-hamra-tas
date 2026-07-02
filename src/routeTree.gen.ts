@@ -14,7 +14,9 @@ import { Route as NoAccessRouteImport } from './routes/no-access'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppRouteImport } from './routes/app'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CareersIndexRouteImport } from './routes/careers.index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
+import { Route as CareersIdRouteImport } from './routes/careers.$id'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AppWorkflowIndexRouteImport } from './routes/app.workflow.index'
 import { Route as AppSourcingIndexRouteImport } from './routes/app.sourcing.index'
@@ -85,10 +87,20 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CareersIndexRoute = CareersIndexRouteImport.update({
+  id: '/careers/',
+  path: '/careers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AppIndexRoute = AppIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AppRoute,
+} as any)
+const CareersIdRoute = CareersIdRouteImport.update({
+  id: '/careers/$id',
+  path: '/careers/$id',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth/callback',
@@ -320,7 +332,9 @@ export interface FileRoutesByFullPath {
   '/no-access': typeof NoAccessRoute
   '/signin': typeof SigninRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/careers/$id': typeof CareersIdRoute
   '/app/': typeof AppIndexRoute
+  '/careers/': typeof CareersIndexRoute
   '/app/admin/permissions': typeof AppAdminPermissionsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
@@ -371,7 +385,9 @@ export interface FileRoutesByTo {
   '/no-access': typeof NoAccessRoute
   '/signin': typeof SigninRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/careers/$id': typeof CareersIdRoute
   '/app': typeof AppIndexRoute
+  '/careers': typeof CareersIndexRoute
   '/app/admin/permissions': typeof AppAdminPermissionsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
@@ -424,7 +440,9 @@ export interface FileRoutesById {
   '/no-access': typeof NoAccessRoute
   '/signin': typeof SigninRoute
   '/auth/callback': typeof AuthCallbackRoute
+  '/careers/$id': typeof CareersIdRoute
   '/app/': typeof AppIndexRoute
+  '/careers/': typeof CareersIndexRoute
   '/app/admin/permissions': typeof AppAdminPermissionsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
@@ -478,7 +496,9 @@ export interface FileRouteTypes {
     | '/no-access'
     | '/signin'
     | '/auth/callback'
+    | '/careers/$id'
     | '/app/'
+    | '/careers/'
     | '/app/admin/permissions'
     | '/app/applications/$id'
     | '/app/applications/board'
@@ -529,7 +549,9 @@ export interface FileRouteTypes {
     | '/no-access'
     | '/signin'
     | '/auth/callback'
+    | '/careers/$id'
     | '/app'
+    | '/careers'
     | '/app/admin/permissions'
     | '/app/applications/$id'
     | '/app/applications/board'
@@ -581,7 +603,9 @@ export interface FileRouteTypes {
     | '/no-access'
     | '/signin'
     | '/auth/callback'
+    | '/careers/$id'
     | '/app/'
+    | '/careers/'
     | '/app/admin/permissions'
     | '/app/applications/$id'
     | '/app/applications/board'
@@ -634,6 +658,8 @@ export interface RootRouteChildren {
   NoAccessRoute: typeof NoAccessRoute
   SigninRoute: typeof SigninRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
+  CareersIdRoute: typeof CareersIdRoute
+  CareersIndexRoute: typeof CareersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -673,12 +699,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/careers/': {
+      id: '/careers/'
+      path: '/careers'
+      fullPath: '/careers/'
+      preLoaderRoute: typeof CareersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/app/': {
       id: '/app/'
       path: '/'
       fullPath: '/app/'
       preLoaderRoute: typeof AppIndexRouteImport
       parentRoute: typeof AppRoute
+    }
+    '/careers/$id': {
+      id: '/careers/$id'
+      path: '/careers/$id'
+      fullPath: '/careers/$id'
+      preLoaderRoute: typeof CareersIdRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/auth/callback': {
       id: '/auth/callback'
@@ -1094,6 +1134,8 @@ const rootRouteChildren: RootRouteChildren = {
   NoAccessRoute: NoAccessRoute,
   SigninRoute: SigninRoute,
   AuthCallbackRoute: AuthCallbackRoute,
+  CareersIdRoute: CareersIdRoute,
+  CareersIndexRoute: CareersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

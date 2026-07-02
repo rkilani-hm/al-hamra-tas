@@ -161,6 +161,28 @@
       "actionError": "Action failed. Please try again."
     }
   },
+  "careers": {
+    "title": "Careers",
+    "subtitle": "Join Al Hamra Real Estate Group",
+    "loading": "Loading…",
+    "empty": "No open positions right now. Please check back soon.",
+    "back": "Back to careers",
+    "notFound": "This position is no longer available.",
+    "footer": "© Al Hamra Real Estate Group",
+    "apply": {
+      "title": "Apply for this role",
+      "name": "Full name",
+      "email": "Email",
+      "phone": "Phone",
+      "nationality": "Nationality",
+      "cover": "Cover note",
+      "submit": "Submit application",
+      "success": "Application submitted successfully.",
+      "duplicate": "You already have an active application for this role.",
+      "submitted": "Thank you — your application has been received.",
+      "error": "Could not submit. Please try again."
+    }
+  },
   "sourcing": {
     "page": {
       "title": "Sourcing & Talent Pool",
