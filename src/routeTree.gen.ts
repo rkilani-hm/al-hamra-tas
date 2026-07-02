@@ -23,6 +23,7 @@ import { Route as AppPreboardingIndexRouteImport } from './routes/app.preboardin
 import { Route as AppOnboardingIndexRouteImport } from './routes/app.onboarding.index'
 import { Route as AppOffersIndexRouteImport } from './routes/app.offers.index'
 import { Route as AppNotificationsIndexRouteImport } from './routes/app.notifications.index'
+import { Route as AppManpowerIndexRouteImport } from './routes/app.manpower.index'
 import { Route as AppInterviewsIndexRouteImport } from './routes/app.interviews.index'
 import { Route as AppIdentityIndexRouteImport } from './routes/app.identity.index'
 import { Route as AppDocumentsIndexRouteImport } from './routes/app.documents.index'
@@ -126,6 +127,11 @@ const AppOffersIndexRoute = AppOffersIndexRouteImport.update({
 const AppNotificationsIndexRoute = AppNotificationsIndexRouteImport.update({
   id: '/notifications/',
   path: '/notifications/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppManpowerIndexRoute = AppManpowerIndexRouteImport.update({
+  id: '/manpower/',
+  path: '/manpower/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppInterviewsIndexRoute = AppInterviewsIndexRouteImport.update({
@@ -338,6 +344,7 @@ export interface FileRoutesByFullPath {
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
   '/app/interviews/': typeof AppInterviewsIndexRoute
+  '/app/manpower/': typeof AppManpowerIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/offers/': typeof AppOffersIndexRoute
   '/app/onboarding/': typeof AppOnboardingIndexRoute
@@ -387,6 +394,7 @@ export interface FileRoutesByTo {
   '/app/documents': typeof AppDocumentsIndexRoute
   '/app/identity': typeof AppIdentityIndexRoute
   '/app/interviews': typeof AppInterviewsIndexRoute
+  '/app/manpower': typeof AppManpowerIndexRoute
   '/app/notifications': typeof AppNotificationsIndexRoute
   '/app/offers': typeof AppOffersIndexRoute
   '/app/onboarding': typeof AppOnboardingIndexRoute
@@ -438,6 +446,7 @@ export interface FileRoutesById {
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
   '/app/interviews/': typeof AppInterviewsIndexRoute
+  '/app/manpower/': typeof AppManpowerIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/offers/': typeof AppOffersIndexRoute
   '/app/onboarding/': typeof AppOnboardingIndexRoute
@@ -490,6 +499,7 @@ export interface FileRouteTypes {
     | '/app/documents/'
     | '/app/identity/'
     | '/app/interviews/'
+    | '/app/manpower/'
     | '/app/notifications/'
     | '/app/offers/'
     | '/app/onboarding/'
@@ -539,6 +549,7 @@ export interface FileRouteTypes {
     | '/app/documents'
     | '/app/identity'
     | '/app/interviews'
+    | '/app/manpower'
     | '/app/notifications'
     | '/app/offers'
     | '/app/onboarding'
@@ -589,6 +600,7 @@ export interface FileRouteTypes {
     | '/app/documents/'
     | '/app/identity/'
     | '/app/interviews/'
+    | '/app/manpower/'
     | '/app/notifications/'
     | '/app/offers/'
     | '/app/onboarding/'
@@ -710,6 +722,13 @@ declare module '@tanstack/react-router' {
       path: '/notifications'
       fullPath: '/app/notifications/'
       preLoaderRoute: typeof AppNotificationsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/manpower/': {
+      id: '/app/manpower/'
+      path: '/manpower'
+      fullPath: '/app/manpower/'
+      preLoaderRoute: typeof AppManpowerIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/interviews/': {
@@ -984,6 +1003,7 @@ interface AppRouteChildren {
   AppDocumentsIndexRoute: typeof AppDocumentsIndexRoute
   AppIdentityIndexRoute: typeof AppIdentityIndexRoute
   AppInterviewsIndexRoute: typeof AppInterviewsIndexRoute
+  AppManpowerIndexRoute: typeof AppManpowerIndexRoute
   AppNotificationsIndexRoute: typeof AppNotificationsIndexRoute
   AppOffersIndexRoute: typeof AppOffersIndexRoute
   AppOnboardingIndexRoute: typeof AppOnboardingIndexRoute
@@ -1029,6 +1049,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppDocumentsIndexRoute: AppDocumentsIndexRoute,
   AppIdentityIndexRoute: AppIdentityIndexRoute,
   AppInterviewsIndexRoute: AppInterviewsIndexRoute,
+  AppManpowerIndexRoute: AppManpowerIndexRoute,
   AppNotificationsIndexRoute: AppNotificationsIndexRoute,
   AppOffersIndexRoute: AppOffersIndexRoute,
   AppOnboardingIndexRoute: AppOnboardingIndexRoute,

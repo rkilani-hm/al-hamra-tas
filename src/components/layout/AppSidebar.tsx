@@ -1,4 +1,4 @@
-import { LayoutDashboard, FileBarChart, Settings, Settings2, ShieldCheck, Workflow, Bell, ScrollText, FolderArchive, ClipboardList, KanbanSquare, UserSearch, ClipboardCheck, CalendarClock, FileSignature, UserCog, KeyRound, UserPlus, UserCheck } from "lucide-react";
+import { LayoutDashboard, FileBarChart, Settings, Settings2, ShieldCheck, Workflow, Bell, ScrollText, FolderArchive, ClipboardList, KanbanSquare, UserSearch, ClipboardCheck, CalendarClock, FileSignature, UserCog, KeyRound, UserPlus, UserCheck, Users } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
 
@@ -24,6 +24,7 @@ export function AppSidebar() {
     { title: t("nav.dashboard"), url: "/app", icon: LayoutDashboard },
     { title: t("nav.identity"), url: "/app/identity", icon: ShieldCheck },
     { title: t("nav.config"), url: "/app/config", icon: Settings2 },
+    { title: t("nav.manpower"), url: "/app/manpower", icon: Users },
     { title: t("nav.requisitions"), url: "/app/requisitions", icon: ClipboardList },
     { title: t("nav.applications"), url: "/app/applications", icon: KanbanSquare },
     { title: t("nav.candidates"), url: "/app/candidates", icon: UserSearch },

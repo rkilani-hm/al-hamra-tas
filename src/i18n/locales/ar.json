@@ -7,6 +7,7 @@
     "dashboard": "لوحة التحكم",
     "identity": "الهوية والوصول",
     "config": "الإعدادات الأساسية",
+    "manpower": "تخطيط القوى العاملة",
     "requisitions": "طلبات التوظيف",
     "applications": "الطلبات",
     "candidates": "المرشحون",
@@ -125,6 +126,39 @@
       "loading": "جارٍ التحميل…"
     },
     "backToList": "العودة إلى الالتحاق"
+  },
+  "manpower": {
+    "page": {
+      "title": "تخطيط القوى العاملة",
+      "subtitle": "الأعداد المعتمدة وأهداف التكويت حسب السنة المالية.",
+      "empty": "لا توجد خطط قوى عاملة بعد."
+    },
+    "table": {
+      "year": "السنة المالية",
+      "department": "الإدارة",
+      "position": "الوظيفة",
+      "budgeted": "المعتمد",
+      "openReqs": "الطلبات المفتوحة",
+      "kuwaitization": "هدف التكويت",
+      "status": "الحالة"
+    },
+    "form": {
+      "entity": "الكيان"
+    },
+    "status": {
+      "draft": "مسودة",
+      "active": "نشط",
+      "closed": "مغلق"
+    },
+    "actions": {
+      "new": "خطة جديدة",
+      "save": "حفظ",
+      "cancel": "إلغاء"
+    },
+    "toasts": {
+      "saved": "تم حفظ الخطة.",
+      "actionError": "فشل الإجراء. يرجى المحاولة مرة أخرى."
+    }
   },
   "assessment": {
     "panel": {

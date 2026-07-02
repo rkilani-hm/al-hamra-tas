@@ -7,6 +7,7 @@
     "dashboard": "Dashboard",
     "identity": "Identity & Access",
     "config": "Core Configuration",
+    "manpower": "Manpower Planning",
     "requisitions": "Requisitions",
     "applications": "Applications",
     "candidates": "Candidates",
@@ -125,6 +126,39 @@
       "loading": "Loading…"
     },
     "backToList": "Back to onboarding"
+  },
+  "manpower": {
+    "page": {
+      "title": "Manpower Planning",
+      "subtitle": "Budgeted headcount and Kuwaitization targets by fiscal year.",
+      "empty": "No manpower plans yet."
+    },
+    "table": {
+      "year": "Fiscal year",
+      "department": "Department",
+      "position": "Position",
+      "budgeted": "Budgeted",
+      "openReqs": "Open requisitions",
+      "kuwaitization": "Kuwaitization target",
+      "status": "Status"
+    },
+    "form": {
+      "entity": "Entity"
+    },
+    "status": {
+      "draft": "Draft",
+      "active": "Active",
+      "closed": "Closed"
+    },
+    "actions": {
+      "new": "New plan",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "toasts": {
+      "saved": "Plan saved.",
+      "actionError": "Action failed. Please try again."
+    }
   },
   "assessment": {
     "panel": {
