@@ -4405,12 +4405,12 @@ export type Database = {
       }
       upsert_manpower_plan: {
         Args: {
-          p_budgeted: number
-          p_department_id: string
-          p_entity_id: string
-          p_fiscal_year: number
-          p_id: string
-          p_job_position_id: string
+          p_budgeted?: number
+          p_department_id?: string
+          p_entity_id?: string
+          p_fiscal_year?: number
+          p_id?: string
+          p_job_position_id?: string
           p_kuwait_pct?: number
           p_notes?: string
         }
