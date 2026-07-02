@@ -178,6 +178,12 @@
       "teams": "Teams meetings",
       "sharepoint": "SharePoint storage"
     },
+    "mename": {
+      "title": "MenaME HRMS",
+      "queued": "Queued handoffs",
+      "test": "Test connection",
+      "secretsNote": "Provision the MenaITech API base URL + credentials in System Settings secrets, then enable the adapter."
+    },
     "status": {
       "live": "Live",
       "enabled": "Enabled",

@@ -31,3 +31,27 @@ export async function setAdapterEnabled(kind: string, provider: string, enabled:
   const { error } = await db.rpc("set_adapter_enabled", { p_kind: kind, p_provider: provider, p_enabled: enabled });
   if (error) throw error;
 }
+
+// --- M2.2 MenaME HRMS ---------------------------------------------------------
+export interface MenameStatus {
+  adapter: { provider: string; is_enabled: boolean; config_status: string } | null;
+  queued_handoffs: number;
+}
+
+export interface MenameTestResult {
+  ok: boolean;
+  dormant: boolean;
+  message: string;
+}
+
+export async function menameStatus(): Promise<MenameStatus | null> {
+  const { data, error } = await db.rpc("mename_status");
+  if (error) throw error;
+  return (data ?? null) as unknown as MenameStatus | null;
+}
+
+export async function menameTestConnection(): Promise<MenameTestResult> {
+  const { data, error } = await db.rpc("mename_test_connection");
+  if (error) throw error;
+  return data as unknown as MenameTestResult;
+}

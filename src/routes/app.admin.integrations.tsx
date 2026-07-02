@@ -8,7 +8,7 @@ import { Plug } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/features/auth/AuthProvider";
-import { m365Status, setAdapterEnabled, type M365Component } from "@/features/integrations/api";
+import { m365Status, menameStatus, menameTestConnection, setAdapterEnabled, type M365Component } from "@/features/integrations/api";
 
 export const Route = createFileRoute("/app/admin/integrations")({
   head: () => ({ meta: [{ title: "Integrations — Al Hamra TAS" }] }),
@@ -23,8 +23,20 @@ function IntegrationsPage() {
 
   const q = useQuery({ queryKey: ["integrations", "m365"], queryFn: m365Status, enabled: canManage });
   const s = q.data ?? null;
+  const menameQ = useQuery({ queryKey: ["integrations", "mename"], queryFn: menameStatus, enabled: canManage });
+  const mename = menameQ.data ?? null;
 
-  const refresh = () => qc.invalidateQueries({ queryKey: ["integrations", "m365"] });
+  const refresh = () => qc.invalidateQueries({ queryKey: ["integrations"] });
+
+  const testMename = async () => {
+    try {
+      const r = await menameTestConnection();
+      if (r.dormant) toast.info(r.message);
+      else toast.success(r.message);
+    } catch {
+      toast.error(t("integrations.toasts.actionError"));
+    }
+  };
 
   const toggle = async (c: M365Component) => {
     if (!c.provider) return;
@@ -78,6 +90,28 @@ function IntegrationsPage() {
           );
         })}
       </div>
+
+      {/* MenaME HRMS (M2.2) */}
+      <section className="space-y-2 rounded-md border p-4">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="font-medium text-foreground">{t("integrations.mename.title")}</h3>
+          <Badge variant={mename?.adapter?.is_enabled ? "default" : "outline"}>
+            {mename?.adapter?.is_enabled ? t("integrations.status.enabled") : t("integrations.status.dormant")}
+          </Badge>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          {t("integrations.mename.queued")}: <span dir="ltr" className="font-medium text-foreground">{mename?.queued_handoffs ?? 0}</span>
+        </p>
+        <div className="flex flex-wrap gap-2 pt-1">
+          {mename?.adapter && (
+            <Button variant="outline" size="sm" onClick={() => toggle({ component: "mename", kind: "hrms", provider: mename.adapter!.provider, is_enabled: mename.adapter!.is_enabled })}>
+              {mename.adapter.is_enabled ? t("integrations.actions.disable") : t("integrations.actions.enable")}
+            </Button>
+          )}
+          <Button variant="outline" size="sm" onClick={testMename}>{t("integrations.mename.test")}</Button>
+        </div>
+        <p className="text-xs text-muted-foreground">{t("integrations.mename.secretsNote")}</p>
+      </section>
 
       <p className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">{t("integrations.secretsNote")}</p>
     </div>
