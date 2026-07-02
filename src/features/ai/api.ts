@@ -25,7 +25,16 @@ export async function aiStatus(): Promise<AiStatus> {
 }
 
 export async function aiGenerateJd(title: string, notes?: string | null): Promise<AiJdResult> {
+  // 1) RPC gates on ai.use, audits, and reports the adapter's dormant/enabled state.
   const { data, error } = await db.rpc("ai_generate_jd", { p_title: title, p_notes: notes ?? undefined });
   if (error) throw error;
-  return data as unknown as AiJdResult;
+  const gate = data as unknown as AiJdResult;
+  if (gate?.dormant) return gate;
+
+  // 2) Adapter enabled -> the ai-copilot edge function performs the real generation.
+  const { data: fn, error: fnErr } = await db.functions.invoke("ai-copilot", {
+    body: { task: "generate_jd", title, notes: notes ?? undefined },
+  });
+  if (fnErr) throw fnErr;
+  return fn as unknown as AiJdResult;
 }
