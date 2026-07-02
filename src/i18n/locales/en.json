@@ -205,8 +205,8 @@
     },
     "enabled": "Enabled",
     "dormant": "Dormant",
-    "dormantNote": "The AI copilot is dormant. Provision an LLM API key and enable the adapter in System Settings to activate it.",
-    "dormantToast": "AI copilot is not configured yet.",
+    "dormantNote": "The AI copilot is dormant. Enable the AI adapter in System Settings to activate it — Lovable provides the AI, no API key needed.",
+    "dormantToast": "AI copilot is not enabled yet.",
     "noPermission": "You don't have permission to use the AI copilot.",
     "error": "Request failed. Please try again.",
     "jd": {

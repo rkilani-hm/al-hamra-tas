@@ -1,83 +1,66 @@
 // =============================================================================
 // Edge Function: ai-copilot  (Module M2.1 — AI Recruitment Copilot)
 // =============================================================================
-// Anthropic Messages API adapter. DORMANT until BOTH the tas_ai_adapter_config
-// 'llm' row is enabled AND an API key is present — until then returns
-// { dormant: true } and never calls out. When live it calls Claude for:
+// Uses the LOVABLE AI GATEWAY (embedded AI — no external key to manage; Lovable
+// auto-injects LOVABLE_API_KEY into edge functions). DORMANT until BOTH the
+// tas_ai_adapter_config 'llm' row is enabled AND LOVABLE_API_KEY is present —
+// until then returns { dormant: true } and never calls out. When live it calls
+// the gateway for:
 //   task="generate_jd"  -> bilingual (EN/AR) job description from title + notes
 //   task="parse_cv"     -> structured JSON candidate fields from raw CV text
 //
-// Required secrets (Supabase/Lovable env; NEVER hardcode) — provision to go live:
-//   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
-//   AI_PROVIDER (e.g. 'anthropic'), ANTHROPIC_API_KEY
-// Then enable the 'ai/llm' adapter in /app/admin/settings.
-//
-// API surface (per the claude-api skill):
-//   POST https://api.anthropic.com/v1/messages
-//   headers: x-api-key, anthropic-version: 2023-06-01, content-type: application/json
-//   body:    { model, max_tokens, system?, messages:[{role,content}], output_config? }
-//   resp:    { content:[{type:"text",text}], stop_reason, usage }
-// Model: claude-opus-4-8. Non-streaming with max_tokens<=4096 stays well under
-// the edge-function/HTTP timeout. Check stop_reason before reading content.
+// Gateway (OpenAI-compatible chat completions):
+//   POST https://ai.gateway.lovable.dev/v1/chat/completions
+//   headers: Authorization: Bearer <LOVABLE_API_KEY>, content-type: application/json
+//   body:    { model, messages:[{role:"system"|"user"|"assistant", content}] }
+//   resp:    { choices:[{ message:{content}, finish_reason }], usage }
+// Model: google/gemini-2.5-flash (fast, low-cost; swap MODEL to change).
+// Handles 429 (rate limit) and 402 (out of credits) gracefully.
+// LOVABLE_API_KEY is provided automatically in Lovable Cloud — no secret to set.
 // =============================================================================
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 import { handleCorsPreflight } from "../_shared/cors.ts";
 import { errorResponse, jsonResponse } from "../_shared/errors.ts";
 
-const ANTHROPIC_URL = "https://api.anthropic.com/v1/messages";
-const ANTHROPIC_VERSION = "2023-06-01";
-const MODEL = "claude-opus-4-8";
+const GATEWAY_URL = "https://ai.gateway.lovable.dev/v1/chat/completions";
+const MODEL = "google/gemini-2.5-flash";
 
-function apiKey(): string {
-  return Deno.env.get("ANTHROPIC_API_KEY") ?? Deno.env.get("AI_API_KEY") ?? "";
+function lovableKey(): string {
+  return Deno.env.get("LOVABLE_API_KEY") ?? "";
 }
-function llmConfigured(): boolean {
-  const provider = Deno.env.get("AI_PROVIDER") ?? "";
-  return !!provider && !!apiKey();
+function aiConfigured(): boolean {
+  return !!lovableKey();
 }
 
-// deno-lint-ignore no-explicit-any
-type AnthropicMessage = { role: "user" | "assistant"; content: any };
+type ChatMessage = { role: "system" | "user" | "assistant"; content: string };
 
-async function callClaude(opts: {
-  system?: string;
-  messages: AnthropicMessage[];
-  maxTokens?: number;
-  // deno-lint-ignore no-explicit-any
-  outputConfig?: any;
-}): Promise<{ text: string; stop_reason: string; raw: unknown }> {
-  const body: Record<string, unknown> = {
-    model: MODEL,
-    max_tokens: opts.maxTokens ?? 4096,
-    messages: opts.messages,
-  };
-  if (opts.system) body.system = opts.system;
-  if (opts.outputConfig) body.output_config = opts.outputConfig;
-
-  const resp = await fetch(ANTHROPIC_URL, {
+// Returns { text, ok, status } — status lets callers surface rate-limit / credit errors.
+async function callGateway(messages: ChatMessage[], maxTokens = 3000): Promise<{ text: string; ok: boolean; status: number }> {
+  const resp = await fetch(GATEWAY_URL, {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      "x-api-key": apiKey(),
-      "anthropic-version": ANTHROPIC_VERSION,
+      "authorization": `Bearer ${lovableKey()}`,
     },
-    body: JSON.stringify(body),
+    body: JSON.stringify({ model: MODEL, messages, max_tokens: maxTokens }),
   });
 
   if (!resp.ok) {
     const detail = await resp.text().catch(() => "");
-    throw new Error(`anthropic_error_${resp.status}: ${detail.slice(0, 500)}`);
+    console.error(`[ai-copilot] gateway ${resp.status}: ${detail.slice(0, 500)}`);
+    return { text: "", ok: false, status: resp.status };
   }
 
   const data = await resp.json();
-  // Refusal / safety: content may be empty — surface a message rather than crash.
-  if (data?.stop_reason === "refusal") {
-    return { text: "", stop_reason: "refusal", raw: data };
-  }
-  // deno-lint-ignore no-explicit-any
-  const textBlock = (data?.content ?? []).find((b: any) => b?.type === "text");
-  return { text: textBlock?.text ?? "", stop_reason: data?.stop_reason ?? "end_turn", raw: data };
+  const text = data?.choices?.[0]?.message?.content ?? "";
+  return { text, ok: true, status: 200 };
+}
+
+function statusMessage(status: number): string {
+  if (status === 429) return "AI is rate limited right now. Please try again in a moment.";
+  if (status === 402) return "The AI workspace is out of credits. Add credits in Lovable to continue.";
+  return "AI request failed. Please try again.";
 }
 
 async function generateJd(title: string, notes: string) {
@@ -90,46 +73,29 @@ async function generateJd(title: string, notes: string) {
     `Role title: ${title}\n` +
     (notes ? `Notes / requirements from the hiring team:\n${notes}\n` : "") +
     `\nProduce the job description now. Label the two halves clearly: "English" then "العربية".`;
-  const r = await callClaude({ system, messages: [{ role: "user", content: user }], maxTokens: 3000 });
-  if (r.stop_reason === "refusal") {
-    return { dormant: false, output: null, message: "The request was declined by the safety system. Please rephrase." };
-  }
+
+  const r = await callGateway([{ role: "system", content: system }, { role: "user", content: user }], 3000);
+  if (!r.ok) return { dormant: false, output: null, message: statusMessage(r.status) };
   return { dormant: false, output: r.text, message: "generated" };
 }
 
-const CV_SCHEMA = {
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    full_name_en: { type: "string" },
-    full_name_ar: { type: "string" },
-    email: { type: "string" },
-    phone: { type: "string" },
-    nationality: { type: "string" },
-    current_title: { type: "string" },
-    years_experience: { type: "number" },
-    skills: { type: "array", items: { type: "string" } },
-    summary: { type: "string" },
-  },
-  required: ["full_name_en", "email", "skills", "summary"],
-};
-
 async function parseCv(cvText: string) {
   const system =
-    "You extract structured candidate data from a raw CV/résumé. " +
-    "Return ONLY the fields requested. Use empty string / empty array when a field is absent — never guess. " +
+    "You extract structured candidate data from a raw CV/résumé and return ONLY valid JSON — no markdown fences, no prose. " +
+    "Use empty string / empty array when a field is absent; never guess. Schema: " +
+    '{"full_name_en":string,"full_name_ar":string,"email":string,"phone":string,"nationality":string,' +
+    '"current_title":string,"years_experience":number,"skills":string[],"summary":string}. ' +
     "full_name_ar is the Arabic form of the name if present in the CV, else empty.";
-  const r = await callClaude({
-    system,
-    messages: [{ role: "user", content: `Extract candidate fields from this CV:\n\n${cvText.slice(0, 20000)}` }],
-    maxTokens: 1500,
-    outputConfig: { format: { type: "json_schema", schema: CV_SCHEMA } },
-  });
-  if (r.stop_reason === "refusal") {
-    return { dormant: false, output: null, message: "The request was declined by the safety system." };
-  }
+  const r = await callGateway(
+    [{ role: "system", content: system }, { role: "user", content: `Extract candidate fields from this CV:\n\n${cvText.slice(0, 20000)}` }],
+    1500,
+  );
+  if (!r.ok) return { dormant: false, output: null, message: statusMessage(r.status) };
+
+  // Strip any accidental ```json fences before parsing.
+  const cleaned = r.text.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
   let parsed: unknown = null;
-  try { parsed = JSON.parse(r.text); } catch { parsed = null; }
+  try { parsed = JSON.parse(cleaned); } catch { parsed = null; }
   return { dormant: false, output: parsed, message: parsed ? "parsed" : "parse_failed" };
 }
 
@@ -160,18 +126,18 @@ Deno.serve(async (req: Request) => {
     auth: { autoRefreshToken: false, persistSession: false },
   });
 
-  // Adapter must be enabled in config AND a key present, or stay dormant.
+  // Adapter must be enabled in config AND the embedded key present, or stay dormant.
   const { data: cfg } = await admin
     .from("tas_ai_adapter_config")
     .select("is_enabled")
     .eq("provider", "llm")
     .maybeSingle();
 
-  if (!cfg?.is_enabled || !llmConfigured()) {
+  if (!cfg?.is_enabled || !aiConfigured()) {
     return jsonResponse({
       dormant: true,
       output: null,
-      message: "AI copilot is dormant. Provision an LLM API key and enable the adapter in System Settings.",
+      message: "AI copilot is dormant. Enable the AI adapter in System Settings to use it.",
     });
   }
 
@@ -184,7 +150,6 @@ Deno.serve(async (req: Request) => {
     return jsonResponse(await generateJd(title.trim(), notes.trim()));
   } catch (err) {
     console.error("[ai-copilot] error:", err);
-    // Degrade gracefully — the UI shows a retry message rather than crashing.
     return jsonResponse({ dormant: false, output: null, message: "ai_error", error: String(err).slice(0, 300) });
   }
 });

@@ -70,7 +70,7 @@ begin
 
   if not coalesce(v_enabled, false) then
     return jsonb_build_object('dormant', true, 'output', null,
-      'message', 'AI copilot is not configured. Provision an LLM API key and enable the adapter in System Settings.');
+      'message', 'AI copilot is dormant. Enable the AI adapter in System Settings to use it.');
   end if;
 
   -- Adapter enabled: the ai-copilot edge function performs the real generation
