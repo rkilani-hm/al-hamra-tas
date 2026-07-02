@@ -214,6 +214,18 @@
       "roleTitle": "Role title",
       "notes": "Notes / requirements",
       "generate": "Generate draft"
+    },
+    "assist": {
+      "button": "Generate with AI",
+      "title": "Generate with AI",
+      "notesLabel": "Guidance (optional)",
+      "notesHint": "Any specifics to include…",
+      "generate": "Generate",
+      "generating": "Generating…",
+      "apply": "Insert",
+      "cancel": "Cancel",
+      "applied": "Inserted.",
+      "error": "Generation failed. Please try again."
     }
   },
   "consent": {
@@ -1001,6 +1013,8 @@
       "summaryEn": "Summary (English)",
       "summaryAr": "Summary (Arabic)",
       "jdHint": "Edits here are captured into the requisition's frozen JD snapshot at submit.",
+      "jdAi": "Generate JD with AI",
+      "jdAiNeedsTitle": "Enter a role title above to generate a JD with AI.",
       "details": "Details",
       "headcount": "Headcount",
       "employmentType": "Employment type",

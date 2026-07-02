@@ -12,9 +12,15 @@ export interface AiStatus {
   model?: string | null;
 }
 
+export interface JdOutput {
+  text: string;
+  summary_en: string;
+  summary_ar: string;
+}
+
 export interface AiJdResult {
   dormant: boolean;
-  output: string | null;
+  output: JdOutput | null;
   message: string;
 }
 

@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/features/auth/AuthProvider";
-import { aiGenerateJd, aiStatus } from "@/features/ai/api";
+import { aiGenerateJd, aiStatus, type JdOutput } from "@/features/ai/api";
 
 export const Route = createFileRoute("/app/ai/")({
   head: () => ({
@@ -30,7 +30,7 @@ function AiPage() {
   const canUse = capabilities.includes("ai.use");
   const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
-  const [output, setOutput] = useState<string | null>(null);
+  const [output, setOutput] = useState<JdOutput | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -89,8 +89,8 @@ function AiPage() {
           </div>
         </div>
         {msg && (
-          <div className="rounded-md bg-muted/40 p-3 text-sm text-muted-foreground">
-            {output ?? msg}
+          <div className="whitespace-pre-wrap rounded-md bg-muted/40 p-3 text-sm text-muted-foreground">
+            {output?.text ?? msg}
           </div>
         )}
       </section>

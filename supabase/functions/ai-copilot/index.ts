@@ -66,17 +66,31 @@ function statusMessage(status: number): string {
 async function generateJd(title: string, notes: string) {
   const system =
     "You are an HR specialist at Al Hamra Real Estate Group in Kuwait. Write a clear, professional job description. " +
-    "Return it in BOTH English and Arabic (Modern Standard Arabic, RTL-appropriate). " +
-    "Structure each language with: a one-paragraph summary, Key Responsibilities (bullet list), and Requirements/Qualifications (bullet list). " +
-    "Keep it concise and Kuwait-labor-market appropriate. Do not invent salary or benefits unless given.";
+    "Each language must contain: a one-paragraph summary, Key Responsibilities (bullet list), and Requirements/Qualifications (bullet list). " +
+    "Keep it concise and Kuwait-labor-market appropriate. Do not invent salary or benefits unless given. " +
+    "Return ONLY valid JSON — no markdown fences, no prose — with this schema: " +
+    '{"summary_en": string, "summary_ar": string}. ' +
+    "summary_en is the full English job description; summary_ar is the full Arabic (Modern Standard Arabic) job description.";
   const user =
     `Role title: ${title}\n` +
     (notes ? `Notes / requirements from the hiring team:\n${notes}\n` : "") +
-    `\nProduce the job description now. Label the two halves clearly: "English" then "العربية".`;
+    `\nProduce the job description now as JSON.`;
 
   const r = await callGateway([{ role: "system", content: system }, { role: "user", content: user }], 3000);
   if (!r.ok) return { dormant: false, output: null, message: statusMessage(r.status) };
-  return { dormant: false, output: r.text, message: "generated" };
+
+  const cleaned = r.text.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
+  let en = "", ar = "";
+  try {
+    const p = JSON.parse(cleaned);
+    en = String(p?.summary_en ?? "");
+    ar = String(p?.summary_ar ?? "");
+  } catch {
+    // Model didn't return clean JSON — fall back to the raw text in the English field.
+    en = r.text;
+  }
+  const text = [en && `English\n\n${en}`, ar && `العربية\n\n${ar}`].filter(Boolean).join("\n\n———\n\n");
+  return { dormant: false, output: { text, summary_en: en, summary_ar: ar }, message: "generated" };
 }
 
 async function parseCv(cvText: string) {

@@ -23,6 +23,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/hooks/use-language";
 import { useAuth } from "@/features/auth/AuthProvider";
+import { AiGenerateButton } from "@/features/ai/components/AiGenerateButton";
+import { aiGenerateJd, type JdOutput } from "@/features/ai/api";
 import {
   listBranches,
   listDepartments,
@@ -242,7 +244,24 @@ export function RequisitionForm({ currentUserId = null }: RequisitionFormProps) 
 
       {/* JD (editable into the snapshot) */}
       <section className="space-y-3 rounded-md border p-4">
-        <h3 className="font-medium text-foreground">{t("requisition.form.jd")}</h3>
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <h3 className="font-medium text-foreground">{t("requisition.form.jd")}</h3>
+          <AiGenerateButton<JdOutput>
+            label={t("requisition.form.jdAi")}
+            disabled={!(titleEn.trim() || titleAr.trim())}
+            generate={(notes) => aiGenerateJd((titleEn.trim() || titleAr.trim()), notes)}
+            onApply={(o) => { setSummaryEn(o.summary_en); setSummaryAr(o.summary_ar); }}
+            renderPreview={(o) => (
+              <div className="space-y-2">
+                <p className="whitespace-pre-wrap">{o.summary_en}</p>
+                <p className="whitespace-pre-wrap" dir="rtl">{o.summary_ar}</p>
+              </div>
+            )}
+          />
+        </div>
+        {!(titleEn.trim() || titleAr.trim()) && (
+          <p className="text-xs text-muted-foreground">{t("requisition.form.jdAiNeedsTitle")}</p>
+        )}
         <div className="grid gap-3 sm:grid-cols-2">
           <div className="flex flex-col gap-1.5">
             <Label>{t("requisition.form.titleEn")}</Label>
