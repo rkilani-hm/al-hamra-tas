@@ -38,6 +38,7 @@ export function AppSidebar() {
     { title: t("nav.notifications"), url: "/app/notifications", icon: Bell },
     { title: t("nav.documents"), url: "/app/documents", icon: FolderArchive },
     { title: t("nav.audit"), url: "/app/audit", icon: ScrollText },
+    { title: t("nav.compliance"), url: "/app/compliance", icon: ShieldCheck },
     // Admin-only: hidden from non-SYSTEM_ADMIN users (route + RPC also enforce).
     ...(isSystemAdmin(roles)
       ? [

@@ -21,6 +21,7 @@
     "notifications": "Notifications",
     "documents": "Documents",
     "audit": "Audit Log",
+    "compliance": "Compliance Reporting",
     "admin": "User Administration",
     "roles": "Roles & Permissions",
     "systemSettings": "System Settings",
@@ -160,6 +161,31 @@
     "toasts": {
       "saved": "Plan saved.",
       "actionError": "Action failed. Please try again."
+    }
+  },
+  "compliance": {
+    "page": {
+      "title": "Compliance Reporting",
+      "subtitle": "System-wide audit and compliance overview."
+    },
+    "noPermission": "You don't have permission to view compliance reports.",
+    "empty": "No audit events.",
+    "kpi": {
+      "total": "Total events",
+      "last24h": "Last 24 hours",
+      "modules": "Modules",
+      "eventTypes": "Event types"
+    },
+    "byModule": "Events by module",
+    "byEvent": "Events by type",
+    "recent": "Recent events",
+    "allModules": "All modules",
+    "table": {
+      "time": "Time",
+      "actor": "Actor",
+      "module": "Module",
+      "event": "Event",
+      "entity": "Entity"
     }
   },
   "settings": {

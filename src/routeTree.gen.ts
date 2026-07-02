@@ -32,6 +32,7 @@ import { Route as AppInterviewsIndexRouteImport } from './routes/app.interviews.
 import { Route as AppIdentityIndexRouteImport } from './routes/app.identity.index'
 import { Route as AppDocumentsIndexRouteImport } from './routes/app.documents.index'
 import { Route as AppConfigIndexRouteImport } from './routes/app.config.index'
+import { Route as AppComplianceIndexRouteImport } from './routes/app.compliance.index'
 import { Route as AppCandidatesIndexRouteImport } from './routes/app.candidates.index'
 import { Route as AppAuditIndexRouteImport } from './routes/app.audit.index'
 import { Route as AppApplicationsIndexRouteImport } from './routes/app.applications.index'
@@ -177,6 +178,11 @@ const AppDocumentsIndexRoute = AppDocumentsIndexRouteImport.update({
 const AppConfigIndexRoute = AppConfigIndexRouteImport.update({
   id: '/config/',
   path: '/config/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppComplianceIndexRoute = AppComplianceIndexRouteImport.update({
+  id: '/compliance/',
+  path: '/compliance/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppCandidatesIndexRoute = AppCandidatesIndexRouteImport.update({
@@ -373,6 +379,7 @@ export interface FileRoutesByFullPath {
   '/app/applications/': typeof AppApplicationsIndexRoute
   '/app/audit/': typeof AppAuditIndexRoute
   '/app/candidates/': typeof AppCandidatesIndexRoute
+  '/app/compliance/': typeof AppComplianceIndexRoute
   '/app/config/': typeof AppConfigIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
@@ -428,6 +435,7 @@ export interface FileRoutesByTo {
   '/app/applications': typeof AppApplicationsIndexRoute
   '/app/audit': typeof AppAuditIndexRoute
   '/app/candidates': typeof AppCandidatesIndexRoute
+  '/app/compliance': typeof AppComplianceIndexRoute
   '/app/config': typeof AppConfigIndexRoute
   '/app/documents': typeof AppDocumentsIndexRoute
   '/app/identity': typeof AppIdentityIndexRoute
@@ -485,6 +493,7 @@ export interface FileRoutesById {
   '/app/applications/': typeof AppApplicationsIndexRoute
   '/app/audit/': typeof AppAuditIndexRoute
   '/app/candidates/': typeof AppCandidatesIndexRoute
+  '/app/compliance/': typeof AppComplianceIndexRoute
   '/app/config/': typeof AppConfigIndexRoute
   '/app/documents/': typeof AppDocumentsIndexRoute
   '/app/identity/': typeof AppIdentityIndexRoute
@@ -543,6 +552,7 @@ export interface FileRouteTypes {
     | '/app/applications/'
     | '/app/audit/'
     | '/app/candidates/'
+    | '/app/compliance/'
     | '/app/config/'
     | '/app/documents/'
     | '/app/identity/'
@@ -598,6 +608,7 @@ export interface FileRouteTypes {
     | '/app/applications'
     | '/app/audit'
     | '/app/candidates'
+    | '/app/compliance'
     | '/app/config'
     | '/app/documents'
     | '/app/identity'
@@ -654,6 +665,7 @@ export interface FileRouteTypes {
     | '/app/applications/'
     | '/app/audit/'
     | '/app/candidates/'
+    | '/app/compliance/'
     | '/app/config/'
     | '/app/documents/'
     | '/app/identity/'
@@ -847,6 +859,13 @@ declare module '@tanstack/react-router' {
       path: '/config'
       fullPath: '/app/config/'
       preLoaderRoute: typeof AppConfigIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/compliance/': {
+      id: '/app/compliance/'
+      path: '/compliance'
+      fullPath: '/app/compliance/'
+      preLoaderRoute: typeof AppComplianceIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/candidates/': {
@@ -1097,6 +1116,7 @@ interface AppRouteChildren {
   AppApplicationsIndexRoute: typeof AppApplicationsIndexRoute
   AppAuditIndexRoute: typeof AppAuditIndexRoute
   AppCandidatesIndexRoute: typeof AppCandidatesIndexRoute
+  AppComplianceIndexRoute: typeof AppComplianceIndexRoute
   AppConfigIndexRoute: typeof AppConfigIndexRoute
   AppDocumentsIndexRoute: typeof AppDocumentsIndexRoute
   AppIdentityIndexRoute: typeof AppIdentityIndexRoute
@@ -1146,6 +1166,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppApplicationsIndexRoute: AppApplicationsIndexRoute,
   AppAuditIndexRoute: AppAuditIndexRoute,
   AppCandidatesIndexRoute: AppCandidatesIndexRoute,
+  AppComplianceIndexRoute: AppComplianceIndexRoute,
   AppConfigIndexRoute: AppConfigIndexRoute,
   AppDocumentsIndexRoute: AppDocumentsIndexRoute,
   AppIdentityIndexRoute: AppIdentityIndexRoute,
