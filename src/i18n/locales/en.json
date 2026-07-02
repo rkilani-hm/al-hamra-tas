@@ -464,6 +464,24 @@
     "welcome": "Welcome",
     "placeholder": "Your modules will appear here."
   },
+  "dashboard": {
+    "greeting": "Welcome back, {{name}}",
+    "greetingNoName": "Welcome to Al Hamra TAS",
+    "subtitle": "Your recruitment pipeline at a glance.",
+    "kpisTitle": "Pipeline snapshot",
+    "kpisLocked": "Pipeline metrics require reporting access.",
+    "quickActionsTitle": "Quick actions",
+    "viewReports": "View reports",
+    "actions": {
+      "newRequisition": "New requisition",
+      "applicationsBoard": "Applications board",
+      "screening": "Screening queue",
+      "interviews": "Interviews",
+      "newOffer": "New offer",
+      "approvals": "Approvals inbox",
+      "aiCopilot": "AI copilot"
+    }
+  },
   "identity": {
     "page": {
       "title": "Identity & Access",

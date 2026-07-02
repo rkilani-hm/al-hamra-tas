@@ -464,6 +464,24 @@
     "welcome": "مرحباً",
     "placeholder": "ستظهر وحداتك هنا."
   },
+  "dashboard": {
+    "greeting": "مرحباً بعودتك، {{name}}",
+    "greetingNoName": "مرحباً بك في نظام استقطاب المواهب — الحمراء",
+    "subtitle": "لمحة سريعة عن مسار التوظيف لديك.",
+    "kpisTitle": "لمحة عن المسار",
+    "kpisLocked": "تتطلب مؤشرات المسار صلاحية الاطلاع على التقارير.",
+    "quickActionsTitle": "إجراءات سريعة",
+    "viewReports": "عرض التقارير",
+    "actions": {
+      "newRequisition": "طلب توظيف جديد",
+      "applicationsBoard": "لوحة الطلبات",
+      "screening": "قائمة الفرز",
+      "interviews": "المقابلات",
+      "newOffer": "عرض جديد",
+      "approvals": "صندوق الموافقات",
+      "aiCopilot": "مساعد الذكاء الاصطناعي"
+    }
+  },
   "identity": {
     "page": {
       "title": "الهوية والوصول",
