@@ -28,6 +28,7 @@ export function AppSidebar() {
     { title: t("nav.requisitions"), url: "/app/requisitions", icon: ClipboardList },
     { title: t("nav.applications"), url: "/app/applications", icon: KanbanSquare },
     { title: t("nav.candidates"), url: "/app/candidates", icon: UserSearch },
+    { title: t("nav.sourcing"), url: "/app/sourcing", icon: UserSearch },
     { title: t("nav.screening"), url: "/app/screening", icon: ClipboardCheck },
     { title: t("nav.interviews"), url: "/app/interviews", icon: CalendarClock },
     { title: t("nav.offers"), url: "/app/offers", icon: FileSignature },

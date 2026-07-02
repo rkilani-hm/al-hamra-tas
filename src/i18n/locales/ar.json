@@ -11,6 +11,7 @@
     "requisitions": "طلبات التوظيف",
     "applications": "الطلبات",
     "candidates": "المرشحون",
+    "sourcing": "المصادر ومجمع المواهب",
     "screening": "الفرز",
     "interviews": "المقابلات",
     "offers": "العروض",
@@ -157,6 +158,49 @@
     },
     "toasts": {
       "saved": "تم حفظ الخطة.",
+      "actionError": "فشل الإجراء. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "sourcing": {
+    "page": {
+      "title": "المصادر ومجمع المواهب",
+      "subtitle": "قنوات مصادر المرشحين ومجمع المواهب.",
+      "empty": "لا توجد إدخالات في مجمع المواهب بعد."
+    },
+    "filter": {
+      "allChannels": "جميع القنوات",
+      "allStatuses": "جميع الحالات"
+    },
+    "table": {
+      "candidate": "المرشح",
+      "channel": "قناة المصدر",
+      "tags": "الوسوم",
+      "status": "الحالة"
+    },
+    "form": {
+      "tagsHint": "وسوم مفصولة بفواصل"
+    },
+    "channel": {
+      "internal": "داخلي",
+      "referral": "ترشيح",
+      "agency": "وكالة",
+      "database": "قاعدة بيانات",
+      "portal": "بوابة التوظيف",
+      "other": "أخرى"
+    },
+    "status": {
+      "active": "نشط",
+      "passive": "خامل",
+      "placed": "تم التعيين",
+      "archived": "مؤرشف"
+    },
+    "actions": {
+      "add": "إضافة إلى المجمع",
+      "save": "حفظ",
+      "cancel": "إلغاء"
+    },
+    "toasts": {
+      "added": "تمت الإضافة إلى مجمع المواهب.",
       "actionError": "فشل الإجراء. يرجى المحاولة مرة أخرى."
     }
   },

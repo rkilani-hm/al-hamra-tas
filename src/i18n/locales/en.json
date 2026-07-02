@@ -11,6 +11,7 @@
     "requisitions": "Requisitions",
     "applications": "Applications",
     "candidates": "Candidates",
+    "sourcing": "Sourcing & Talent Pool",
     "screening": "Screening",
     "interviews": "Interviews",
     "offers": "Offers",
@@ -157,6 +158,49 @@
     },
     "toasts": {
       "saved": "Plan saved.",
+      "actionError": "Action failed. Please try again."
+    }
+  },
+  "sourcing": {
+    "page": {
+      "title": "Sourcing & Talent Pool",
+      "subtitle": "Candidate sourcing channels and talent pool.",
+      "empty": "No talent pool entries yet."
+    },
+    "filter": {
+      "allChannels": "All channels",
+      "allStatuses": "All statuses"
+    },
+    "table": {
+      "candidate": "Candidate",
+      "channel": "Source channel",
+      "tags": "Tags",
+      "status": "Status"
+    },
+    "form": {
+      "tagsHint": "Comma-separated tags"
+    },
+    "channel": {
+      "internal": "Internal",
+      "referral": "Referral",
+      "agency": "Agency",
+      "database": "Database",
+      "portal": "Careers portal",
+      "other": "Other"
+    },
+    "status": {
+      "active": "Active",
+      "passive": "Passive",
+      "placed": "Placed",
+      "archived": "Archived"
+    },
+    "actions": {
+      "add": "Add to pool",
+      "save": "Save",
+      "cancel": "Cancel"
+    },
+    "toasts": {
+      "added": "Added to talent pool.",
       "actionError": "Action failed. Please try again."
     }
   },

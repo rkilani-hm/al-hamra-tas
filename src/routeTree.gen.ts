@@ -17,6 +17,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppIndexRouteImport } from './routes/app.index'
 import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AppWorkflowIndexRouteImport } from './routes/app.workflow.index'
+import { Route as AppSourcingIndexRouteImport } from './routes/app.sourcing.index'
 import { Route as AppScreeningIndexRouteImport } from './routes/app.screening.index'
 import { Route as AppRequisitionsIndexRouteImport } from './routes/app.requisitions.index'
 import { Route as AppPreboardingIndexRouteImport } from './routes/app.preboarding.index'
@@ -97,6 +98,11 @@ const AuthCallbackRoute = AuthCallbackRouteImport.update({
 const AppWorkflowIndexRoute = AppWorkflowIndexRouteImport.update({
   id: '/workflow/',
   path: '/workflow/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppSourcingIndexRoute = AppSourcingIndexRouteImport.update({
+  id: '/sourcing/',
+  path: '/sourcing/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppScreeningIndexRoute = AppScreeningIndexRouteImport.update({
@@ -351,6 +357,7 @@ export interface FileRoutesByFullPath {
   '/app/preboarding/': typeof AppPreboardingIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
+  '/app/sourcing/': typeof AppSourcingIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
   '/app/admin/roles/matrix': typeof AppAdminRolesMatrixRoute
   '/app/admin/users/$id': typeof AppAdminUsersIdRoute
@@ -401,6 +408,7 @@ export interface FileRoutesByTo {
   '/app/preboarding': typeof AppPreboardingIndexRoute
   '/app/requisitions': typeof AppRequisitionsIndexRoute
   '/app/screening': typeof AppScreeningIndexRoute
+  '/app/sourcing': typeof AppSourcingIndexRoute
   '/app/workflow': typeof AppWorkflowIndexRoute
   '/app/admin/roles/matrix': typeof AppAdminRolesMatrixRoute
   '/app/admin/users/$id': typeof AppAdminUsersIdRoute
@@ -453,6 +461,7 @@ export interface FileRoutesById {
   '/app/preboarding/': typeof AppPreboardingIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
+  '/app/sourcing/': typeof AppSourcingIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
   '/app/admin/roles/matrix': typeof AppAdminRolesMatrixRoute
   '/app/admin/users/$id': typeof AppAdminUsersIdRoute
@@ -506,6 +515,7 @@ export interface FileRouteTypes {
     | '/app/preboarding/'
     | '/app/requisitions/'
     | '/app/screening/'
+    | '/app/sourcing/'
     | '/app/workflow/'
     | '/app/admin/roles/matrix'
     | '/app/admin/users/$id'
@@ -556,6 +566,7 @@ export interface FileRouteTypes {
     | '/app/preboarding'
     | '/app/requisitions'
     | '/app/screening'
+    | '/app/sourcing'
     | '/app/workflow'
     | '/app/admin/roles/matrix'
     | '/app/admin/users/$id'
@@ -607,6 +618,7 @@ export interface FileRouteTypes {
     | '/app/preboarding/'
     | '/app/requisitions/'
     | '/app/screening/'
+    | '/app/sourcing/'
     | '/app/workflow/'
     | '/app/admin/roles/matrix'
     | '/app/admin/users/$id'
@@ -680,6 +692,13 @@ declare module '@tanstack/react-router' {
       path: '/workflow'
       fullPath: '/app/workflow/'
       preLoaderRoute: typeof AppWorkflowIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/sourcing/': {
+      id: '/app/sourcing/'
+      path: '/sourcing'
+      fullPath: '/app/sourcing/'
+      preLoaderRoute: typeof AppSourcingIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/screening/': {
@@ -1010,6 +1029,7 @@ interface AppRouteChildren {
   AppPreboardingIndexRoute: typeof AppPreboardingIndexRoute
   AppRequisitionsIndexRoute: typeof AppRequisitionsIndexRoute
   AppScreeningIndexRoute: typeof AppScreeningIndexRoute
+  AppSourcingIndexRoute: typeof AppSourcingIndexRoute
   AppWorkflowIndexRoute: typeof AppWorkflowIndexRoute
   AppAdminRolesMatrixRoute: typeof AppAdminRolesMatrixRoute
   AppAdminUsersIdRoute: typeof AppAdminUsersIdRoute
@@ -1056,6 +1076,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppPreboardingIndexRoute: AppPreboardingIndexRoute,
   AppRequisitionsIndexRoute: AppRequisitionsIndexRoute,
   AppScreeningIndexRoute: AppScreeningIndexRoute,
+  AppSourcingIndexRoute: AppSourcingIndexRoute,
   AppWorkflowIndexRoute: AppWorkflowIndexRoute,
   AppAdminRolesMatrixRoute: AppAdminRolesMatrixRoute,
   AppAdminUsersIdRoute: AppAdminUsersIdRoute,
