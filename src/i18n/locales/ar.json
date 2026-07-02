@@ -126,6 +126,47 @@
     },
     "backToList": "العودة إلى الالتحاق"
   },
+  "assessment": {
+    "panel": {
+      "title": "التقييم والتقدير",
+      "none": "لا توجد تقييمات بعد."
+    },
+    "type": {
+      "technical": "تقني",
+      "psychometric": "قياس نفسي",
+      "case_study": "دراسة حالة",
+      "other": "أخرى"
+    },
+    "status": {
+      "draft": "مسودة",
+      "submitted": "مُقدَّم"
+    },
+    "recommendation": {
+      "proceed": "المتابعة",
+      "hold": "تعليق",
+      "reject": "رفض"
+    },
+    "actions": {
+      "new": "تقييم جديد",
+      "save": "حفظ",
+      "submit": "تقديم"
+    },
+    "form": {
+      "overall": "المجموع المرجّح",
+      "recommendation": "التوصية",
+      "notes": "ملاحظات",
+      "note": "ملاحظة"
+    },
+    "toasts": {
+      "created": "تم إنشاء التقييم.",
+      "saved": "تم حفظ الدرجات.",
+      "submitted": "تم تقديم التقييم.",
+      "actionError": "فشل الإجراء. يرجى المحاولة مرة أخرى."
+    },
+    "common": {
+      "loading": "جارٍ التحميل…"
+    }
+  },
   "topbar": {
     "toggleSidebar": "تبديل الشريط الجانبي",
     "language": "English",

@@ -21,6 +21,7 @@ import { AuditTrail } from "@/features/audit/components/AuditTrail";
 import { ScreeningPanel } from "@/features/screening/components/ScreeningPanel";
 import { InterviewPanel } from "@/features/interviews/components/InterviewPanel";
 import { OfferPanel } from "@/features/offers/components/OfferPanel";
+import { AssessmentPanel } from "@/features/assessment/components/AssessmentPanel";
 import { PreBoardingPanel } from "@/features/preboarding/components/PreBoardingPanel";
 import {
   applicationDetail,
@@ -164,6 +165,12 @@ export function ApplicationDetail({ id, currentUserId = null }: ApplicationDetai
       <section className="space-y-2 rounded-md border p-4">
         <h3 className="font-medium text-foreground">{t("interviews.panel.title")}</h3>
         <InterviewPanel applicationId={id} />
+      </section>
+
+      {/* Assessment & Evaluation (M1.8) */}
+      <section className="space-y-2 rounded-md border p-4">
+        <h3 className="font-medium text-foreground">{t("assessment.panel.title")}</h3>
+        <AssessmentPanel applicationId={id} />
       </section>
 
       {/* Offer (M1.9, reused panel) */}

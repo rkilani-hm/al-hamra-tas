@@ -126,6 +126,47 @@
     },
     "backToList": "Back to onboarding"
   },
+  "assessment": {
+    "panel": {
+      "title": "Assessment & Evaluation",
+      "none": "No assessments yet."
+    },
+    "type": {
+      "technical": "Technical",
+      "psychometric": "Psychometric",
+      "case_study": "Case study",
+      "other": "Other"
+    },
+    "status": {
+      "draft": "Draft",
+      "submitted": "Submitted"
+    },
+    "recommendation": {
+      "proceed": "Proceed",
+      "hold": "Hold",
+      "reject": "Reject"
+    },
+    "actions": {
+      "new": "New assessment",
+      "save": "Save",
+      "submit": "Submit"
+    },
+    "form": {
+      "overall": "Weighted overall",
+      "recommendation": "Recommendation",
+      "notes": "Notes",
+      "note": "Note"
+    },
+    "toasts": {
+      "created": "Assessment created.",
+      "saved": "Scores saved.",
+      "submitted": "Assessment submitted.",
+      "actionError": "Action failed. Please try again."
+    },
+    "common": {
+      "loading": "Loading…"
+    }
+  },
   "topbar": {
     "toggleSidebar": "Toggle sidebar",
     "language": "العربية",
