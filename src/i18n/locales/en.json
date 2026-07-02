@@ -28,7 +28,17 @@
     "integrations": "Integrations",
     "ai": "AI Copilot",
     "reports": "Reports",
-    "settings": "Settings"
+    "settings": "Settings",
+    "group": {
+      "overview": "Overview",
+      "planSource": "Plan & Source",
+      "recruit": "Recruit",
+      "hire": "Hire & Onboard",
+      "workspace": "Workspace",
+      "governance": "Governance",
+      "setup": "Setup",
+      "admin": "Administration"
+    }
   },
   "preboarding": {
     "page": {

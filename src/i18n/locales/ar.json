@@ -28,7 +28,17 @@
     "integrations": "التكاملات",
     "ai": "مساعد الذكاء الاصطناعي",
     "reports": "التقارير",
-    "settings": "الإعدادات"
+    "settings": "الإعدادات",
+    "group": {
+      "overview": "نظرة عامة",
+      "planSource": "التخطيط والمصادر",
+      "recruit": "التوظيف",
+      "hire": "التعيين والالتحاق",
+      "workspace": "مساحة العمل",
+      "governance": "الحوكمة",
+      "setup": "الإعداد",
+      "admin": "الإدارة"
+    }
   },
   "preboarding": {
     "page": {
