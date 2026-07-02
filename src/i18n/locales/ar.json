@@ -163,6 +163,27 @@
       "actionError": "فشل الإجراء. يرجى المحاولة مرة أخرى."
     }
   },
+  "consent": {
+    "title": "خصوصية البيانات والموافقة",
+    "granted": "ممنوحة",
+    "withdrawn": "مسحوبة",
+    "notRecorded": "غير مسجلة",
+    "retentionUntil": "الاحتفاظ حتى",
+    "type": {
+      "data_processing": "معالجة البيانات",
+      "background_check": "التحقق من الخلفية",
+      "data_retention": "الاحتفاظ بالبيانات",
+      "marketing": "المراسلات التسويقية"
+    },
+    "actions": {
+      "grant": "منح",
+      "withdraw": "سحب"
+    },
+    "toasts": {
+      "saved": "تم تحديث الموافقة.",
+      "actionError": "فشل الإجراء. يرجى المحاولة مرة أخرى."
+    }
+  },
   "compliance": {
     "page": {
       "title": "تقارير الامتثال",

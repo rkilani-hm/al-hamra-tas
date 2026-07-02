@@ -163,6 +163,27 @@
       "actionError": "Action failed. Please try again."
     }
   },
+  "consent": {
+    "title": "Data Privacy & Consent",
+    "granted": "Granted",
+    "withdrawn": "Withdrawn",
+    "notRecorded": "Not recorded",
+    "retentionUntil": "Retention until",
+    "type": {
+      "data_processing": "Data processing",
+      "background_check": "Background check",
+      "data_retention": "Data retention",
+      "marketing": "Marketing communications"
+    },
+    "actions": {
+      "grant": "Grant",
+      "withdraw": "Withdraw"
+    },
+    "toasts": {
+      "saved": "Consent updated.",
+      "actionError": "Action failed. Please try again."
+    }
+  },
   "compliance": {
     "page": {
       "title": "Compliance Reporting",

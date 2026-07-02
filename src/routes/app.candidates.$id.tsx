@@ -18,6 +18,7 @@ import {
 import { useLanguage } from "@/hooks/use-language";
 import { CandidateForm } from "@/features/applications/components/CandidateForm";
 import { ApplicationStatusBadge } from "@/features/applications/components/ApplicationStatusBadge";
+import { ConsentPanel } from "@/features/consent/components/ConsentPanel";
 import { applicationsForCandidate, getCandidate, safe } from "@/features/applications/api";
 
 export const Route = createFileRoute("/app/candidates/$id")({
@@ -99,6 +100,11 @@ function CandidateDetailPage() {
                 </TableBody>
               </Table>
             </div>
+          </section>
+
+          <section className="space-y-2">
+            <h2 className="text-lg font-semibold text-foreground">{t("consent.title")}</h2>
+            <ConsentPanel candidateId={id} />
           </section>
 
           <CandidateForm
