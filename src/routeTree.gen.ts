@@ -36,6 +36,7 @@ import { Route as AppComplianceIndexRouteImport } from './routes/app.compliance.
 import { Route as AppCandidatesIndexRouteImport } from './routes/app.candidates.index'
 import { Route as AppAuditIndexRouteImport } from './routes/app.audit.index'
 import { Route as AppApplicationsIndexRouteImport } from './routes/app.applications.index'
+import { Route as AppAiIndexRouteImport } from './routes/app.ai.index'
 import { Route as AppWorkflowInboxRouteImport } from './routes/app.workflow.inbox'
 import { Route as AppWorkflowDefsRouteImport } from './routes/app.workflow.defs'
 import { Route as AppScreeningScorecardsRouteImport } from './routes/app.screening.scorecards'
@@ -198,6 +199,11 @@ const AppAuditIndexRoute = AppAuditIndexRouteImport.update({
 const AppApplicationsIndexRoute = AppApplicationsIndexRouteImport.update({
   id: '/applications/',
   path: '/applications/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAiIndexRoute = AppAiIndexRouteImport.update({
+  id: '/ai/',
+  path: '/ai/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppWorkflowInboxRoute = AppWorkflowInboxRouteImport.update({
@@ -376,6 +382,7 @@ export interface FileRoutesByFullPath {
   '/app/screening/scorecards': typeof AppScreeningScorecardsRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
+  '/app/ai/': typeof AppAiIndexRoute
   '/app/applications/': typeof AppApplicationsIndexRoute
   '/app/audit/': typeof AppAuditIndexRoute
   '/app/candidates/': typeof AppCandidatesIndexRoute
@@ -432,6 +439,7 @@ export interface FileRoutesByTo {
   '/app/screening/scorecards': typeof AppScreeningScorecardsRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
+  '/app/ai': typeof AppAiIndexRoute
   '/app/applications': typeof AppApplicationsIndexRoute
   '/app/audit': typeof AppAuditIndexRoute
   '/app/candidates': typeof AppCandidatesIndexRoute
@@ -490,6 +498,7 @@ export interface FileRoutesById {
   '/app/screening/scorecards': typeof AppScreeningScorecardsRoute
   '/app/workflow/defs': typeof AppWorkflowDefsRoute
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
+  '/app/ai/': typeof AppAiIndexRoute
   '/app/applications/': typeof AppApplicationsIndexRoute
   '/app/audit/': typeof AppAuditIndexRoute
   '/app/candidates/': typeof AppCandidatesIndexRoute
@@ -549,6 +558,7 @@ export interface FileRouteTypes {
     | '/app/screening/scorecards'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
+    | '/app/ai/'
     | '/app/applications/'
     | '/app/audit/'
     | '/app/candidates/'
@@ -605,6 +615,7 @@ export interface FileRouteTypes {
     | '/app/screening/scorecards'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
+    | '/app/ai'
     | '/app/applications'
     | '/app/audit'
     | '/app/candidates'
@@ -662,6 +673,7 @@ export interface FileRouteTypes {
     | '/app/screening/scorecards'
     | '/app/workflow/defs'
     | '/app/workflow/inbox'
+    | '/app/ai/'
     | '/app/applications/'
     | '/app/audit/'
     | '/app/candidates/'
@@ -889,6 +901,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppApplicationsIndexRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/ai/': {
+      id: '/app/ai/'
+      path: '/ai'
+      fullPath: '/app/ai/'
+      preLoaderRoute: typeof AppAiIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/workflow/inbox': {
       id: '/app/workflow/inbox'
       path: '/workflow/inbox'
@@ -1113,6 +1132,7 @@ interface AppRouteChildren {
   AppScreeningScorecardsRoute: typeof AppScreeningScorecardsRoute
   AppWorkflowDefsRoute: typeof AppWorkflowDefsRoute
   AppWorkflowInboxRoute: typeof AppWorkflowInboxRoute
+  AppAiIndexRoute: typeof AppAiIndexRoute
   AppApplicationsIndexRoute: typeof AppApplicationsIndexRoute
   AppAuditIndexRoute: typeof AppAuditIndexRoute
   AppCandidatesIndexRoute: typeof AppCandidatesIndexRoute
@@ -1163,6 +1183,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppScreeningScorecardsRoute: AppScreeningScorecardsRoute,
   AppWorkflowDefsRoute: AppWorkflowDefsRoute,
   AppWorkflowInboxRoute: AppWorkflowInboxRoute,
+  AppAiIndexRoute: AppAiIndexRoute,
   AppApplicationsIndexRoute: AppApplicationsIndexRoute,
   AppAuditIndexRoute: AppAuditIndexRoute,
   AppCandidatesIndexRoute: AppCandidatesIndexRoute,

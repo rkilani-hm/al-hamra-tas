@@ -25,6 +25,7 @@
     "admin": "User Administration",
     "roles": "Roles & Permissions",
     "systemSettings": "System Settings",
+    "ai": "AI Copilot",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -161,6 +162,24 @@
     "toasts": {
       "saved": "Plan saved.",
       "actionError": "Action failed. Please try again."
+    }
+  },
+  "ai": {
+    "page": {
+      "title": "AI Copilot",
+      "subtitle": "AI assistance for JD drafting, CV parsing and ranking."
+    },
+    "enabled": "Enabled",
+    "dormant": "Dormant",
+    "dormantNote": "The AI copilot is dormant. Provision an LLM API key and enable the adapter in System Settings to activate it.",
+    "dormantToast": "AI copilot is not configured yet.",
+    "noPermission": "You don't have permission to use the AI copilot.",
+    "error": "Request failed. Please try again.",
+    "jd": {
+      "title": "Generate job description",
+      "roleTitle": "Role title",
+      "notes": "Notes / requirements",
+      "generate": "Generate draft"
     }
   },
   "consent": {
