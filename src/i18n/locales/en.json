@@ -13,6 +13,7 @@
     "screening": "Screening",
     "interviews": "Interviews",
     "offers": "Offers",
+    "preboarding": "Pre-Boarding",
     "workflow": "Workflow & Approvals",
     "notifications": "Notifications",
     "documents": "Documents",
@@ -21,6 +22,54 @@
     "roles": "Roles & Permissions",
     "reports": "Reports",
     "settings": "Settings"
+  },
+  "preboarding": {
+    "page": {
+      "title": "Pre-Boarding",
+      "subtitle": "Collect new-hire documents and track pre-boarding readiness.",
+      "empty": "No hires in pre-boarding yet."
+    },
+    "panel": {
+      "title": "Pre-Boarding",
+      "notStarted": "Not started",
+      "open": "Open pre-boarding",
+      "start": "Start pre-boarding"
+    },
+    "detail": {
+      "title": "Pre-Boarding",
+      "checklist": "Document checklist",
+      "documents": "Documents",
+      "notFound": "Pre-boarding record not found."
+    },
+    "status": {
+      "in_progress": "In progress",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "item": {
+      "required": "Required",
+      "optional": "Optional"
+    },
+    "itemStatus": {
+      "pending": "Pending",
+      "collected": "Collected",
+      "verified": "Verified",
+      "waived": "Waived"
+    },
+    "actions": {
+      "start": "Start pre-boarding",
+      "complete": "Complete pre-boarding"
+    },
+    "toasts": {
+      "started": "Pre-boarding started.",
+      "completed": "Pre-boarding completed.",
+      "completeError": "Could not complete — all required documents must be collected, verified, or waived.",
+      "actionError": "Action failed. Please try again."
+    },
+    "common": {
+      "loading": "Loading…"
+    },
+    "backToList": "Back to pre-boarding"
   },
   "topbar": {
     "toggleSidebar": "Toggle sidebar",

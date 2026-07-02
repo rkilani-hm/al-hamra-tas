@@ -21,6 +21,7 @@ import { AuditTrail } from "@/features/audit/components/AuditTrail";
 import { ScreeningPanel } from "@/features/screening/components/ScreeningPanel";
 import { InterviewPanel } from "@/features/interviews/components/InterviewPanel";
 import { OfferPanel } from "@/features/offers/components/OfferPanel";
+import { PreBoardingPanel } from "@/features/preboarding/components/PreBoardingPanel";
 import {
   applicationDetail,
   listPipelineStages,
@@ -169,6 +170,12 @@ export function ApplicationDetail({ id, currentUserId = null }: ApplicationDetai
       <section className="space-y-2 rounded-md border p-4">
         <h3 className="font-medium text-foreground">{t("offers.panel.title")}</h3>
         <OfferPanel applicationId={id} candidateId={candidate?.id ?? null} currentUserId={currentUserId} />
+      </section>
+
+      {/* Pre-Boarding (M1.10) */}
+      <section className="space-y-2 rounded-md border p-4">
+        <h3 className="font-medium text-foreground">{t("preboarding.panel.title")}</h3>
+        <PreBoardingPanel applicationId={id} />
       </section>
 
       {/* Audit trail (reused) */}

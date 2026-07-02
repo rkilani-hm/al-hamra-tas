@@ -19,6 +19,7 @@ import { Route as AuthCallbackRouteImport } from './routes/auth.callback'
 import { Route as AppWorkflowIndexRouteImport } from './routes/app.workflow.index'
 import { Route as AppScreeningIndexRouteImport } from './routes/app.screening.index'
 import { Route as AppRequisitionsIndexRouteImport } from './routes/app.requisitions.index'
+import { Route as AppPreboardingIndexRouteImport } from './routes/app.preboarding.index'
 import { Route as AppOffersIndexRouteImport } from './routes/app.offers.index'
 import { Route as AppNotificationsIndexRouteImport } from './routes/app.notifications.index'
 import { Route as AppInterviewsIndexRouteImport } from './routes/app.interviews.index'
@@ -33,6 +34,7 @@ import { Route as AppWorkflowDefsRouteImport } from './routes/app.workflow.defs'
 import { Route as AppScreeningScorecardsRouteImport } from './routes/app.screening.scorecards'
 import { Route as AppRequisitionsNewRouteImport } from './routes/app.requisitions.new'
 import { Route as AppRequisitionsIdRouteImport } from './routes/app.requisitions.$id'
+import { Route as AppPreboardingIdRouteImport } from './routes/app.preboarding.$id'
 import { Route as AppOffersNewRouteImport } from './routes/app.offers.new'
 import { Route as AppOffersIdRouteImport } from './routes/app.offers.$id'
 import { Route as AppNotificationsTemplatesRouteImport } from './routes/app.notifications.templates'
@@ -104,6 +106,11 @@ const AppRequisitionsIndexRoute = AppRequisitionsIndexRouteImport.update({
   path: '/requisitions/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppPreboardingIndexRoute = AppPreboardingIndexRouteImport.update({
+  id: '/preboarding/',
+  path: '/preboarding/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppOffersIndexRoute = AppOffersIndexRouteImport.update({
   id: '/offers/',
   path: '/offers/',
@@ -172,6 +179,11 @@ const AppRequisitionsNewRoute = AppRequisitionsNewRouteImport.update({
 const AppRequisitionsIdRoute = AppRequisitionsIdRouteImport.update({
   id: '/requisitions/$id',
   path: '/requisitions/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppPreboardingIdRoute = AppPreboardingIdRouteImport.update({
+  id: '/preboarding/$id',
+  path: '/preboarding/$id',
   getParentRoute: () => AppRoute,
 } as any)
 const AppOffersNewRoute = AppOffersNewRouteImport.update({
@@ -300,6 +312,7 @@ export interface FileRoutesByFullPath {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/offers/$id': typeof AppOffersIdRoute
   '/app/offers/new': typeof AppOffersNewRoute
+  '/app/preboarding/$id': typeof AppPreboardingIdRoute
   '/app/requisitions/$id': typeof AppRequisitionsIdRoute
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
   '/app/screening/scorecards': typeof AppScreeningScorecardsRoute
@@ -314,6 +327,7 @@ export interface FileRoutesByFullPath {
   '/app/interviews/': typeof AppInterviewsIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/offers/': typeof AppOffersIndexRoute
+  '/app/preboarding/': typeof AppPreboardingIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
@@ -345,6 +359,7 @@ export interface FileRoutesByTo {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/offers/$id': typeof AppOffersIdRoute
   '/app/offers/new': typeof AppOffersNewRoute
+  '/app/preboarding/$id': typeof AppPreboardingIdRoute
   '/app/requisitions/$id': typeof AppRequisitionsIdRoute
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
   '/app/screening/scorecards': typeof AppScreeningScorecardsRoute
@@ -359,6 +374,7 @@ export interface FileRoutesByTo {
   '/app/interviews': typeof AppInterviewsIndexRoute
   '/app/notifications': typeof AppNotificationsIndexRoute
   '/app/offers': typeof AppOffersIndexRoute
+  '/app/preboarding': typeof AppPreboardingIndexRoute
   '/app/requisitions': typeof AppRequisitionsIndexRoute
   '/app/screening': typeof AppScreeningIndexRoute
   '/app/workflow': typeof AppWorkflowIndexRoute
@@ -392,6 +408,7 @@ export interface FileRoutesById {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/offers/$id': typeof AppOffersIdRoute
   '/app/offers/new': typeof AppOffersNewRoute
+  '/app/preboarding/$id': typeof AppPreboardingIdRoute
   '/app/requisitions/$id': typeof AppRequisitionsIdRoute
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
   '/app/screening/scorecards': typeof AppScreeningScorecardsRoute
@@ -406,6 +423,7 @@ export interface FileRoutesById {
   '/app/interviews/': typeof AppInterviewsIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/offers/': typeof AppOffersIndexRoute
+  '/app/preboarding/': typeof AppPreboardingIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
   '/app/workflow/': typeof AppWorkflowIndexRoute
@@ -440,6 +458,7 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/offers/$id'
     | '/app/offers/new'
+    | '/app/preboarding/$id'
     | '/app/requisitions/$id'
     | '/app/requisitions/new'
     | '/app/screening/scorecards'
@@ -454,6 +473,7 @@ export interface FileRouteTypes {
     | '/app/interviews/'
     | '/app/notifications/'
     | '/app/offers/'
+    | '/app/preboarding/'
     | '/app/requisitions/'
     | '/app/screening/'
     | '/app/workflow/'
@@ -485,6 +505,7 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/offers/$id'
     | '/app/offers/new'
+    | '/app/preboarding/$id'
     | '/app/requisitions/$id'
     | '/app/requisitions/new'
     | '/app/screening/scorecards'
@@ -499,6 +520,7 @@ export interface FileRouteTypes {
     | '/app/interviews'
     | '/app/notifications'
     | '/app/offers'
+    | '/app/preboarding'
     | '/app/requisitions'
     | '/app/screening'
     | '/app/workflow'
@@ -531,6 +553,7 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/offers/$id'
     | '/app/offers/new'
+    | '/app/preboarding/$id'
     | '/app/requisitions/$id'
     | '/app/requisitions/new'
     | '/app/screening/scorecards'
@@ -545,6 +568,7 @@ export interface FileRouteTypes {
     | '/app/interviews/'
     | '/app/notifications/'
     | '/app/offers/'
+    | '/app/preboarding/'
     | '/app/requisitions/'
     | '/app/screening/'
     | '/app/workflow/'
@@ -634,6 +658,13 @@ declare module '@tanstack/react-router' {
       path: '/requisitions'
       fullPath: '/app/requisitions/'
       preLoaderRoute: typeof AppRequisitionsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/preboarding/': {
+      id: '/app/preboarding/'
+      path: '/preboarding'
+      fullPath: '/app/preboarding/'
+      preLoaderRoute: typeof AppPreboardingIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/offers/': {
@@ -732,6 +763,13 @@ declare module '@tanstack/react-router' {
       path: '/requisitions/$id'
       fullPath: '/app/requisitions/$id'
       preLoaderRoute: typeof AppRequisitionsIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/preboarding/$id': {
+      id: '/app/preboarding/$id'
+      path: '/preboarding/$id'
+      fullPath: '/app/preboarding/$id'
+      preLoaderRoute: typeof AppPreboardingIdRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/offers/new': {
@@ -894,6 +932,7 @@ interface AppRouteChildren {
   AppNotificationsTemplatesRoute: typeof AppNotificationsTemplatesRoute
   AppOffersIdRoute: typeof AppOffersIdRoute
   AppOffersNewRoute: typeof AppOffersNewRoute
+  AppPreboardingIdRoute: typeof AppPreboardingIdRoute
   AppRequisitionsIdRoute: typeof AppRequisitionsIdRoute
   AppRequisitionsNewRoute: typeof AppRequisitionsNewRoute
   AppScreeningScorecardsRoute: typeof AppScreeningScorecardsRoute
@@ -908,6 +947,7 @@ interface AppRouteChildren {
   AppInterviewsIndexRoute: typeof AppInterviewsIndexRoute
   AppNotificationsIndexRoute: typeof AppNotificationsIndexRoute
   AppOffersIndexRoute: typeof AppOffersIndexRoute
+  AppPreboardingIndexRoute: typeof AppPreboardingIndexRoute
   AppRequisitionsIndexRoute: typeof AppRequisitionsIndexRoute
   AppScreeningIndexRoute: typeof AppScreeningIndexRoute
   AppWorkflowIndexRoute: typeof AppWorkflowIndexRoute
@@ -935,6 +975,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppNotificationsTemplatesRoute: AppNotificationsTemplatesRoute,
   AppOffersIdRoute: AppOffersIdRoute,
   AppOffersNewRoute: AppOffersNewRoute,
+  AppPreboardingIdRoute: AppPreboardingIdRoute,
   AppRequisitionsIdRoute: AppRequisitionsIdRoute,
   AppRequisitionsNewRoute: AppRequisitionsNewRoute,
   AppScreeningScorecardsRoute: AppScreeningScorecardsRoute,
@@ -949,6 +990,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppInterviewsIndexRoute: AppInterviewsIndexRoute,
   AppNotificationsIndexRoute: AppNotificationsIndexRoute,
   AppOffersIndexRoute: AppOffersIndexRoute,
+  AppPreboardingIndexRoute: AppPreboardingIndexRoute,
   AppRequisitionsIndexRoute: AppRequisitionsIndexRoute,
   AppScreeningIndexRoute: AppScreeningIndexRoute,
   AppWorkflowIndexRoute: AppWorkflowIndexRoute,
@@ -972,3 +1014,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
