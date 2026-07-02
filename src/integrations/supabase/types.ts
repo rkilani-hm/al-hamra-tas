@@ -46,6 +46,45 @@ export type Database = {
           },
         ]
       }
+      tas_ai_adapter_config: {
+        Row: {
+          config_status: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_enabled: boolean
+          model: string | null
+          notes: string | null
+          provider: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          config_status?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_enabled?: boolean
+          model?: string | null
+          notes?: string | null
+          provider: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          config_status?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_enabled?: boolean
+          model?: string | null
+          notes?: string | null
+          provider?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
       tas_application: {
         Row: {
           applied_at: string
@@ -196,6 +235,135 @@ export type Database = {
             columns: ["to_stage_id"]
             isOneToOne: false
             referencedRelation: "tas_pipeline_stage"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_assessment: {
+        Row: {
+          application_id: string
+          assessed_by: string | null
+          assessment_type: string
+          candidate_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          overall_score: number | null
+          recommendation: string | null
+          status: string
+          submitted_at: string | null
+          title: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          application_id: string
+          assessed_by?: string | null
+          assessment_type?: string
+          candidate_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          overall_score?: number | null
+          recommendation?: string | null
+          status?: string
+          submitted_at?: string | null
+          title?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          assessed_by?: string | null
+          assessment_type?: string
+          candidate_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          overall_score?: number | null
+          recommendation?: string | null
+          status?: string
+          submitted_at?: string | null
+          title?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_assessment_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "tas_application"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_assessment_assessed_by_fkey"
+            columns: ["assessed_by"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_assessment_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "tas_candidate"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_assessment_item: {
+        Row: {
+          assessment_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          label_ar: string | null
+          label_en: string | null
+          max_score: number
+          note: string | null
+          score: number | null
+          updated_at: string
+          updated_by: string | null
+          weight: number
+        }
+        Insert: {
+          assessment_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label_ar?: string | null
+          label_en?: string | null
+          max_score?: number
+          note?: string | null
+          score?: number | null
+          updated_at?: string
+          updated_by?: string | null
+          weight?: number
+        }
+        Update: {
+          assessment_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          label_ar?: string | null
+          label_en?: string | null
+          max_score?: number
+          note?: string | null
+          score?: number | null
+          updated_at?: string
+          updated_by?: string | null
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_assessment_item_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "tas_assessment"
             referencedColumns: ["id"]
           },
         ]
@@ -433,6 +601,62 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: []
+      }
+      tas_candidate_consent: {
+        Row: {
+          candidate_id: string
+          consent_type: string
+          created_at: string
+          created_by: string | null
+          granted: boolean
+          granted_at: string | null
+          id: string
+          notes: string | null
+          retention_until: string | null
+          source: string | null
+          updated_at: string
+          updated_by: string | null
+          withdrawn_at: string | null
+        }
+        Insert: {
+          candidate_id: string
+          consent_type: string
+          created_at?: string
+          created_by?: string | null
+          granted?: boolean
+          granted_at?: string | null
+          id?: string
+          notes?: string | null
+          retention_until?: string | null
+          source?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          withdrawn_at?: string | null
+        }
+        Update: {
+          candidate_id?: string
+          consent_type?: string
+          created_at?: string
+          created_by?: string | null
+          granted?: boolean
+          granted_at?: string | null
+          id?: string
+          notes?: string | null
+          retention_until?: string | null
+          source?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          withdrawn_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_candidate_consent_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "tas_candidate"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tas_comm_adapter_config: {
         Row: {
@@ -750,6 +974,42 @@ export type Database = {
           name_ar?: string
           name_en?: string
           status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      tas_hrms_adapter_config: {
+        Row: {
+          config_status: string
+          created_at: string
+          created_by: string | null
+          id: string
+          is_enabled: boolean
+          notes: string | null
+          provider: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          config_status?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_enabled?: boolean
+          notes?: string | null
+          provider: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          config_status?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          is_enabled?: boolean
+          notes?: string | null
+          provider?: string
           updated_at?: string
           updated_by?: string | null
         }
@@ -1319,6 +1579,76 @@ export type Database = {
         }
         Relationships: []
       }
+      tas_manpower_plan: {
+        Row: {
+          budgeted_headcount: number
+          created_at: string
+          created_by: string | null
+          department_id: string | null
+          entity_id: string | null
+          fiscal_year: number
+          id: string
+          job_position_id: string | null
+          kuwaitization_target_pct: number | null
+          notes: string | null
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          budgeted_headcount?: number
+          created_at?: string
+          created_by?: string | null
+          department_id?: string | null
+          entity_id?: string | null
+          fiscal_year: number
+          id?: string
+          job_position_id?: string | null
+          kuwaitization_target_pct?: number | null
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          budgeted_headcount?: number
+          created_at?: string
+          created_by?: string | null
+          department_id?: string | null
+          entity_id?: string | null
+          fiscal_year?: number
+          id?: string
+          job_position_id?: string | null
+          kuwaitization_target_pct?: number | null
+          notes?: string | null
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_manpower_plan_department_id_fkey"
+            columns: ["department_id"]
+            isOneToOne: false
+            referencedRelation: "tas_department"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_manpower_plan_entity_id_fkey"
+            columns: ["entity_id"]
+            isOneToOne: false
+            referencedRelation: "tas_entity"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_manpower_plan_job_position_id_fkey"
+            columns: ["job_position_id"]
+            isOneToOne: false
+            referencedRelation: "tas_job_position"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tas_notification: {
         Row: {
           body: string | null
@@ -1697,6 +2027,79 @@ export type Database = {
           },
         ]
       }
+      tas_onboarding: {
+        Row: {
+          application_id: string | null
+          candidate_id: string | null
+          created_at: string
+          created_by: string | null
+          handed_off_at: string | null
+          handoff_payload: Json
+          handoff_status: string
+          id: string
+          mename_employee_ref: string | null
+          notes: string | null
+          preboarding_id: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          application_id?: string | null
+          candidate_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          handed_off_at?: string | null
+          handoff_payload?: Json
+          handoff_status?: string
+          id?: string
+          mename_employee_ref?: string | null
+          notes?: string | null
+          preboarding_id: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          application_id?: string | null
+          candidate_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          handed_off_at?: string | null
+          handoff_payload?: Json
+          handoff_status?: string
+          id?: string
+          mename_employee_ref?: string | null
+          notes?: string | null
+          preboarding_id?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_onboarding_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "tas_application"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_onboarding_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "tas_candidate"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_onboarding_preboarding_id_fkey"
+            columns: ["preboarding_id"]
+            isOneToOne: true
+            referencedRelation: "tas_preboarding"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tas_permission: {
         Row: {
           action: string | null
@@ -1780,6 +2183,152 @@ export type Database = {
           updated_by?: string | null
         }
         Relationships: []
+      }
+      tas_preboarding: {
+        Row: {
+          application_id: string
+          candidate_id: string | null
+          completed_at: string | null
+          completed_by: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          offer_id: string | null
+          started_at: string
+          status: string
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          application_id: string
+          candidate_id?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          offer_id?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          application_id?: string
+          candidate_id?: string | null
+          completed_at?: string | null
+          completed_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          offer_id?: string | null
+          started_at?: string
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_preboarding_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: true
+            referencedRelation: "tas_application"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_preboarding_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: false
+            referencedRelation: "tas_candidate"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_preboarding_completed_by_fkey"
+            columns: ["completed_by"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_preboarding_offer_id_fkey"
+            columns: ["offer_id"]
+            isOneToOne: false
+            referencedRelation: "tas_offer"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tas_preboarding_item: {
+        Row: {
+          collected_at: string | null
+          created_at: string
+          created_by: string | null
+          doc_category: string
+          document_id: string | null
+          id: string
+          label_ar: string | null
+          label_en: string | null
+          preboarding_id: string
+          required: boolean
+          status: string
+          updated_at: string
+          updated_by: string | null
+          verified_at: string | null
+          waived_reason: string | null
+        }
+        Insert: {
+          collected_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          doc_category: string
+          document_id?: string | null
+          id?: string
+          label_ar?: string | null
+          label_en?: string | null
+          preboarding_id: string
+          required?: boolean
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+          verified_at?: string | null
+          waived_reason?: string | null
+        }
+        Update: {
+          collected_at?: string | null
+          created_at?: string
+          created_by?: string | null
+          doc_category?: string
+          document_id?: string | null
+          id?: string
+          label_ar?: string | null
+          label_en?: string | null
+          preboarding_id?: string
+          required?: boolean
+          status?: string
+          updated_at?: string
+          updated_by?: string | null
+          verified_at?: string | null
+          waived_reason?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_preboarding_item_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "tas_document"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_preboarding_item_preboarding_id_fkey"
+            columns: ["preboarding_id"]
+            isOneToOne: false
+            referencedRelation: "tas_preboarding"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       tas_requisition: {
         Row: {
@@ -2341,6 +2890,95 @@ export type Database = {
         }
         Relationships: []
       }
+      tas_system_setting: {
+        Row: {
+          category: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          key: string
+          updated_at: string
+          updated_by: string | null
+          value_json: Json
+        }
+        Insert: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          key: string
+          updated_at?: string
+          updated_by?: string | null
+          value_json?: Json
+        }
+        Update: {
+          category?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          key?: string
+          updated_at?: string
+          updated_by?: string | null
+          value_json?: Json
+        }
+        Relationships: []
+      }
+      tas_talent_pool: {
+        Row: {
+          agency_name: string | null
+          candidate_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          notes: string | null
+          pool_status: string
+          referred_by: string | null
+          source_channel: string
+          tags: string[]
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          agency_name?: string | null
+          candidate_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          pool_status?: string
+          referred_by?: string | null
+          source_channel?: string
+          tags?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          agency_name?: string | null
+          candidate_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          notes?: string | null
+          pool_status?: string
+          referred_by?: string | null
+          source_channel?: string
+          tags?: string[]
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_talent_pool_candidate_id_fkey"
+            columns: ["candidate_id"]
+            isOneToOne: true
+            referencedRelation: "tas_candidate"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tas_user: {
         Row: {
           created_at: string
@@ -2898,6 +3536,17 @@ export type Database = {
         Args: { p_definition_id: string }
         Returns: undefined
       }
+      add_to_talent_pool: {
+        Args: {
+          p_agency?: string
+          p_candidate_id: string
+          p_channel?: string
+          p_notes?: string
+          p_referred_by?: string
+          p_tags?: Json
+        }
+        Returns: string
+      }
       admin_assign_role: {
         Args: { p_role_id: string; p_user_id: string }
         Returns: undefined
@@ -2942,8 +3591,14 @@ export type Database = {
         }
         Returns: string
       }
+      ai_generate_jd: {
+        Args: { p_notes?: string; p_title: string }
+        Returns: Json
+      }
+      ai_status: { Args: never; Returns: Json }
       application_detail: { Args: { p_id: string }; Returns: Json }
       archive_document: { Args: { p_id: string }; Returns: undefined }
+      assessment_detail: { Args: { p_id: string }; Returns: Json }
       audit_log: {
         Args: {
           p_actor: string
@@ -2955,6 +3610,19 @@ export type Database = {
         }
         Returns: string
       }
+      audit_report: {
+        Args: { p_limit?: number; p_module?: string; p_offset?: number }
+        Returns: {
+          actor_name: string
+          created_at: string
+          entity_ref: string
+          entity_type: string
+          event_type: string
+          id: string
+          module_code: string
+        }[]
+      }
+      audit_stats: { Args: never; Returns: Json }
       cancel_interview: {
         Args: { p_interview_id: string; p_reason?: string }
         Returns: undefined
@@ -2971,6 +3639,14 @@ export type Database = {
           filled: number
           over_budget: boolean
         }[]
+      }
+      complete_onboarding: {
+        Args: { p_mename_ref?: string; p_onboarding_id: string }
+        Returns: undefined
+      }
+      complete_preboarding: {
+        Args: { p_preboarding_id: string }
+        Returns: undefined
       }
       config_attach_competency: {
         Args: {
@@ -3134,6 +3810,10 @@ export type Database = {
         }
         Returns: string
       }
+      create_assessment: {
+        Args: { p_application_id: string; p_title?: string; p_type?: string }
+        Returns: string
+      }
       create_screening: {
         Args: { p_application_id: string; p_scorecard_id?: string }
         Returns: string
@@ -3175,6 +3855,7 @@ export type Database = {
       generate_interview_ref: { Args: never; Returns: string }
       generate_offer_ref: { Args: never; Returns: string }
       generate_requisition_ref: { Args: never; Returns: string }
+      handoff_to_mename: { Args: { p_onboarding_id: string }; Returns: Json }
       instance_timeline: { Args: { p_instance_id: string }; Returns: Json }
       interview_detail: { Args: { p_id: string }; Returns: Json }
       interview_panel_summary: {
@@ -3182,6 +3863,7 @@ export type Database = {
         Returns: Json
       }
       issue_offer: { Args: { p_offer_id: string }; Returns: undefined }
+      list_adapters: { Args: never; Returns: Json }
       list_applications: {
         Args: {
           p_candidate_search?: string
@@ -3209,6 +3891,23 @@ export type Database = {
           stage_type: string
           status: string
         }[]
+      }
+      list_assessments: {
+        Args: { p_application_id?: string; p_limit?: number; p_offset?: number }
+        Returns: {
+          application_id: string
+          assessment_type: string
+          created_at: string
+          id: string
+          overall_score: number
+          recommendation: string
+          status: string
+          title: string
+        }[]
+      }
+      list_candidate_consents: {
+        Args: { p_candidate_id: string }
+        Returns: Json
       }
       list_documents: {
         Args: { p_entity_ref: string; p_entity_type: string }
@@ -3258,6 +3957,20 @@ export type Database = {
           teams_join_url: string
         }[]
       }
+      list_manpower_plans: {
+        Args: { p_fiscal_year?: number; p_limit?: number; p_offset?: number }
+        Returns: {
+          budgeted_headcount: number
+          department_id: string
+          entity_id: string
+          fiscal_year: number
+          id: string
+          job_position_id: string
+          kuwaitization_target_pct: number
+          open_requisitions: number
+          status: string
+        }[]
+      }
       list_offers: {
         Args: {
           p_application_id?: string
@@ -3282,6 +3995,21 @@ export type Database = {
           status: string
         }[]
       }
+      list_onboarding: {
+        Args: { p_limit?: number; p_offset?: number; p_status?: string }
+        Returns: {
+          application_id: string
+          candidate_id: string
+          candidate_name_ar: string
+          candidate_name_en: string
+          created_at: string
+          handoff_status: string
+          id: string
+          mename_employee_ref: string
+          reference: string
+          status: string
+        }[]
+      }
       list_pipeline_stages: {
         Args: never
         Returns: {
@@ -3293,6 +4021,34 @@ export type Database = {
           sort_order: number
           stage_type: string
           status: string
+        }[]
+      }
+      list_preboarding: {
+        Args: { p_limit?: number; p_offset?: number; p_status?: string }
+        Returns: {
+          application_id: string
+          candidate_id: string
+          candidate_name_ar: string
+          candidate_name_en: string
+          id: string
+          reference: string
+          required_done: number
+          required_total: number
+          started_at: string
+          status: string
+        }[]
+      }
+      list_public_jobs: {
+        Args: never
+        Returns: {
+          created_at: string
+          department_ar: string
+          department_en: string
+          employment_type: string
+          id: string
+          reference: string
+          title_ar: string
+          title_en: string
         }[]
       }
       list_requisitions: {
@@ -3321,7 +4077,32 @@ export type Database = {
         }[]
       }
       list_screening_scorecards: { Args: never; Returns: Json }
+      list_system_settings: { Args: never; Returns: Json }
+      list_talent_pool: {
+        Args: {
+          p_channel?: string
+          p_limit?: number
+          p_offset?: number
+          p_status?: string
+        }
+        Returns: {
+          agency_name: string
+          candidate_id: string
+          candidate_name_ar: string
+          candidate_name_en: string
+          created_at: string
+          email: string
+          id: string
+          pool_status: string
+          source_channel: string
+          tags: string[]
+        }[]
+      }
+      m365_status: { Args: never; Returns: Json }
+      manpower_plan_detail: { Args: { p_id: string }; Returns: Json }
       mark_notification_read: { Args: { p_id: string }; Returns: undefined }
+      mename_status: { Args: never; Returns: Json }
+      mename_test_connection: { Args: never; Returns: Json }
       move_application_stage: {
         Args: {
           p_application_id: string
@@ -3368,7 +4149,9 @@ export type Database = {
         Returns: number
       }
       offer_detail: { Args: { p_id: string }; Returns: Json }
+      onboarding_detail: { Args: { p_id: string }; Returns: Json }
       perm_list_catalog: { Args: never; Returns: Json }
+      preboarding_detail: { Args: { p_id: string }; Returns: Json }
       preview_template: {
         Args: { p_sample_context: Json; p_template_id: string }
         Returns: {
@@ -3376,10 +4159,23 @@ export type Database = {
           subject: string
         }[]
       }
+      public_job_detail: { Args: { p_id: string }; Returns: Json }
+      record_consent: {
+        Args: {
+          p_candidate_id: string
+          p_granted: boolean
+          p_notes?: string
+          p_retention_until?: string
+          p_source?: string
+          p_type: string
+        }
+        Returns: string
+      }
       record_interview_outcome: {
         Args: { p_interview_id: string; p_outcome: string }
         Returns: Json
       }
+      recruitment_kpis: { Args: never; Returns: Json }
       render_template: {
         Args: {
           p_channel: string
@@ -3446,6 +4242,10 @@ export type Database = {
         Args: { p_permission_id: string; p_role_id: string }
         Returns: undefined
       }
+      save_assessment_items: {
+        Args: { p_assessment_id: string; p_items: Json }
+        Returns: number
+      }
       save_screening_scores: {
         Args: { p_scores: Json; p_screening_id: string }
         Returns: number
@@ -3489,8 +4289,39 @@ export type Database = {
           source: string
         }[]
       }
+      set_adapter_enabled: {
+        Args: { p_enabled: boolean; p_kind: string; p_provider: string }
+        Returns: undefined
+      }
       set_application_status: {
         Args: { p_application_id: string; p_reason?: string; p_status: string }
+        Returns: undefined
+      }
+      set_manpower_status: {
+        Args: { p_id: string; p_status: string }
+        Returns: undefined
+      }
+      set_preboarding_item: {
+        Args: {
+          p_document_id?: string
+          p_item_id: string
+          p_reason?: string
+          p_status: string
+        }
+        Returns: undefined
+      }
+      set_system_setting: {
+        Args: { p_key: string; p_value: Json }
+        Returns: undefined
+      }
+      start_onboarding: { Args: { p_preboarding_id: string }; Returns: string }
+      start_preboarding: { Args: { p_application_id: string }; Returns: string }
+      submit_assessment: {
+        Args: {
+          p_assessment_id: string
+          p_notes?: string
+          p_recommendation: string
+        }
         Returns: undefined
       }
       submit_interview_score: {
@@ -3503,6 +4334,17 @@ export type Database = {
         Returns: number
       }
       submit_offer: { Args: { p_offer_id: string }; Returns: string }
+      submit_public_application: {
+        Args: {
+          p_cover?: string
+          p_email: string
+          p_full_name: string
+          p_job_id: string
+          p_nationality?: string
+          p_phone?: string
+        }
+        Returns: Json
+      }
       submit_requisition: {
         Args: { p_requisition_id: string }
         Returns: string
@@ -3541,6 +4383,10 @@ export type Database = {
         Returns: undefined
       }
       unread_count: { Args: { p_user_id: string }; Returns: number }
+      update_pool_status: {
+        Args: { p_id: string; p_status: string }
+        Returns: undefined
+      }
       upsert_candidate: {
         Args: {
           p_current_title?: string
@@ -3554,6 +4400,19 @@ export type Database = {
           p_nationality_class?: string
           p_phone?: string
           p_source?: string
+        }
+        Returns: string
+      }
+      upsert_manpower_plan: {
+        Args: {
+          p_budgeted: number
+          p_department_id: string
+          p_entity_id: string
+          p_fiscal_year: number
+          p_id: string
+          p_job_position_id: string
+          p_kuwait_pct?: number
+          p_notes?: string
         }
         Returns: string
       }
