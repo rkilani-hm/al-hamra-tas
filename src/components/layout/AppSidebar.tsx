@@ -45,7 +45,7 @@ export function AppSidebar() {
           { title: t("nav.roles"), url: "/app/admin/roles", icon: KeyRound },
         ]
       : []),
-    { title: t("nav.reports"), url: "/app", icon: FileBarChart },
+    { title: t("nav.reports"), url: "/app/reports", icon: FileBarChart },
     { title: t("nav.settings"), url: "/app", icon: Settings },
   ];
 

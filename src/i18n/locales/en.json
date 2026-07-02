@@ -161,6 +161,26 @@
       "actionError": "Action failed. Please try again."
     }
   },
+  "reports": {
+    "page": {
+      "title": "Reports & Analytics",
+      "subtitle": "Recruitment KPIs across the hiring funnel."
+    },
+    "loading": "Loading…",
+    "empty": "No data yet.",
+    "noPermission": "You don't have permission to view reports.",
+    "kpi": {
+      "openRequisitions": "Open requisitions",
+      "activeApplications": "Active applications",
+      "offersPending": "Offers pending",
+      "hires": "Hires"
+    },
+    "funnel": {
+      "title": "Pipeline funnel"
+    },
+    "offersByStatus": "Offers by status",
+    "applicationsBySource": "Applications by source"
+  },
   "careers": {
     "title": "Careers",
     "subtitle": "Join Al Hamra Real Estate Group",

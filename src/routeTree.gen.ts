@@ -22,6 +22,7 @@ import { Route as AppWorkflowIndexRouteImport } from './routes/app.workflow.inde
 import { Route as AppSourcingIndexRouteImport } from './routes/app.sourcing.index'
 import { Route as AppScreeningIndexRouteImport } from './routes/app.screening.index'
 import { Route as AppRequisitionsIndexRouteImport } from './routes/app.requisitions.index'
+import { Route as AppReportsIndexRouteImport } from './routes/app.reports.index'
 import { Route as AppPreboardingIndexRouteImport } from './routes/app.preboarding.index'
 import { Route as AppOnboardingIndexRouteImport } from './routes/app.onboarding.index'
 import { Route as AppOffersIndexRouteImport } from './routes/app.offers.index'
@@ -125,6 +126,11 @@ const AppScreeningIndexRoute = AppScreeningIndexRouteImport.update({
 const AppRequisitionsIndexRoute = AppRequisitionsIndexRouteImport.update({
   id: '/requisitions/',
   path: '/requisitions/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppReportsIndexRoute = AppReportsIndexRouteImport.update({
+  id: '/reports/',
+  path: '/reports/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppPreboardingIndexRoute = AppPreboardingIndexRouteImport.update({
@@ -369,6 +375,7 @@ export interface FileRoutesByFullPath {
   '/app/offers/': typeof AppOffersIndexRoute
   '/app/onboarding/': typeof AppOnboardingIndexRoute
   '/app/preboarding/': typeof AppPreboardingIndexRoute
+  '/app/reports/': typeof AppReportsIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
   '/app/sourcing/': typeof AppSourcingIndexRoute
@@ -422,6 +429,7 @@ export interface FileRoutesByTo {
   '/app/offers': typeof AppOffersIndexRoute
   '/app/onboarding': typeof AppOnboardingIndexRoute
   '/app/preboarding': typeof AppPreboardingIndexRoute
+  '/app/reports': typeof AppReportsIndexRoute
   '/app/requisitions': typeof AppRequisitionsIndexRoute
   '/app/screening': typeof AppScreeningIndexRoute
   '/app/sourcing': typeof AppSourcingIndexRoute
@@ -477,6 +485,7 @@ export interface FileRoutesById {
   '/app/offers/': typeof AppOffersIndexRoute
   '/app/onboarding/': typeof AppOnboardingIndexRoute
   '/app/preboarding/': typeof AppPreboardingIndexRoute
+  '/app/reports/': typeof AppReportsIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
   '/app/sourcing/': typeof AppSourcingIndexRoute
@@ -533,6 +542,7 @@ export interface FileRouteTypes {
     | '/app/offers/'
     | '/app/onboarding/'
     | '/app/preboarding/'
+    | '/app/reports/'
     | '/app/requisitions/'
     | '/app/screening/'
     | '/app/sourcing/'
@@ -586,6 +596,7 @@ export interface FileRouteTypes {
     | '/app/offers'
     | '/app/onboarding'
     | '/app/preboarding'
+    | '/app/reports'
     | '/app/requisitions'
     | '/app/screening'
     | '/app/sourcing'
@@ -640,6 +651,7 @@ export interface FileRouteTypes {
     | '/app/offers/'
     | '/app/onboarding/'
     | '/app/preboarding/'
+    | '/app/reports/'
     | '/app/requisitions/'
     | '/app/screening/'
     | '/app/sourcing/'
@@ -753,6 +765,13 @@ declare module '@tanstack/react-router' {
       path: '/requisitions'
       fullPath: '/app/requisitions/'
       preLoaderRoute: typeof AppRequisitionsIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/reports/': {
+      id: '/app/reports/'
+      path: '/reports'
+      fullPath: '/app/reports/'
+      preLoaderRoute: typeof AppReportsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/preboarding/': {
@@ -1067,6 +1086,7 @@ interface AppRouteChildren {
   AppOffersIndexRoute: typeof AppOffersIndexRoute
   AppOnboardingIndexRoute: typeof AppOnboardingIndexRoute
   AppPreboardingIndexRoute: typeof AppPreboardingIndexRoute
+  AppReportsIndexRoute: typeof AppReportsIndexRoute
   AppRequisitionsIndexRoute: typeof AppRequisitionsIndexRoute
   AppScreeningIndexRoute: typeof AppScreeningIndexRoute
   AppSourcingIndexRoute: typeof AppSourcingIndexRoute
@@ -1114,6 +1134,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppOffersIndexRoute: AppOffersIndexRoute,
   AppOnboardingIndexRoute: AppOnboardingIndexRoute,
   AppPreboardingIndexRoute: AppPreboardingIndexRoute,
+  AppReportsIndexRoute: AppReportsIndexRoute,
   AppRequisitionsIndexRoute: AppRequisitionsIndexRoute,
   AppScreeningIndexRoute: AppScreeningIndexRoute,
   AppSourcingIndexRoute: AppSourcingIndexRoute,
