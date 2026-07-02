@@ -25,6 +25,7 @@
     "admin": "User Administration",
     "roles": "Roles & Permissions",
     "systemSettings": "System Settings",
+    "integrations": "Integrations",
     "ai": "AI Copilot",
     "reports": "Reports",
     "settings": "Settings"
@@ -161,6 +162,33 @@
     },
     "toasts": {
       "saved": "Plan saved.",
+      "actionError": "Action failed. Please try again."
+    }
+  },
+  "integrations": {
+    "page": {
+      "title": "Integrations",
+      "subtitle": "Microsoft 365 and external service connections."
+    },
+    "noPermission": "You don't have permission to manage integrations.",
+    "secretsNote": "Outlook, Teams and SharePoint are dormant. To activate, register a Microsoft Entra app with Microsoft Graph permissions (Mail.Send, OnlineMeetings, Sites.ReadWrite.All), add the client secret in System Settings secrets, then enable the adapter here.",
+    "m365": {
+      "entra": "Entra ID (sign-in)",
+      "outlook": "Outlook email",
+      "teams": "Teams meetings",
+      "sharepoint": "SharePoint storage"
+    },
+    "status": {
+      "live": "Live",
+      "enabled": "Enabled",
+      "dormant": "Dormant"
+    },
+    "actions": {
+      "enable": "Enable",
+      "disable": "Disable"
+    },
+    "toasts": {
+      "saved": "Saved.",
       "actionError": "Action failed. Please try again."
     }
   },

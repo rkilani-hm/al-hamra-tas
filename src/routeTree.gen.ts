@@ -60,6 +60,7 @@ import { Route as AppApplicationsBoardRouteImport } from './routes/app.applicati
 import { Route as AppApplicationsIdRouteImport } from './routes/app.applications.$id'
 import { Route as AppAdminSettingsRouteImport } from './routes/app.admin.settings'
 import { Route as AppAdminPermissionsRouteImport } from './routes/app.admin.permissions'
+import { Route as AppAdminIntegrationsRouteImport } from './routes/app.admin.integrations'
 import { Route as AppAdminUsersIndexRouteImport } from './routes/app.admin.users.index'
 import { Route as AppAdminRolesIndexRouteImport } from './routes/app.admin.roles.index'
 import { Route as AppAdminUsersNewRouteImport } from './routes/app.admin.users.new'
@@ -323,6 +324,11 @@ const AppAdminPermissionsRoute = AppAdminPermissionsRouteImport.update({
   path: '/admin/permissions',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminIntegrationsRoute = AppAdminIntegrationsRouteImport.update({
+  id: '/admin/integrations',
+  path: '/admin/integrations',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAdminUsersIndexRoute = AppAdminUsersIndexRouteImport.update({
   id: '/admin/users/',
   path: '/admin/users/',
@@ -359,6 +365,7 @@ export interface FileRoutesByFullPath {
   '/careers/$id': typeof CareersIdRoute
   '/app/': typeof AppIndexRoute
   '/careers/': typeof CareersIndexRoute
+  '/app/admin/integrations': typeof AppAdminIntegrationsRoute
   '/app/admin/permissions': typeof AppAdminPermissionsRoute
   '/app/admin/settings': typeof AppAdminSettingsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
@@ -416,6 +423,7 @@ export interface FileRoutesByTo {
   '/careers/$id': typeof CareersIdRoute
   '/app': typeof AppIndexRoute
   '/careers': typeof CareersIndexRoute
+  '/app/admin/integrations': typeof AppAdminIntegrationsRoute
   '/app/admin/permissions': typeof AppAdminPermissionsRoute
   '/app/admin/settings': typeof AppAdminSettingsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
@@ -475,6 +483,7 @@ export interface FileRoutesById {
   '/careers/$id': typeof CareersIdRoute
   '/app/': typeof AppIndexRoute
   '/careers/': typeof CareersIndexRoute
+  '/app/admin/integrations': typeof AppAdminIntegrationsRoute
   '/app/admin/permissions': typeof AppAdminPermissionsRoute
   '/app/admin/settings': typeof AppAdminSettingsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
@@ -535,6 +544,7 @@ export interface FileRouteTypes {
     | '/careers/$id'
     | '/app/'
     | '/careers/'
+    | '/app/admin/integrations'
     | '/app/admin/permissions'
     | '/app/admin/settings'
     | '/app/applications/$id'
@@ -592,6 +602,7 @@ export interface FileRouteTypes {
     | '/careers/$id'
     | '/app'
     | '/careers'
+    | '/app/admin/integrations'
     | '/app/admin/permissions'
     | '/app/admin/settings'
     | '/app/applications/$id'
@@ -650,6 +661,7 @@ export interface FileRouteTypes {
     | '/careers/$id'
     | '/app/'
     | '/careers/'
+    | '/app/admin/integrations'
     | '/app/admin/permissions'
     | '/app/admin/settings'
     | '/app/applications/$id'
@@ -1069,6 +1081,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppAdminPermissionsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/admin/integrations': {
+      id: '/app/admin/integrations'
+      path: '/admin/integrations'
+      fullPath: '/app/admin/integrations'
+      preLoaderRoute: typeof AppAdminIntegrationsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/admin/users/': {
       id: '/app/admin/users/'
       path: '/admin/users'
@@ -1109,6 +1128,7 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
+  AppAdminIntegrationsRoute: typeof AppAdminIntegrationsRoute
   AppAdminPermissionsRoute: typeof AppAdminPermissionsRoute
   AppAdminSettingsRoute: typeof AppAdminSettingsRoute
   AppApplicationsIdRoute: typeof AppApplicationsIdRoute
@@ -1160,6 +1180,7 @@ interface AppRouteChildren {
 
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
+  AppAdminIntegrationsRoute: AppAdminIntegrationsRoute,
   AppAdminPermissionsRoute: AppAdminPermissionsRoute,
   AppAdminSettingsRoute: AppAdminSettingsRoute,
   AppApplicationsIdRoute: AppApplicationsIdRoute,

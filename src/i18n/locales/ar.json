@@ -25,6 +25,7 @@
     "admin": "إدارة المستخدمين",
     "roles": "الأدوار والصلاحيات",
     "systemSettings": "إعدادات النظام",
+    "integrations": "التكاملات",
     "ai": "مساعد الذكاء الاصطناعي",
     "reports": "التقارير",
     "settings": "الإعدادات"
@@ -161,6 +162,33 @@
     },
     "toasts": {
       "saved": "تم حفظ الخطة.",
+      "actionError": "فشل الإجراء. يرجى المحاولة مرة أخرى."
+    }
+  },
+  "integrations": {
+    "page": {
+      "title": "التكاملات",
+      "subtitle": "اتصالات Microsoft 365 والخدمات الخارجية."
+    },
+    "noPermission": "ليس لديك إذن لإدارة التكاملات.",
+    "secretsNote": "خدمات Outlook وTeams وSharePoint غير مفعّلة. للتفعيل، سجّل تطبيق Microsoft Entra بصلاحيات Microsoft Graph (Mail.Send وOnlineMeetings وSites.ReadWrite.All)، وأضف السر في أسرار إعدادات النظام، ثم فعّل المحول هنا.",
+    "m365": {
+      "entra": "Entra ID (تسجيل الدخول)",
+      "outlook": "بريد Outlook",
+      "teams": "اجتماعات Teams",
+      "sharepoint": "تخزين SharePoint"
+    },
+    "status": {
+      "live": "مباشر",
+      "enabled": "مفعّل",
+      "dormant": "غير مفعّل"
+    },
+    "actions": {
+      "enable": "تفعيل",
+      "disable": "تعطيل"
+    },
+    "toasts": {
+      "saved": "تم الحفظ.",
       "actionError": "فشل الإجراء. يرجى المحاولة مرة أخرى."
     }
   },

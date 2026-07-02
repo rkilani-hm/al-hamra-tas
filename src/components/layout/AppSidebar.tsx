@@ -45,6 +45,7 @@ export function AppSidebar() {
           { title: t("nav.admin"), url: "/app/admin/users", icon: UserCog },
           { title: t("nav.roles"), url: "/app/admin/roles", icon: KeyRound },
           { title: t("nav.systemSettings"), url: "/app/admin/settings", icon: Settings },
+          { title: t("nav.integrations"), url: "/app/admin/integrations", icon: Settings },
         ]
       : []),
     { title: t("nav.ai"), url: "/app/ai", icon: Sparkles },
