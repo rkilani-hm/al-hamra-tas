@@ -56,6 +56,7 @@ import { Route as AppCandidatesIdRouteImport } from './routes/app.candidates.$id
 import { Route as AppApplicationsStagesRouteImport } from './routes/app.applications.stages'
 import { Route as AppApplicationsBoardRouteImport } from './routes/app.applications.board'
 import { Route as AppApplicationsIdRouteImport } from './routes/app.applications.$id'
+import { Route as AppAdminSettingsRouteImport } from './routes/app.admin.settings'
 import { Route as AppAdminPermissionsRouteImport } from './routes/app.admin.permissions'
 import { Route as AppAdminUsersIndexRouteImport } from './routes/app.admin.users.index'
 import { Route as AppAdminRolesIndexRouteImport } from './routes/app.admin.roles.index'
@@ -300,6 +301,11 @@ const AppApplicationsIdRoute = AppApplicationsIdRouteImport.update({
   path: '/applications/$id',
   getParentRoute: () => AppRoute,
 } as any)
+const AppAdminSettingsRoute = AppAdminSettingsRouteImport.update({
+  id: '/admin/settings',
+  path: '/admin/settings',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppAdminPermissionsRoute = AppAdminPermissionsRouteImport.update({
   id: '/admin/permissions',
   path: '/admin/permissions',
@@ -342,6 +348,7 @@ export interface FileRoutesByFullPath {
   '/app/': typeof AppIndexRoute
   '/careers/': typeof CareersIndexRoute
   '/app/admin/permissions': typeof AppAdminPermissionsRoute
+  '/app/admin/settings': typeof AppAdminSettingsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
   '/app/applications/stages': typeof AppApplicationsStagesRoute
@@ -396,6 +403,7 @@ export interface FileRoutesByTo {
   '/app': typeof AppIndexRoute
   '/careers': typeof CareersIndexRoute
   '/app/admin/permissions': typeof AppAdminPermissionsRoute
+  '/app/admin/settings': typeof AppAdminSettingsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
   '/app/applications/stages': typeof AppApplicationsStagesRoute
@@ -452,6 +460,7 @@ export interface FileRoutesById {
   '/app/': typeof AppIndexRoute
   '/careers/': typeof CareersIndexRoute
   '/app/admin/permissions': typeof AppAdminPermissionsRoute
+  '/app/admin/settings': typeof AppAdminSettingsRoute
   '/app/applications/$id': typeof AppApplicationsIdRoute
   '/app/applications/board': typeof AppApplicationsBoardRoute
   '/app/applications/stages': typeof AppApplicationsStagesRoute
@@ -509,6 +518,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/careers/'
     | '/app/admin/permissions'
+    | '/app/admin/settings'
     | '/app/applications/$id'
     | '/app/applications/board'
     | '/app/applications/stages'
@@ -563,6 +573,7 @@ export interface FileRouteTypes {
     | '/app'
     | '/careers'
     | '/app/admin/permissions'
+    | '/app/admin/settings'
     | '/app/applications/$id'
     | '/app/applications/board'
     | '/app/applications/stages'
@@ -618,6 +629,7 @@ export interface FileRouteTypes {
     | '/app/'
     | '/careers/'
     | '/app/admin/permissions'
+    | '/app/admin/settings'
     | '/app/applications/$id'
     | '/app/applications/board'
     | '/app/applications/stages'
@@ -1005,6 +1017,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppApplicationsIdRouteImport
       parentRoute: typeof AppRoute
     }
+    '/app/admin/settings': {
+      id: '/app/admin/settings'
+      path: '/admin/settings'
+      fullPath: '/app/admin/settings'
+      preLoaderRoute: typeof AppAdminSettingsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/app/admin/permissions': {
       id: '/app/admin/permissions'
       path: '/admin/permissions'
@@ -1053,6 +1072,7 @@ declare module '@tanstack/react-router' {
 interface AppRouteChildren {
   AppIndexRoute: typeof AppIndexRoute
   AppAdminPermissionsRoute: typeof AppAdminPermissionsRoute
+  AppAdminSettingsRoute: typeof AppAdminSettingsRoute
   AppApplicationsIdRoute: typeof AppApplicationsIdRoute
   AppApplicationsBoardRoute: typeof AppApplicationsBoardRoute
   AppApplicationsStagesRoute: typeof AppApplicationsStagesRoute
@@ -1101,6 +1121,7 @@ interface AppRouteChildren {
 const AppRouteChildren: AppRouteChildren = {
   AppIndexRoute: AppIndexRoute,
   AppAdminPermissionsRoute: AppAdminPermissionsRoute,
+  AppAdminSettingsRoute: AppAdminSettingsRoute,
   AppApplicationsIdRoute: AppApplicationsIdRoute,
   AppApplicationsBoardRoute: AppApplicationsBoardRoute,
   AppApplicationsStagesRoute: AppApplicationsStagesRoute,

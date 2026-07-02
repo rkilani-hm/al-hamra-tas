@@ -23,6 +23,7 @@
     "audit": "Audit Log",
     "admin": "User Administration",
     "roles": "Roles & Permissions",
+    "systemSettings": "System Settings",
     "reports": "Reports",
     "settings": "Settings"
   },
@@ -158,6 +159,43 @@
     },
     "toasts": {
       "saved": "Plan saved.",
+      "actionError": "Action failed. Please try again."
+    }
+  },
+  "settings": {
+    "page": {
+      "title": "System Settings",
+      "subtitle": "App-wide settings and integration adapters."
+    },
+    "noPermission": "You don't have permission to manage system settings.",
+    "section": {
+      "general": "General settings",
+      "adapters": "Integration adapters"
+    },
+    "table": {
+      "key": "Key",
+      "value": "Value",
+      "kind": "Type",
+      "provider": "Provider",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "kind": {
+      "comm": "Communications",
+      "storage": "Document storage",
+      "hrms": "HRMS"
+    },
+    "adapter": {
+      "enabled": "Enabled",
+      "disabled": "Disabled"
+    },
+    "actions": {
+      "save": "Save",
+      "enable": "Enable",
+      "disable": "Disable"
+    },
+    "toasts": {
+      "saved": "Saved.",
       "actionError": "Action failed. Please try again."
     }
   },
