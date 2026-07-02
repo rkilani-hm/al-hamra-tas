@@ -20,6 +20,7 @@ import { Route as AppWorkflowIndexRouteImport } from './routes/app.workflow.inde
 import { Route as AppScreeningIndexRouteImport } from './routes/app.screening.index'
 import { Route as AppRequisitionsIndexRouteImport } from './routes/app.requisitions.index'
 import { Route as AppPreboardingIndexRouteImport } from './routes/app.preboarding.index'
+import { Route as AppOnboardingIndexRouteImport } from './routes/app.onboarding.index'
 import { Route as AppOffersIndexRouteImport } from './routes/app.offers.index'
 import { Route as AppNotificationsIndexRouteImport } from './routes/app.notifications.index'
 import { Route as AppInterviewsIndexRouteImport } from './routes/app.interviews.index'
@@ -35,6 +36,7 @@ import { Route as AppScreeningScorecardsRouteImport } from './routes/app.screeni
 import { Route as AppRequisitionsNewRouteImport } from './routes/app.requisitions.new'
 import { Route as AppRequisitionsIdRouteImport } from './routes/app.requisitions.$id'
 import { Route as AppPreboardingIdRouteImport } from './routes/app.preboarding.$id'
+import { Route as AppOnboardingIdRouteImport } from './routes/app.onboarding.$id'
 import { Route as AppOffersNewRouteImport } from './routes/app.offers.new'
 import { Route as AppOffersIdRouteImport } from './routes/app.offers.$id'
 import { Route as AppNotificationsTemplatesRouteImport } from './routes/app.notifications.templates'
@@ -111,6 +113,11 @@ const AppPreboardingIndexRoute = AppPreboardingIndexRouteImport.update({
   path: '/preboarding/',
   getParentRoute: () => AppRoute,
 } as any)
+const AppOnboardingIndexRoute = AppOnboardingIndexRouteImport.update({
+  id: '/onboarding/',
+  path: '/onboarding/',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppOffersIndexRoute = AppOffersIndexRouteImport.update({
   id: '/offers/',
   path: '/offers/',
@@ -184,6 +191,11 @@ const AppRequisitionsIdRoute = AppRequisitionsIdRouteImport.update({
 const AppPreboardingIdRoute = AppPreboardingIdRouteImport.update({
   id: '/preboarding/$id',
   path: '/preboarding/$id',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOnboardingIdRoute = AppOnboardingIdRouteImport.update({
+  id: '/onboarding/$id',
+  path: '/onboarding/$id',
   getParentRoute: () => AppRoute,
 } as any)
 const AppOffersNewRoute = AppOffersNewRouteImport.update({
@@ -312,6 +324,7 @@ export interface FileRoutesByFullPath {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/offers/$id': typeof AppOffersIdRoute
   '/app/offers/new': typeof AppOffersNewRoute
+  '/app/onboarding/$id': typeof AppOnboardingIdRoute
   '/app/preboarding/$id': typeof AppPreboardingIdRoute
   '/app/requisitions/$id': typeof AppRequisitionsIdRoute
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
@@ -327,6 +340,7 @@ export interface FileRoutesByFullPath {
   '/app/interviews/': typeof AppInterviewsIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/offers/': typeof AppOffersIndexRoute
+  '/app/onboarding/': typeof AppOnboardingIndexRoute
   '/app/preboarding/': typeof AppPreboardingIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
@@ -359,6 +373,7 @@ export interface FileRoutesByTo {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/offers/$id': typeof AppOffersIdRoute
   '/app/offers/new': typeof AppOffersNewRoute
+  '/app/onboarding/$id': typeof AppOnboardingIdRoute
   '/app/preboarding/$id': typeof AppPreboardingIdRoute
   '/app/requisitions/$id': typeof AppRequisitionsIdRoute
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
@@ -374,6 +389,7 @@ export interface FileRoutesByTo {
   '/app/interviews': typeof AppInterviewsIndexRoute
   '/app/notifications': typeof AppNotificationsIndexRoute
   '/app/offers': typeof AppOffersIndexRoute
+  '/app/onboarding': typeof AppOnboardingIndexRoute
   '/app/preboarding': typeof AppPreboardingIndexRoute
   '/app/requisitions': typeof AppRequisitionsIndexRoute
   '/app/screening': typeof AppScreeningIndexRoute
@@ -408,6 +424,7 @@ export interface FileRoutesById {
   '/app/notifications/templates': typeof AppNotificationsTemplatesRoute
   '/app/offers/$id': typeof AppOffersIdRoute
   '/app/offers/new': typeof AppOffersNewRoute
+  '/app/onboarding/$id': typeof AppOnboardingIdRoute
   '/app/preboarding/$id': typeof AppPreboardingIdRoute
   '/app/requisitions/$id': typeof AppRequisitionsIdRoute
   '/app/requisitions/new': typeof AppRequisitionsNewRoute
@@ -423,6 +440,7 @@ export interface FileRoutesById {
   '/app/interviews/': typeof AppInterviewsIndexRoute
   '/app/notifications/': typeof AppNotificationsIndexRoute
   '/app/offers/': typeof AppOffersIndexRoute
+  '/app/onboarding/': typeof AppOnboardingIndexRoute
   '/app/preboarding/': typeof AppPreboardingIndexRoute
   '/app/requisitions/': typeof AppRequisitionsIndexRoute
   '/app/screening/': typeof AppScreeningIndexRoute
@@ -458,6 +476,7 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/offers/$id'
     | '/app/offers/new'
+    | '/app/onboarding/$id'
     | '/app/preboarding/$id'
     | '/app/requisitions/$id'
     | '/app/requisitions/new'
@@ -473,6 +492,7 @@ export interface FileRouteTypes {
     | '/app/interviews/'
     | '/app/notifications/'
     | '/app/offers/'
+    | '/app/onboarding/'
     | '/app/preboarding/'
     | '/app/requisitions/'
     | '/app/screening/'
@@ -505,6 +525,7 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/offers/$id'
     | '/app/offers/new'
+    | '/app/onboarding/$id'
     | '/app/preboarding/$id'
     | '/app/requisitions/$id'
     | '/app/requisitions/new'
@@ -520,6 +541,7 @@ export interface FileRouteTypes {
     | '/app/interviews'
     | '/app/notifications'
     | '/app/offers'
+    | '/app/onboarding'
     | '/app/preboarding'
     | '/app/requisitions'
     | '/app/screening'
@@ -553,6 +575,7 @@ export interface FileRouteTypes {
     | '/app/notifications/templates'
     | '/app/offers/$id'
     | '/app/offers/new'
+    | '/app/onboarding/$id'
     | '/app/preboarding/$id'
     | '/app/requisitions/$id'
     | '/app/requisitions/new'
@@ -568,6 +591,7 @@ export interface FileRouteTypes {
     | '/app/interviews/'
     | '/app/notifications/'
     | '/app/offers/'
+    | '/app/onboarding/'
     | '/app/preboarding/'
     | '/app/requisitions/'
     | '/app/screening/'
@@ -665,6 +689,13 @@ declare module '@tanstack/react-router' {
       path: '/preboarding'
       fullPath: '/app/preboarding/'
       preLoaderRoute: typeof AppPreboardingIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/onboarding/': {
+      id: '/app/onboarding/'
+      path: '/onboarding'
+      fullPath: '/app/onboarding/'
+      preLoaderRoute: typeof AppOnboardingIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/offers/': {
@@ -770,6 +801,13 @@ declare module '@tanstack/react-router' {
       path: '/preboarding/$id'
       fullPath: '/app/preboarding/$id'
       preLoaderRoute: typeof AppPreboardingIdRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/onboarding/$id': {
+      id: '/app/onboarding/$id'
+      path: '/onboarding/$id'
+      fullPath: '/app/onboarding/$id'
+      preLoaderRoute: typeof AppOnboardingIdRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/offers/new': {
@@ -932,6 +970,7 @@ interface AppRouteChildren {
   AppNotificationsTemplatesRoute: typeof AppNotificationsTemplatesRoute
   AppOffersIdRoute: typeof AppOffersIdRoute
   AppOffersNewRoute: typeof AppOffersNewRoute
+  AppOnboardingIdRoute: typeof AppOnboardingIdRoute
   AppPreboardingIdRoute: typeof AppPreboardingIdRoute
   AppRequisitionsIdRoute: typeof AppRequisitionsIdRoute
   AppRequisitionsNewRoute: typeof AppRequisitionsNewRoute
@@ -947,6 +986,7 @@ interface AppRouteChildren {
   AppInterviewsIndexRoute: typeof AppInterviewsIndexRoute
   AppNotificationsIndexRoute: typeof AppNotificationsIndexRoute
   AppOffersIndexRoute: typeof AppOffersIndexRoute
+  AppOnboardingIndexRoute: typeof AppOnboardingIndexRoute
   AppPreboardingIndexRoute: typeof AppPreboardingIndexRoute
   AppRequisitionsIndexRoute: typeof AppRequisitionsIndexRoute
   AppScreeningIndexRoute: typeof AppScreeningIndexRoute
@@ -975,6 +1015,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppNotificationsTemplatesRoute: AppNotificationsTemplatesRoute,
   AppOffersIdRoute: AppOffersIdRoute,
   AppOffersNewRoute: AppOffersNewRoute,
+  AppOnboardingIdRoute: AppOnboardingIdRoute,
   AppPreboardingIdRoute: AppPreboardingIdRoute,
   AppRequisitionsIdRoute: AppRequisitionsIdRoute,
   AppRequisitionsNewRoute: AppRequisitionsNewRoute,
@@ -990,6 +1031,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppInterviewsIndexRoute: AppInterviewsIndexRoute,
   AppNotificationsIndexRoute: AppNotificationsIndexRoute,
   AppOffersIndexRoute: AppOffersIndexRoute,
+  AppOnboardingIndexRoute: AppOnboardingIndexRoute,
   AppPreboardingIndexRoute: AppPreboardingIndexRoute,
   AppRequisitionsIndexRoute: AppRequisitionsIndexRoute,
   AppScreeningIndexRoute: AppScreeningIndexRoute,

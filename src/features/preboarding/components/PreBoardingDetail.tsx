@@ -17,6 +17,7 @@ import {
 import { useLanguage } from "@/hooks/use-language";
 import { useAuth } from "@/features/auth/AuthProvider";
 import { DocumentPanel } from "@/features/documents/components/DocumentPanel";
+import { OnboardingPanel } from "@/features/onboarding/components/OnboardingPanel";
 import { completePreboarding, preboardingDetail, setPreboardingItem } from "../api";
 import type { ItemStatus } from "../types";
 
@@ -134,6 +135,14 @@ export function PreBoardingDetail({ id, currentUserId = null }: PreBoardingDetai
         <h3 className="font-medium text-foreground">{t("preboarding.detail.documents")}</h3>
         <DocumentPanel entityType="preboarding" entityRef={id} currentUserId={currentUserId} />
       </section>
+
+      {/* Onboarding handoff (M1.11) — available once pre-boarding is complete */}
+      {pb.status === "completed" && (
+        <section className="space-y-2 rounded-md border p-4">
+          <h3 className="font-medium text-foreground">{t("onboarding.panel.title")}</h3>
+          <OnboardingPanel preboardingId={id} applicationId={data?.application?.id ?? null} />
+        </section>
+      )}
     </div>
   );
 }

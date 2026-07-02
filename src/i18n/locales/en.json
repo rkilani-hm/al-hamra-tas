@@ -14,6 +14,7 @@
     "interviews": "Interviews",
     "offers": "Offers",
     "preboarding": "Pre-Boarding",
+    "onboarding": "Onboarding",
     "workflow": "Workflow & Approvals",
     "notifications": "Notifications",
     "documents": "Documents",
@@ -70,6 +71,60 @@
       "loading": "Loading…"
     },
     "backToList": "Back to pre-boarding"
+  },
+  "onboarding": {
+    "page": {
+      "title": "Onboarding",
+      "subtitle": "New-hire onboarding and MenaME HRMS handoff.",
+      "empty": "No hires in onboarding yet."
+    },
+    "panel": {
+      "title": "Onboarding",
+      "notStarted": "Not started",
+      "open": "Open onboarding"
+    },
+    "detail": {
+      "title": "Onboarding",
+      "handoffTitle": "MenaME HRMS handoff",
+      "dormantNote": "The MenaME adapter is dormant. The handoff will be queued and transmitted once HRMS credentials are configured.",
+      "payload": "Handoff payload",
+      "completeTitle": "Complete onboarding",
+      "menameRef": "MenaME employee reference",
+      "notFound": "Onboarding record not found."
+    },
+    "status": {
+      "pending": "Pending",
+      "handed_off": "Handed off",
+      "completed": "Completed",
+      "cancelled": "Cancelled"
+    },
+    "handoff": {
+      "not_sent": "Not sent",
+      "queued": "Queued",
+      "sent": "Sent",
+      "ack": "Acknowledged",
+      "error": "Error"
+    },
+    "adapter": {
+      "enabled": "Adapter enabled",
+      "dormant": "Adapter dormant"
+    },
+    "actions": {
+      "start": "Start onboarding",
+      "handoff": "Hand off to MenaME",
+      "complete": "Complete onboarding"
+    },
+    "toasts": {
+      "started": "Onboarding started.",
+      "handedOff": "Handed off to MenaME.",
+      "queued": "Handoff queued (adapter dormant).",
+      "completed": "Onboarding completed.",
+      "actionError": "Action failed. Please try again."
+    },
+    "common": {
+      "loading": "Loading…"
+    },
+    "backToList": "Back to onboarding"
   },
   "topbar": {
     "toggleSidebar": "Toggle sidebar",
