@@ -1118,6 +1118,69 @@ export type Database = {
         }
         Relationships: []
       }
+      tas_interview_note: {
+        Row: {
+          ai_generated: boolean
+          author_user_id: string | null
+          created_at: string
+          created_by: string | null
+          id: string
+          interview_id: string
+          key_points: Json
+          raw_text: string | null
+          recommendation: string | null
+          summary_ar: string | null
+          summary_en: string | null
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          ai_generated?: boolean
+          author_user_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          interview_id: string
+          key_points?: Json
+          raw_text?: string | null
+          recommendation?: string | null
+          summary_ar?: string | null
+          summary_en?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          ai_generated?: boolean
+          author_user_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          interview_id?: string
+          key_points?: Json
+          raw_text?: string | null
+          recommendation?: string | null
+          summary_ar?: string | null
+          summary_en?: string | null
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tas_interview_note_author_user_id_fkey"
+            columns: ["author_user_id"]
+            isOneToOne: false
+            referencedRelation: "tas_user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "tas_interview_note_interview_id_fkey"
+            columns: ["interview_id"]
+            isOneToOne: false
+            referencedRelation: "tas_interview"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       tas_interview_panelist: {
         Row: {
           created_at: string
@@ -3596,6 +3659,7 @@ export type Database = {
         Returns: Json
       }
       ai_status: { Args: never; Returns: Json }
+      ai_summarize_meeting: { Args: { p_note_id: string }; Returns: Json }
       application_detail: { Args: { p_id: string }; Returns: Json }
       archive_document: { Args: { p_id: string }; Returns: undefined }
       assessment_detail: { Args: { p_id: string }; Returns: Json }
@@ -3929,6 +3993,7 @@ export type Database = {
           version: number
         }[]
       }
+      list_interview_notes: { Args: { p_interview_id: string }; Returns: Json }
       list_interviews: {
         Args: {
           p_application_id?: string
@@ -4245,6 +4310,10 @@ export type Database = {
       save_assessment_items: {
         Args: { p_assessment_id: string; p_items: Json }
         Returns: number
+      }
+      save_interview_note: {
+        Args: { p_interview_id: string; p_raw_text: string }
+        Returns: string
       }
       save_screening_scores: {
         Args: { p_scores: Json; p_screening_id: string }
