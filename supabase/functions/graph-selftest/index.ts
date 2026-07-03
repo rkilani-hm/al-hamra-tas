@@ -162,5 +162,24 @@ Deno.serve(async (req: Request) => {
     }
   }
 
+  // 3) Test the dedicated online-meetings endpoint (needs OnlineMeetings.ReadWrite.All
+  //    + a Teams application access policy for the organizer). This is the reliable
+  //    app-only path for a Teams join link.
+  if (organizer) {
+    const s2 = new Date(Date.now() + 60 * 60 * 1000);
+    const e2 = new Date(s2.getTime() + 30 * 60 * 1000);
+    const r = await fetch(`https://graph.microsoft.com/v1.0/users/${encodeURIComponent(organizer)}/onlineMeetings`, {
+      method: "POST",
+      headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
+      body: JSON.stringify({ startDateTime: s2.toISOString(), endDateTime: e2.toISOString(), subject: "Al Hamra TAS — test online meeting" }),
+    });
+    if (r.ok) {
+      const j = await r.json();
+      report.online_meeting = { ok: true, join_url: j.joinWebUrl ?? j.joinUrl ?? null, id: j.id };
+    } else {
+      report.online_meeting = { ok: false, status: r.status, detail: (await r.text()).slice(0, 400) };
+    }
+  }
+
   return jsonResponse(report);
 });
