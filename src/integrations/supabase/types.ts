@@ -1027,7 +1027,10 @@ export type Database = {
           mode: string
           outcome: string | null
           outlook_event_id: string | null
+          outlook_web_link: string | null
           reference: string | null
+          room_email: string | null
+          room_name: string | null
           round_type: string | null
           scheduled_at: string | null
           scheduled_by: string | null
@@ -1048,7 +1051,10 @@ export type Database = {
           mode?: string
           outcome?: string | null
           outlook_event_id?: string | null
+          outlook_web_link?: string | null
           reference?: string | null
+          room_email?: string | null
+          room_name?: string | null
           round_type?: string | null
           scheduled_at?: string | null
           scheduled_by?: string | null
@@ -1069,7 +1075,10 @@ export type Database = {
           mode?: string
           outcome?: string | null
           outlook_event_id?: string | null
+          outlook_web_link?: string | null
           reference?: string | null
+          room_email?: string | null
+          room_name?: string | null
           round_type?: string | null
           scheduled_at?: string | null
           scheduled_by?: string | null
@@ -4364,6 +4373,14 @@ export type Database = {
       }
       set_application_status: {
         Args: { p_application_id: string; p_reason?: string; p_status: string }
+        Returns: undefined
+      }
+      set_interview_room: {
+        Args: {
+          p_interview_id: string
+          p_room_email: string
+          p_room_name: string
+        }
         Returns: undefined
       }
       set_manpower_status: {
