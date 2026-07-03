@@ -141,6 +141,22 @@ Deno.serve(async (req: Request) => {
     if (r.ok) {
       const j = await r.json();
       report.meeting = { ok: true, event_id: j.id, teams_join_url: j.onlineMeeting?.joinUrl ?? null, web_link: j.webLink ?? null, start_utc: start.toISOString() };
+      // Re-fetch the event — the create response omits onlineMeeting even when created.
+      try {
+        const g = await fetch(
+          `https://graph.microsoft.com/v1.0/users/${encodeURIComponent(organizer)}/events/${j.id}?$select=id,isOnlineMeeting,onlineMeetingProvider,onlineMeeting`,
+          { headers: { authorization: `Bearer ${token}` } },
+        );
+        if (g.ok) {
+          const ev = await g.json();
+          report.meeting.refetch = { isOnlineMeeting: ev.isOnlineMeeting, provider: ev.onlineMeetingProvider, join_url: ev.onlineMeeting?.joinUrl ?? null };
+          if (ev.onlineMeeting?.joinUrl) report.meeting.teams_join_url = ev.onlineMeeting.joinUrl;
+        } else {
+          report.meeting.refetch = { status: g.status, detail: (await g.text()).slice(0, 300) };
+        }
+      } catch (e) {
+        report.meeting.refetch = { error: String(e) };
+      }
     } else {
       report.meeting = { ok: false, status: r.status, detail: (await r.text()).slice(0, 500) };
     }
