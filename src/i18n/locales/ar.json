@@ -480,6 +480,17 @@
     "kpisLocked": "تتطلب مؤشرات المسار صلاحية الاطلاع على التقارير.",
     "quickActionsTitle": "إجراءات سريعة",
     "viewReports": "عرض التقارير",
+    "forYouTitle": "لك",
+    "widgets": {
+      "viewAll": "عرض الكل",
+      "overdue": "{{count}} متأخرة",
+      "approvalsTitle": "موافقاتي",
+      "approvalsEmpty": "لا يوجد ما ينتظر موافقتك.",
+      "requisitionsTitle": "طلباتي",
+      "requisitionsEmpty": "ليس لديك طلبات توظيف بعد.",
+      "assessmentsTitle": "تقييمات بانتظار الإكمال",
+      "assessmentsEmpty": "لا توجد تقييمات مسودة."
+    },
     "actions": {
       "newRequisition": "طلب توظيف جديد",
       "applicationsBoard": "لوحة الطلبات",

@@ -480,6 +480,17 @@
     "kpisLocked": "Pipeline metrics require reporting access.",
     "quickActionsTitle": "Quick actions",
     "viewReports": "View reports",
+    "forYouTitle": "For you",
+    "widgets": {
+      "viewAll": "View all",
+      "overdue": "{{count}} overdue",
+      "approvalsTitle": "My approvals",
+      "approvalsEmpty": "Nothing awaiting your approval.",
+      "requisitionsTitle": "My requisitions",
+      "requisitionsEmpty": "You have no requisitions yet.",
+      "assessmentsTitle": "Assessments to complete",
+      "assessmentsEmpty": "No draft assessments."
+    },
     "actions": {
       "newRequisition": "New requisition",
       "applicationsBoard": "Applications board",
