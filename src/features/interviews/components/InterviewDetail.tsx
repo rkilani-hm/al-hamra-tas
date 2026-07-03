@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { Video } from "lucide-react";
+import { Video, Copy } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -130,11 +130,30 @@ export function InterviewDetail({ id, currentUserId = null }: InterviewDetailPro
           )}
           {iv.outcome && <Badge>{t(`interviews.outcome.${iv.outcome}`)}</Badge>}
         </div>
-        {iv.teams_join_url && (
-          <a href={iv.teams_join_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
-            <Video className="h-4 w-4" /> {t("interviews.detail.joinTeams")}
-          </a>
-        )}
+        <div className="flex items-center gap-2">
+          {iv.teams_join_url && (
+            <a href={iv.teams_join_url} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+              <Video className="h-4 w-4" /> {t("interviews.detail.joinTeams")}
+            </a>
+          )}
+          {(iv.teams_join_url || iv.outlook_web_link) && (
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-1"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(iv.teams_join_url ?? iv.outlook_web_link ?? "");
+                  toast.success(t("interviews.detail.linkCopied"));
+                } catch {
+                  toast.error(t("interviews.toasts.error"));
+                }
+              }}
+            >
+              <Copy className="h-4 w-4" /> {t("interviews.detail.copyInvite")}
+            </Button>
+          )}
+        </div>
       </header>
 
       {/* Summary line */}
@@ -142,7 +161,7 @@ export function InterviewDetail({ id, currentUserId = null }: InterviewDetailPro
         <Detail label={t("interviews.detail.candidate")} value={candName ?? "—"} />
         <Detail label={t("interviews.schedule.datetime")} value={iv.scheduled_at ? new Date(iv.scheduled_at).toLocaleString() : "—"} />
         <Detail label={t("interviews.schedule.duration")} value={`${iv.duration_min} ${t("interviews.detail.minutes")}`} />
-        <Detail label={t("interviews.schedule.location")} value={iv.location ?? "—"} />
+        <Detail label={t("interviews.schedule.location")} value={iv.room_name || iv.location || "—"} />
       </section>
 
       {/* Actions */}

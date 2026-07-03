@@ -4,6 +4,7 @@
 // tables + RPCs after Lovable applied the migration and regenerated types.ts).
 import { supabase } from "@/integrations/supabase/client";
 import type { Json } from "@/integrations/supabase/types";
+import { setInterviewRoom } from "./roomsApi";
 import type {
   InterviewDetailData,
   InterviewListFilter,
@@ -74,6 +75,15 @@ export async function scheduleInterview(input: ScheduleInterviewInput): Promise<
   });
   if (error) throw error;
   const id = data as string;
+  // Attach the chosen room (M2.6) BEFORE kicking the adapter, so the edge function
+  // books the room + sets the location on the calendar event.
+  if (input.roomEmail) {
+    try {
+      await setInterviewRoom(id, input.roomEmail, input.roomName ?? null);
+    } catch (err) {
+      console.warn("[interviews] set room failed (non-blocking):", err);
+    }
+  }
   // Best-effort: kick the dormant Graph adapter (fire-and-forget, never blocks).
   void invokeScheduleAdapter(id);
   return id;

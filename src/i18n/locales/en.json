@@ -1443,6 +1443,9 @@
       "duration": "Duration (min)",
       "mode": "Mode",
       "location": "Location",
+      "room": "Meeting room",
+      "roomPlaceholder": "Select a room",
+      "locationRoomHint": "Optional — room selected above",
       "scorecard": "Scorecard",
       "panel": "Panel",
       "noUsers": "No users available.",
@@ -1490,6 +1493,8 @@
     "detail": {
       "notFound": "Interview not found.",
       "joinTeams": "Join Teams meeting",
+      "copyInvite": "Copy invite link",
+      "linkCopied": "Invite link copied.",
       "candidate": "Candidate",
       "minutes": "min",
       "actions": "Actions",

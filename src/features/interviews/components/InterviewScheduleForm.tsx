@@ -22,6 +22,7 @@ import { listUsers } from "@/features/identity/api";
 import { listAdapters } from "@/features/notifications/api";
 import { listScreeningScorecards } from "@/features/screening/api";
 import { listRoundTypes, scheduleInterview, safe } from "../api";
+import { listMeetingRooms } from "../roomsApi";
 import type { InterviewMode } from "../types";
 
 interface InterviewScheduleFormProps {
@@ -38,11 +39,13 @@ export function InterviewScheduleForm({ applicationId, onScheduled, onCancel }: 
   const usersQ = useQuery({ queryKey: ["identity", "users"], queryFn: safe(listUsers) });
   const cardsQ = useQuery({ queryKey: ["screening", "scorecards"], queryFn: safe(listScreeningScorecards) });
   const adaptersQ = useQuery({ queryKey: ["notifications", "adapters"], queryFn: safe(listAdapters) });
+  const roomsQ = useQuery({ queryKey: ["interviews", "rooms"], queryFn: listMeetingRooms });
 
   const rounds = roundsQ.data ?? [];
   const users = usersQ.data ?? [];
   const cards = cardsQ.data ?? [];
   const adapters = adaptersQ.data ?? [];
+  const rooms = roomsQ.data ?? [];
 
   const calendarLive = useMemo(
     () =>
@@ -57,6 +60,7 @@ export function InterviewScheduleForm({ applicationId, onScheduled, onCancel }: 
   const [durationMin, setDurationMin] = useState("60");
   const [mode, setMode] = useState<InterviewMode>("onsite");
   const [location, setLocation] = useState("");
+  const [roomEmail, setRoomEmail] = useState<string | undefined>(undefined);
   const [scorecardId, setScorecardId] = useState<string | undefined>(undefined);
   const [panel, setPanel] = useState<Record<string, boolean>>({});
   const [busy, setBusy] = useState(false);
@@ -76,6 +80,8 @@ export function InterviewScheduleForm({ applicationId, onScheduled, onCancel }: 
         durationMin: Number(durationMin) || 60,
         mode,
         location: location || null,
+        roomEmail: mode === "onsite" ? (roomEmail ?? null) : null,
+        roomName: mode === "onsite" ? (rooms.find((r) => r.email === roomEmail)?.name ?? null) : null,
         panelistIds: Object.keys(panel).filter((id) => panel[id]),
         scorecardId: scorecardId ?? null,
       });
@@ -122,9 +128,24 @@ export function InterviewScheduleForm({ applicationId, onScheduled, onCancel }: 
             </SelectContent>
           </Select>
         </div>
+        {mode === "onsite" && rooms.length > 0 && (
+          <div className="flex flex-col gap-1">
+            <Label className="text-xs text-muted-foreground">{t("interviews.schedule.room")}</Label>
+            <Select value={roomEmail} onValueChange={setRoomEmail}>
+              <SelectTrigger className="h-9"><SelectValue placeholder={t("interviews.schedule.roomPlaceholder")} /></SelectTrigger>
+              <SelectContent>
+                {rooms.map((r) => (
+                  <SelectItem key={r.email} value={r.email}>
+                    {r.name}{r.capacity ? ` · ${r.capacity}` : ""}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
         <div className="flex flex-col gap-1">
           <Label className="text-xs text-muted-foreground">{t("interviews.schedule.location")}</Label>
-          <Input value={location} onChange={(e) => setLocation(e.target.value)} className="h-9" />
+          <Input value={location} onChange={(e) => setLocation(e.target.value)} className="h-9" placeholder={mode === "onsite" && roomEmail ? t("interviews.schedule.locationRoomHint") : undefined} />
         </div>
         <div className="flex flex-col gap-1">
           <Label className="text-xs text-muted-foreground">{t("interviews.schedule.scorecard")}</Label>

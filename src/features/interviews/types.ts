@@ -48,6 +48,9 @@ export interface InterviewRecord {
   calendar_status: CalendarStatus;
   outlook_event_id: string | null;
   teams_join_url: string | null;
+  outlook_web_link: string | null;
+  room_email: string | null;
+  room_name: string | null;
   outcome: InterviewOutcome | null;
   scorecard_id: string | null;
   scheduled_by: string | null;
@@ -133,6 +136,8 @@ export interface ScheduleInterviewInput {
   durationMin?: number | null;
   mode: InterviewMode;
   location?: string | null;
+  roomEmail?: string | null;
+  roomName?: string | null;
   panelistIds: string[];
   scorecardId?: string | null;
 }

@@ -74,11 +74,13 @@ interface InterviewRow {
   duration_min: number;
   mode: string;
   location: string | null;
+  room_email: string | null;
+  room_name: string | null;
 }
 
 interface Attendee {
   emailAddress: { address: string; name?: string };
-  type: "required";
+  type: "required" | "resource";
 }
 
 // Microsoft Graph client-credentials token.
@@ -156,7 +158,7 @@ async function createOutlookEvent(
   secrets: GraphSecrets,
   admin: Admin,
   iv: InterviewRow,
-): Promise<{ eventId: string; joinUrl: string | null }> {
+): Promise<{ eventId: string; joinUrl: string | null; webLink: string | null }> {
   if (!iv.scheduled_at) {
     throw new UnconfiguredError("interview has no scheduled_at; nothing to place on the calendar.");
   }
@@ -166,13 +168,20 @@ async function createOutlookEvent(
   const start = new Date(iv.scheduled_at);
   const end = new Date(start.getTime() + (iv.duration_min || 60) * 60_000);
   const isTeams = iv.mode === "teams";
+  // In-person + a chosen M365 room -> invite the room mailbox as a resource so
+  // Exchange books it, and use the room name as the event location.
+  const roomEmail = !isTeams ? (iv.room_email ?? null) : null;
+  const locationName = roomEmail ? (iv.room_name ?? iv.location) : iv.location;
+  if (roomEmail) {
+    attendees.push({ emailAddress: { address: roomEmail, name: iv.room_name ?? undefined }, type: "resource" });
+  }
 
   const subject = `Interview${candidateName ? ` – ${candidateName}` : ""}${iv.reference ? ` (${iv.reference})` : ""}`;
   const lines = [
     candidateName ? `Candidate: ${candidateName}` : null,
     iv.round_type ? `Round: ${iv.round_type}` : null,
     isTeams ? "Mode: Microsoft Teams (online)" : iv.mode === "phone" ? "Mode: Phone" : "Mode: On-site",
-    !isTeams && iv.location ? `Location: ${iv.location}` : null,
+    !isTeams && locationName ? `Location: ${locationName}` : null,
     iv.reference ? `Reference: ${iv.reference}` : null,
   ].filter(Boolean);
 
@@ -187,8 +196,8 @@ async function createOutlookEvent(
   if (isTeams) {
     event.isOnlineMeeting = true;
     event.onlineMeetingProvider = "teamsForBusiness";
-  } else if (iv.location) {
-    event.location = { displayName: iv.location };
+  } else if (locationName) {
+    event.location = { displayName: locationName };
   }
 
   const resp = await fetch(`${GRAPH}/users/${encodeURIComponent(secrets.organizer)}/events`, {
@@ -200,8 +209,25 @@ async function createOutlookEvent(
     throw new Error(`Graph create event failed: ${resp.status} ${await resp.text()}`);
   }
   const created = await resp.json();
-  const joinUrl = created?.onlineMeeting?.joinUrl ?? null;
-  return { eventId: created.id as string, joinUrl };
+  const webLink = created?.webLink ?? null;
+  let joinUrl = created?.onlineMeeting?.joinUrl ?? null;
+
+  // The create response omits onlineMeeting even when created — re-fetch for the
+  // Teams join URL when this is an online meeting.
+  if (isTeams && !joinUrl) {
+    try {
+      const g = await fetch(
+        `${GRAPH}/users/${encodeURIComponent(secrets.organizer)}/events/${created.id}?$select=onlineMeeting`,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      if (g.ok) {
+        const ev = await g.json();
+        joinUrl = ev?.onlineMeeting?.joinUrl ?? null;
+      }
+    } catch { /* best-effort */ }
+  }
+
+  return { eventId: created.id as string, joinUrl, webLink };
 }
 
 async function adapterLive(admin: Admin): Promise<boolean> {
@@ -240,7 +266,7 @@ Deno.serve(async (req: Request) => {
   try {
     const { data: iv } = await admin
       .from("tas_interview")
-      .select("id, reference, application_id, round_type, scheduled_at, duration_min, mode, location")
+      .select("id, reference, application_id, round_type, scheduled_at, duration_min, mode, location, room_email, room_name")
       .eq("id", interviewId)
       .maybeSingle();
     if (!iv) return errorResponse("INVALID_PAYLOAD", 404);
@@ -253,12 +279,12 @@ Deno.serve(async (req: Request) => {
 
     try {
       const secrets = readGraphSecrets();
-      const { eventId, joinUrl } = await createOutlookEvent(secrets, admin, iv as InterviewRow);
+      const { eventId, joinUrl, webLink } = await createOutlookEvent(secrets, admin, iv as InterviewRow);
       await admin
         .from("tas_interview")
-        .update({ calendar_status: "created", outlook_event_id: eventId, teams_join_url: joinUrl })
+        .update({ calendar_status: "created", outlook_event_id: eventId, teams_join_url: joinUrl, outlook_web_link: webLink })
         .eq("id", interviewId);
-      return jsonResponse({ interview_id: interviewId, calendar_status: "created", teams_join_url: joinUrl });
+      return jsonResponse({ interview_id: interviewId, calendar_status: "created", teams_join_url: joinUrl, outlook_web_link: webLink });
     } catch (err) {
       // Unconfigured -> skipped; any other Graph error -> failed (+ note). No crash.
       if (err instanceof UnconfiguredError) {
