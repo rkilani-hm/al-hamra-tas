@@ -1,11 +1,8 @@
 // Module M1.3 — Candidate Sourcing & Talent Pool: data-access layer.
-// INTERIM: new M1.3 table/RPCs not in generated types until Lovable regenerates
-// types.ts after apply. Loose-cast now; swap `db` to strict `supabase` after apply.
 import { supabase } from "@/integrations/supabase/client";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type { TalentPoolInput, TalentPoolRow } from "./types";
 
-const db = supabase as unknown as SupabaseClient; // INTERIM: swap after apply
+const db = supabase;
 
 export async function listTalentPool(channel?: string | null, status?: string | null): Promise<TalentPoolRow[]> {
   const { data, error } = await db.rpc("list_talent_pool", {

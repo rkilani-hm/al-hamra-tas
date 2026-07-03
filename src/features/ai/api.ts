@@ -1,9 +1,7 @@
 // Module M2.1 — AI Recruitment Copilot: data-access layer.
-// INTERIM: new M2.1 table/RPCs not in generated types until Lovable regenerates.
 import { supabase } from "@/integrations/supabase/client";
-import type { SupabaseClient } from "@supabase/supabase-js";
 
-const db = supabase as unknown as SupabaseClient; // INTERIM: swap after apply
+const db = supabase;
 
 export interface AiStatus {
   provider?: string;

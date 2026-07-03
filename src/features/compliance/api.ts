@@ -1,10 +1,8 @@
 // Module M3.3 — Audit & Compliance Reporting: data-access layer.
-// INTERIM: new M3.3 RPCs not in generated types until Lovable regenerates.
 import { supabase } from "@/integrations/supabase/client";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type { AuditReportRow, AuditStats } from "./types";
 
-const db = supabase as unknown as SupabaseClient; // INTERIM: swap after apply
+const db = supabase;
 
 export async function auditStats(): Promise<AuditStats | null> {
   const { data, error } = await db.rpc("audit_stats");

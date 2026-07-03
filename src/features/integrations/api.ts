@@ -1,9 +1,7 @@
 // Module M2.3 — Microsoft 365 Integration: data-access layer.
-// INTERIM: m365_status RPC not in generated types until Lovable regenerates.
 import { supabase } from "@/integrations/supabase/client";
-import type { SupabaseClient } from "@supabase/supabase-js";
 
-const db = supabase as unknown as SupabaseClient; // INTERIM: swap after apply
+const db = supabase;
 
 export interface M365Component {
   component: string;

@@ -1,11 +1,8 @@
 // Module M1.11 — Onboarding & MenaME Handoff: data-access layer.
-// INTERIM: new M1.11 tables/RPCs not in generated types until Lovable regenerates
-// types.ts after apply. Loose-cast now; swap `db` to strict `supabase` after apply.
 import { supabase } from "@/integrations/supabase/client";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type { OnboardingDetailData, OnboardingListRow } from "./types";
 
-const db = supabase as unknown as SupabaseClient; // INTERIM: swap after apply
+const db = supabase;
 
 export async function listOnboarding(status?: string | null): Promise<OnboardingListRow[]> {
   const { data, error } = await db.rpc("list_onboarding", { p_status: status ?? undefined, p_limit: 100, p_offset: 0 });

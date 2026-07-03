@@ -1,13 +1,8 @@
 // Module M1.10 — Pre-Boarding & Document Collection: data-access layer.
-//
-// INTERIM: the new M1.10 tables/RPCs are not in the generated Database types
-// until Lovable regenerates types.ts after the migration applies. Use a loose
-// cast now; swap `db` back to the strict `supabase` client after apply.
 import { supabase } from "@/integrations/supabase/client";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type { PreBoardingDetailData, PreBoardingListRow } from "./types";
 
-const db = supabase as unknown as SupabaseClient; // INTERIM: swap after apply
+const db = supabase;
 
 // --- Reads (open) -----------------------------------------------------------
 export async function listPreboarding(status?: string | null): Promise<PreBoardingListRow[]> {

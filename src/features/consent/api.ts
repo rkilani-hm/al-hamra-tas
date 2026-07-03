@@ -1,10 +1,8 @@
 // Module M3.1 (consent) — Data Privacy & Candidate Consent: data-access layer.
-// INTERIM: new table/RPCs not in generated types until Lovable regenerates.
 import { supabase } from "@/integrations/supabase/client";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ConsentRow } from "./types";
 
-const db = supabase as unknown as SupabaseClient; // INTERIM: swap after apply
+const db = supabase;
 
 export async function listCandidateConsents(candidateId: string): Promise<ConsentRow[]> {
   const { data, error } = await db.rpc("list_candidate_consents", { p_candidate_id: candidateId });

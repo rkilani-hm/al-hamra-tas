@@ -1,11 +1,8 @@
 // Module M1.1 — Manpower Planning & Headcount: data-access layer.
-// INTERIM: new M1.1 table/RPCs not in generated types until Lovable regenerates
-// types.ts after apply. Loose-cast now; swap `db` to strict `supabase` after apply.
 import { supabase } from "@/integrations/supabase/client";
-import type { SupabaseClient } from "@supabase/supabase-js";
 import type { ManpowerPlanInput, ManpowerPlanRow } from "./types";
 
-const db = supabase as unknown as SupabaseClient; // INTERIM: swap after apply
+const db = supabase;
 
 export async function listManpowerPlans(fiscalYear?: number | null): Promise<ManpowerPlanRow[]> {
   const { data, error } = await db.rpc("list_manpower_plans", {
