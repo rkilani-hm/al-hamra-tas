@@ -6,8 +6,10 @@
 // tas_ai_adapter_config 'llm' row is enabled AND LOVABLE_API_KEY is present —
 // until then returns { dormant: true } and never calls out. When live it calls
 // the gateway for:
-//   task="generate_jd"  -> bilingual (EN/AR) job description from title + notes
-//   task="parse_cv"     -> structured JSON candidate fields from raw CV text
+//   task="generate_jd"       -> bilingual (EN/AR) job description from title + notes
+//   task="parse_cv"          -> structured JSON candidate fields from raw CV text
+//   task="summarize_meeting" -> bilingual summary + key points + recommendation for
+//                               an interview note (reads/persists tas_interview_note)
 //
 // Gateway (OpenAI-compatible chat completions):
 //   POST https://ai.gateway.lovable.dev/v1/chat/completions
@@ -113,6 +115,48 @@ async function parseCv(cvText: string) {
   return { dormant: false, output: parsed, message: parsed ? "parsed" : "parse_failed" };
 }
 
+// deno-lint-ignore no-explicit-any
+async function summarizeMeeting(admin: any, noteId: string) {
+  const { data: note } = await admin
+    .from("tas_interview_note")
+    .select("id, raw_text")
+    .eq("id", noteId)
+    .maybeSingle();
+  if (!note) return { dormant: false, output: null, message: "note_not_found" };
+  if (!note.raw_text || !note.raw_text.trim()) return { dormant: false, output: null, message: "empty_note" };
+
+  const system =
+    "You summarize a job interview from raw notes or a transcript for an HR system at Al Hamra Real Estate Group in Kuwait. " +
+    "Return ONLY valid JSON — no markdown fences, no prose — with this schema: " +
+    '{"summary_en":string,"summary_ar":string,"key_points":string[],"recommendation":"proceed"|"hold"|"reject"|""}. ' +
+    "summary_en is a concise professional recap (2-4 sentences) in English; summary_ar is the same in Modern Standard Arabic. " +
+    "key_points is 3-6 short bullet strings (strengths, concerns, notable answers). " +
+    "recommendation is your read of the candidate's fit based ONLY on the notes, or \"\" if unclear. Never invent facts.";
+  const user = `Interview notes / transcript:\n\n${note.raw_text.slice(0, 20000)}\n\nSummarize now as JSON.`;
+
+  const r = await callGateway([{ role: "system", content: system }, { role: "user", content: user }], 2000);
+  if (!r.ok) return { dormant: false, output: null, message: statusMessage(r.status) };
+
+  const cleaned = r.text.trim().replace(/^```(?:json)?/i, "").replace(/```$/, "").trim();
+  let en = "", ar = "", kp: string[] = [], rec = "";
+  try {
+    const p = JSON.parse(cleaned);
+    en = String(p?.summary_en ?? "");
+    ar = String(p?.summary_ar ?? "");
+    kp = Array.isArray(p?.key_points) ? p.key_points.map((x: unknown) => String(x)) : [];
+    rec = ["proceed", "hold", "reject"].includes(p?.recommendation) ? p.recommendation : "";
+  } catch {
+    en = r.text; // model didn't return clean JSON — keep the raw recap in English
+  }
+
+  await admin
+    .from("tas_interview_note")
+    .update({ summary_en: en, summary_ar: ar, key_points: kp, recommendation: rec || null, ai_generated: true })
+    .eq("id", noteId);
+
+  return { dormant: false, output: { summary_en: en, summary_ar: ar, key_points: kp, recommendation: rec }, message: "summarized" };
+}
+
 Deno.serve(async (req: Request) => {
   const preflight = handleCorsPreflight(req);
   if (preflight) return preflight;
@@ -126,12 +170,14 @@ Deno.serve(async (req: Request) => {
   let title = "";
   let notes = "";
   let cvText = "";
+  let noteId = "";
   try {
     const b = await req.json();
     task = (b?.task ?? "generate_jd") as string;
     title = (b?.title ?? "") as string;
     notes = (b?.notes ?? "") as string;
     cvText = (b?.cv_text ?? b?.text ?? "") as string;
+    noteId = (b?.note_id ?? "") as string;
   } catch {
     return errorResponse("INVALID_PAYLOAD", 400);
   }
@@ -158,6 +204,10 @@ Deno.serve(async (req: Request) => {
   try {
     if (task === "parse_cv") {
       return jsonResponse(await parseCv(cvText));
+    }
+    if (task === "summarize_meeting") {
+      if (!noteId.trim()) return errorResponse("INVALID_PAYLOAD", 400);
+      return jsonResponse(await summarizeMeeting(admin, noteId.trim()));
     }
     // default: generate_jd
     if (!title.trim()) return errorResponse("INVALID_PAYLOAD", 400);

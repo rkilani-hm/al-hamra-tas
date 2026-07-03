@@ -1408,6 +1408,19 @@
       "subtitle": "Schedule and manage candidate interviews, panels, and outcomes."
     },
     "backToList": "Back to Interviews",
+    "notes": {
+      "title": "Meeting notes",
+      "placeholder": "Paste the interview transcript or type your notes…",
+      "save": "Save note",
+      "saved": "Note saved.",
+      "none": "No meeting notes yet.",
+      "summarize": "Summarize with AI",
+      "summarizing": "Summarizing…",
+      "summarized": "Summary generated.",
+      "aiSummary": "AI summary",
+      "aiDormant": "AI copilot is dormant. Enable it in System Settings.",
+      "error": "Action failed. Please try again."
+    },
     "common": {
       "loading": "Loading…"
     },

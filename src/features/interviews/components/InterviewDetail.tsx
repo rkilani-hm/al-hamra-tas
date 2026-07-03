@@ -28,6 +28,7 @@ import {
 } from "../api";
 import type { InterviewOutcome } from "../types";
 import { InterviewScorecardForm } from "./InterviewScorecardForm";
+import { MeetingNotesPanel } from "./MeetingNotesPanel";
 
 interface InterviewDetailProps {
   id: string;
@@ -222,6 +223,9 @@ export function InterviewDetail({ id, currentUserId = null }: InterviewDetailPro
           </ul>
         )}
       </section>
+
+      {/* Meeting notes + AI summary (M2.5) */}
+      <MeetingNotesPanel interviewId={id} />
 
       {/* Caller's panelist scorecard */}
       {!terminal && (
