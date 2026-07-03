@@ -166,9 +166,18 @@ Deno.serve(async (req: Request) => {
   //    + a Teams application access policy for the organizer). This is the reliable
   //    app-only path for a Teams join link.
   if (organizer) {
+    // /onlineMeetings requires the user's object GUID, not the UPN — resolve it first.
+    let organizerId = organizer;
+    try {
+      const u = await fetch(`https://graph.microsoft.com/v1.0/users/${encodeURIComponent(organizer)}?$select=id`, {
+        headers: { authorization: `Bearer ${token}` },
+      });
+      if (u.ok) organizerId = (await u.json()).id ?? organizer;
+      report.organizer_id = organizerId;
+    } catch { /* fall back to UPN */ }
     const s2 = new Date(Date.now() + 60 * 60 * 1000);
     const e2 = new Date(s2.getTime() + 30 * 60 * 1000);
-    const r = await fetch(`https://graph.microsoft.com/v1.0/users/${encodeURIComponent(organizer)}/onlineMeetings`, {
+    const r = await fetch(`https://graph.microsoft.com/v1.0/users/${encodeURIComponent(organizerId)}/onlineMeetings`, {
       method: "POST",
       headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
       body: JSON.stringify({ startDateTime: s2.toISOString(), endDateTime: e2.toISOString(), subject: "Al Hamra TAS — test online meeting" }),
