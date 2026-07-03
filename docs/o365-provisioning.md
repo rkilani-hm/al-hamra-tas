@@ -1,22 +1,22 @@
 # Microsoft 365 (Office 365) Provisioning — Al Hamra TAS
 
-This guide activates the **dormant** Microsoft 365 integrations in the TAS. It is written to be
-handed to whoever administers the Al Hamra **Entra ID (Azure AD)** tenant. Nothing here is live
-until an Entra admin registers an app and its secrets are set — the app ships safe-by-default and
-falls back gracefully (documents go to built-in Supabase Storage; notifications are marked
-*skipped*, never failed) until you complete these steps.
+This guide activates the Microsoft 365 integrations the TAS uses. It is written to be handed to
+whoever administers the Al Hamra **Entra ID (Azure AD)** tenant. Nothing here is live until an Entra
+admin registers an app and its secrets are set — the app ships safe-by-default (in-app notifications
+and in-app interview scheduling work regardless; the M365 layer only *adds* email + calendar/Teams
+on top).
 
-## What's already live vs. dormant
+## Scope — the O365 services in use
 
-| Component | Purpose | State today | Turns on with |
-|-----------|---------|-------------|---------------|
-| **Entra SSO** | User sign-in (OIDC) | ✅ **Live** (M0.1) | already configured |
-| **Outlook email** | Send TAS notifications as a real mailbox via Graph | ⏸ Dormant | app + `GRAPH_SENDER_UPN` |
-| **SharePoint** | Store uploaded documents in SharePoint instead of Supabase Storage | ⏸ Dormant | app + site/drive IDs + config flip |
-| **Teams** | Post notifications to Teams | 🚫 Not implemented | needs chat/channel target design (future) |
+| Service | What the TAS does with it | State today | Turns on with |
+|---------|---------------------------|-------------|----------------|
+| **Entra SSO** | User sign-in (OIDC) | ✅ **Live** | already configured |
+| **Outlook email** | Send TAS notifications as a real mailbox | ⏸ Dormant | Graph app + `GRAPH_SENDER_UPN` |
+| **Teams meeting + Outlook calendar** | When an interview is scheduled with mode **Teams**, create an Outlook calendar event **with a Teams online meeting** and email the invite (with the Teams join link) to the candidate + panellists. On-site/phone interviews still send a calendar invite (no Teams link). | ⏸ Dormant | Graph app + `GRAPH_ORGANIZER_UPN` |
+| **SharePoint** (optional) | Store uploaded documents in SharePoint instead of built-in storage | ⏸ Dormant, **not required** for the above | Graph app + site/drive IDs |
 
-All three dormant pieces share **one** Entra app registration using the **client-credentials**
-(application-permission) flow — there is no per-user delegation to configure.
+All of this uses **one** Entra app registration via the **client-credentials** (application-permission)
+flow — no per-user delegation to configure.
 
 ---
 
@@ -24,112 +24,109 @@ All three dormant pieces share **one** Entra app registration using the **client
 
 1. **Azure Portal → Entra ID → App registrations → New registration.**
    - Name: `Al Hamra TAS – Graph Integration` (any name).
-   - Supported account types: **Single tenant**.
-   - Redirect URI: leave blank (client-credentials flow needs none).
-   - Record the **Application (client) ID** and the **Directory (tenant) ID**.
+   - Supported account types: **Single tenant**. Redirect URI: leave blank.
+   - Record the **Application (client) ID** and **Directory (tenant) ID**.
 
-2. **Certificates & secrets → New client secret.**
-   - Description `tas-graph`, expiry per your policy (e.g. 12–24 months — note the renewal date).
-   - Copy the secret **Value** immediately (shown once).
+2. **Certificates & secrets → New client secret.** Copy the **Value** immediately (shown once); note
+   the expiry/renewal date.
 
 3. **API permissions → Add a permission → Microsoft Graph → _Application permissions_** (not
-   Delegated). Add only what each feature needs, then **Grant admin consent** for the tenant:
+   Delegated). Add these, then **Grant admin consent** for the tenant:
 
-   | Permission | Needed for | Least-privilege note |
-   |------------|-----------|----------------------|
-   | `Mail.Send` | Outlook email | Scope it to the single sender mailbox (step 4) so the app can't send as anyone. |
-   | `Sites.ReadWrite.All` *(or `Files.ReadWrite.All`)* | SharePoint document storage | Grants write to SharePoint drives. If your policy allows, restrict via [Sites.Selected] instead and grant the app access to only the TAS site. |
+   | Permission | Needed for |
+   |------------|-----------|
+   | `Mail.Send` | Outlook email notifications |
+   | `Calendars.ReadWrite` | Create the interview calendar event on the organizer mailbox + send invites |
+   | `OnlineMeetings.ReadWrite.All` | Attach the Teams online meeting to the event *(see note in step 5)* |
 
-   Skip Teams permissions — the Teams sender isn't built yet.
+   SharePoint is out of scope here; add `Sites.ReadWrite.All` only if you later opt into SharePoint
+   document storage.
 
-4. **(Recommended) Restrict `Mail.Send` to one mailbox.** By default `Mail.Send` (application) lets
-   the app send as *any* mailbox. Lock it to the TAS sender with an **Application Access Policy**
-   (Exchange Online PowerShell):
+4. **Restrict the app to the two service mailboxes (recommended).** Application `Mail.Send` /
+   `Calendars.ReadWrite` otherwise let the app act on *any* mailbox. Scope it to just the TAS
+   sender/organizer with an **Application Access Policy** (Exchange Online PowerShell):
    ```powershell
    New-ApplicationAccessPolicy `
      -AppId <Application (client) ID> `
-     -PolicyScopeGroupId tas-sender@alhamra.com.kw `
+     -PolicyScopeGroupId tas-interviews@alhamra.com.kw `
      -AccessRight RestrictAccess `
-     -Description "Restrict TAS app to the TAS sender mailbox"
+     -Description "Restrict TAS app to the TAS sender/organizer mailbox"
    ```
-   Use a real/shared mailbox as the sender (this becomes `GRAPH_SENDER_UPN`).
+   Use a real/shared mailbox for both roles (it becomes `GRAPH_SENDER_UPN` and `GRAPH_ORGANIZER_UPN`
+   — they can be the same mailbox).
+
+5. **Teams online-meeting note.** The TAS creates the Teams meeting *via the calendar event*
+   (`isOnlineMeeting: true`), which in most tenants only needs `Calendars.ReadWrite`. If Teams join
+   links don't populate on created events, also grant the app app-only online-meeting rights with a
+   Teams application access policy (Teams PowerShell):
+   ```powershell
+   New-CsApplicationAccessPolicy -Identity tas-online-meetings `
+     -AppIds "<Application (client) ID>" -Description "TAS online meetings"
+   Grant-CsApplicationAccessPolicy -PolicyName tas-online-meetings `
+     -Identity tas-interviews@alhamra.com.kw
+   ```
 
 ---
 
-## Part 2 — Collect the SharePoint site & drive IDs (for document storage)
+## Part 2 — Set the secrets (TAS admin, in Lovable/Supabase)
 
-Only needed if you want documents stored in SharePoint. Using the app token (or Graph Explorer as
-an admin), resolve the target library:
+Set these as **edge-function environment variables** (Supabase → Edge Functions → Secrets).
+**Never commit these to git.**
 
-- **Site ID** — `GET https://graph.microsoft.com/v1.0/sites/alhamra.sharepoint.com:/sites/<SiteName>`
-  → use the returned `id` (the full `host,siteGuid,webGuid` triplet) as `SHAREPOINT_SITE_ID`.
-- **Drive ID** — `GET https://graph.microsoft.com/v1.0/sites/<SITE_ID>/drives`
-  → pick the document library (usually **Documents**) and use its `id` as `SHAREPOINT_DRIVE_ID`.
-
----
-
-## Part 3 — Set the secrets (TAS admin, in Lovable/Supabase)
-
-Set these as **edge-function environment variables** in the Lovable Cloud project (Supabase →
-Edge Functions → Secrets). **Never commit these to git.**
-
-| Secret | Required for | Example / notes |
-|--------|-------------|-----------------|
-| `ENTRA_TENANT_ID` | all Graph | Directory (tenant) ID from Part 1 |
+| Secret | Required for | Notes |
+|--------|-------------|-------|
+| `ENTRA_TENANT_ID` | all Graph | Directory (tenant) ID |
 | `ENTRA_CLIENT_ID` | all Graph | Application (client) ID |
 | `ENTRA_CLIENT_SECRET` | all Graph | client secret **Value** |
 | `GRAPH_SCOPES` | optional | defaults to `https://graph.microsoft.com/.default` — leave unset |
-| `GRAPH_SENDER_UPN` | Outlook email | the sender mailbox, e.g. `tas-sender@alhamra.com.kw` |
-| `SHAREPOINT_SITE_ID` | SharePoint | from Part 2 |
-| `SHAREPOINT_DRIVE_ID` | SharePoint | from Part 2 |
+| `GRAPH_SENDER_UPN` | Outlook email | sender mailbox, e.g. `tas-interviews@alhamra.com.kw` |
+| `GRAPH_ORGANIZER_UPN` | Teams/calendar | organizer mailbox for interview events (falls back to `GRAPH_SENDER_UPN` if unset) |
+| `SHAREPOINT_SITE_ID`, `SHAREPOINT_DRIVE_ID` | SharePoint (optional) | only if you enable SharePoint storage |
 
-The same three `ENTRA_*` values power email **and** SharePoint (one app, one token).
-
----
-
-## Part 4 — Enable the adapters in the app
-
-Two things gate each adapter: an **`is_enabled` toggle** (in-app) and, for SharePoint, a
-**`config_status = 'configured'`** flag (service-role only). Both must be set.
-
-1. **In-app toggle** — sign in as a user with `settings.manage`, go to
-   **Administration → Integrations** (`/app/admin/integrations`) and enable:
-   - **Outlook email** (comm adapter `outlook_email`)
-   - **SharePoint** (storage adapter `sharepoint`)
-
-2. **`config_status` flip (SharePoint only)** — the toggle sets `is_enabled` but *not*
-   `config_status`, which the storage router also checks before routing to SharePoint (otherwise it
-   safely falls back to Supabase Storage). This column is service-role only and has no UI. **Once
-   your secrets are set, tell me and I'll run the one-line update** (`tas_storage_adapter_config`
-   `config_status = 'configured'` for `provider = 'sharepoint'`) via the Lovable DB tooling — or
-   your DBA can run it directly.
-
-   > Outlook email does **not** need this — the dispatcher just tries Graph and marks a send
-   > *skipped* if creds are missing, so once the secret is set and the toggle is on, it's live.
+The same three `ENTRA_*` values power email, calendar, and Teams (one app, one token).
 
 ---
 
-## Part 5 — Verify
+## Part 3 — Enable the adapters in the app
 
-- **Outlook email**: trigger any TAS notification (e.g. submit a requisition for approval) and
-  confirm the recipient receives it from `GRAPH_SENDER_UPN`. In **Notifications → Log** the row
-  should read *sent* (not *skipped*/*failed*).
-- **SharePoint**: upload a document (e.g. a pre-boarding item) and confirm the file appears in the
-  SharePoint library; the stored reference will be a Graph drive-item id rather than a bucket path.
-- **Status view**: `/app/admin/integrations` should show Outlook and SharePoint as **enabled**;
-  the unified `m365_status` reports Entra *live* and the two adapters *enabled/configured*.
+Two gates per adapter: an **`is_enabled` toggle** (in-app) and a **`config_status = 'configured'`**
+flag (service-role only; the seeded default is `unconfigured`). **Both** must be set.
+
+1. **In-app toggle** — sign in as a user with `settings.manage`, go to **Administration →
+   Integrations** (`/app/admin/integrations`) and enable **Outlook email** and **Teams**.
+
+2. **`config_status` flip** — the toggle sets `is_enabled` but not `config_status`. The email
+   dispatcher tolerates this, but the **interview scheduler requires `config_status = 'configured'`**
+   for `outlook_email`/`teams` before it will create a calendar/Teams event (otherwise it safely
+   records the interview's `calendar_status = 'skipped'`). This column has no UI. **Once your secrets
+   are set, tell me and I'll run the one-line update** (`tas_comm_adapter_config` `config_status =
+   'configured'` for channels `outlook_email` and `teams`) via the Lovable DB tooling — or your DBA
+   can run it directly.
+
+---
+
+## Part 4 — Verify
+
+- **Email**: trigger a notification (e.g. submit a requisition for approval) → the recipient gets it
+  from `GRAPH_SENDER_UPN`; **Notifications → Log** shows *sent* (not *skipped*/*failed*).
+- **Teams + calendar**: schedule an interview with mode **Teams**, adding the candidate (with an
+  email) and panellists → they receive an **Outlook calendar invite** containing the **Teams join
+  link**; the interview's `calendar_status` becomes **created** and `teams_join_url` is populated.
+  An on-site interview sends a calendar invite with the location and no Teams link.
 
 ---
 
 ## Notes & limitations
 
-- **Teams** notifications are not implemented — even with credentials the Teams adapter stays
-  *skipped* until a chat/channel target-resolution design is added. Out of scope for now.
+- **Teams here means meetings, not chat.** Meetings are created as Outlook calendar events with an
+  online meeting; there is no Teams channel/chat messaging.
+- **Attendees need email addresses.** Candidates without an email and panellists without a `tas_user`
+  email are simply omitted from the invite; the event is still created for the rest.
 - **SMS** is a separate, non-O365 channel (`SMS_GATEWAY_URL`, `SMS_GATEWAY_KEY`) — ignore unless
-  you want SMS.
-- **Secrets never live in the repo.** They are environment variables only. The database stores just
-  enable/status *flags* (`tas_comm_adapter_config`, `tas_storage_adapter_config`) — never secrets.
-- **Secret rotation**: when the client secret expires, update `ENTRA_CLIENT_SECRET` and the
-  integrations keep working — no code change.
-- **Fail-safe**: if a secret is missing or wrong, the app does not crash — email sends are *skipped*
-  and documents fall back to the private Supabase Storage bucket `tas-documents`.
+  wanted.
+- **Secrets never live in the repo** — environment variables only. The database stores just
+  enable/status *flags* (`tas_comm_adapter_config`), never secrets.
+- **Secret rotation**: update `ENTRA_CLIENT_SECRET` when it expires — no code change.
+- **Fail-safe**: if a secret is missing/wrong the app never crashes — emails are marked *skipped* and
+  interview `calendar_status` is *skipped* (or *failed* with a note on a Graph error), while in-app
+  notifications and in-app scheduling keep working.

@@ -1,34 +1,33 @@
 // =============================================================================
 // Edge Function: interview-schedule  (Module M1.7 — Interview Management)
 // =============================================================================
-// The DORMANT Microsoft Graph scheduling adapter for interviews. Best-effort
-// invoked (fire-and-forget) by the frontend AFTER schedule_interview /
-// reschedule_interview return. In-app scheduling works regardless of this
-// function; it only adds an Outlook calendar event + Teams meeting WHEN M365 is
-// configured.
+// The Microsoft Graph scheduling adapter for interviews. Best-effort invoked
+// (fire-and-forget) by the frontend AFTER schedule_interview / reschedule_interview
+// return. In-app scheduling works regardless of this function; it only ADDS an
+// Outlook calendar event (+ a Teams online meeting when mode='teams') and sends
+// the calendar invite to the candidate + panellists WHEN M365 is configured.
 //
 // Behavior (degradation is a feature — never crash):
 //   * Read tas_comm_adapter_config. If neither 'outlook_email' nor 'teams' is
-//     is_enabled + config_status='configured', OR the Graph secrets are absent,
-//     set tas_interview.calendar_status='skipped' and return — NOT 'failed'.
-//   * If configured + secrets present: create the Outlook event (+ Teams online
-//     meeting when mode='teams'), store outlook_event_id + teams_join_url, set
-//     calendar_status='created'.
+//     is_enabled + config_status='configured', OR the Graph secrets/organizer are
+//     absent, set tas_interview.calendar_status='skipped' and return — NOT 'failed'.
+//   * If configured + secrets present: create the Outlook event on the organizer
+//     mailbox with the candidate + panellists as attendees (Graph emails them the
+//     calendar invite). When mode='teams', the event is created as an online
+//     meeting and Graph returns the Teams join URL. Store outlook_event_id +
+//     teams_join_url, set calendar_status='created'.
 //   * On any Graph error: set calendar_status='failed' + a note; return 200.
 //
-// Required secrets (Supabase/Lovable env; NEVER hardcode) — all already part of
-// the Entra/Graph family used elsewhere; none are added by M1.7:
+// Required secrets (Supabase/Lovable env; NEVER hardcode):
 //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
 //   ENTRA_TENANT_ID, ENTRA_CLIENT_ID, ENTRA_CLIENT_SECRET
-//   GRAPH_SCOPES  — must include Calendars.ReadWrite and OnlineMeetings.ReadWrite
-//                   (and an organizer mailbox the app may write to).
+//   GRAPH_SCOPES        — optional; defaults to https://graph.microsoft.com/.default
+//   GRAPH_ORGANIZER_UPN — the mailbox the event is created on (falls back to
+//                         GRAPH_SENDER_UPN). The app needs Calendars.ReadWrite on it
+//                         (and OnlineMeetings.ReadWrite.All for the Teams meeting).
 //
 // Adapter-config flags read: tas_comm_adapter_config.channel in
 // ('outlook_email','teams') -> is_enabled + config_status.
-//
-// NOTE: actual Graph calls are DORMANT until Al Hamra provisions the scopes. The
-// createOutlookEvent/createTeamsMeeting helpers below throw UnconfiguredError
-// when secrets are missing, which the handler maps to 'skipped'.
 // =============================================================================
 
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
@@ -38,6 +37,8 @@ import { errorResponse, jsonResponse } from "../_shared/errors.ts";
 // deno-lint-ignore no-explicit-any
 type Admin = any;
 
+const GRAPH = "https://graph.microsoft.com/v1.0";
+
 class UnconfiguredError extends Error {}
 
 interface GraphSecrets {
@@ -45,6 +46,7 @@ interface GraphSecrets {
   clientId: string;
   clientSecret: string;
   scopes: string;
+  organizer: string;
 }
 
 // Read Graph secrets; throw UnconfiguredError if any is missing (dormant state).
@@ -52,36 +54,154 @@ function readGraphSecrets(): GraphSecrets {
   const tenantId = Deno.env.get("ENTRA_TENANT_ID") ?? "";
   const clientId = Deno.env.get("ENTRA_CLIENT_ID") ?? "";
   const clientSecret = Deno.env.get("ENTRA_CLIENT_SECRET") ?? "";
-  const scopes = Deno.env.get("GRAPH_SCOPES") ?? "";
+  const scopes = Deno.env.get("GRAPH_SCOPES") ?? "https://graph.microsoft.com/.default";
+  const organizer = Deno.env.get("GRAPH_ORGANIZER_UPN") ?? Deno.env.get("GRAPH_SENDER_UPN") ?? "";
   if (!tenantId || !clientId || !clientSecret) {
     throw new UnconfiguredError("Graph credentials (ENTRA_*) are not configured.");
   }
-  return { tenantId, clientId, clientSecret, scopes };
+  if (!organizer) {
+    throw new UnconfiguredError("GRAPH_ORGANIZER_UPN / GRAPH_SENDER_UPN is not configured.");
+  }
+  return { tenantId, clientId, clientSecret, scopes, organizer };
 }
 
 interface InterviewRow {
   id: string;
   reference: string | null;
+  application_id: string;
+  round_type: string | null;
   scheduled_at: string | null;
   duration_min: number;
   mode: string;
   location: string | null;
 }
 
-// DORMANT: create an Outlook calendar event via Graph. Throws until configured.
-// When Al Hamra provisions Calendars.ReadWrite, implement the POST to
-// /users/{organizer}/events here and return the created event id.
-async function createOutlookEvent(_secrets: GraphSecrets, _iv: InterviewRow): Promise<string> {
-  // Intentionally not implemented until scopes exist. Reaching here means secrets
-  // were present; absence is handled earlier via UnconfiguredError.
-  await Promise.resolve();
-  throw new UnconfiguredError("Outlook event creation is dormant until Graph scopes are provisioned.");
+interface Attendee {
+  emailAddress: { address: string; name?: string };
+  type: "required";
 }
 
-// DORMANT: create a Teams online meeting via Graph. Throws until configured.
-async function createTeamsMeeting(_secrets: GraphSecrets, _iv: InterviewRow): Promise<string> {
-  await Promise.resolve();
-  throw new UnconfiguredError("Teams meeting creation is dormant until Graph scopes are provisioned.");
+// Microsoft Graph client-credentials token.
+async function graphToken(s: GraphSecrets): Promise<string> {
+  const resp = await fetch(`https://login.microsoftonline.com/${s.tenantId}/oauth2/v2.0/token`, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      client_id: s.clientId,
+      client_secret: s.clientSecret,
+      scope: s.scopes,
+      grant_type: "client_credentials",
+    }),
+  });
+  if (!resp.ok) throw new Error(`graph token request failed: ${resp.status}`);
+  const json = await resp.json();
+  if (!json.access_token) throw new Error("graph token response missing access_token");
+  return json.access_token as string;
+}
+
+// Resolve the candidate + panellists into Graph attendees (those with an email).
+async function buildAttendees(
+  admin: Admin,
+  iv: InterviewRow,
+): Promise<{ candidateName: string | null; attendees: Attendee[] }> {
+  const attendees: Attendee[] = [];
+  let candidateName: string | null = null;
+
+  const { data: app } = await admin
+    .from("tas_application")
+    .select("candidate_id")
+    .eq("id", iv.application_id)
+    .maybeSingle();
+  if (app?.candidate_id) {
+    const { data: cand } = await admin
+      .from("tas_candidate")
+      .select("full_name_en, full_name_ar, email")
+      .eq("id", app.candidate_id)
+      .maybeSingle();
+    if (cand) {
+      candidateName = cand.full_name_en ?? cand.full_name_ar ?? null;
+      if (cand.email) {
+        attendees.push({ emailAddress: { address: cand.email, name: candidateName ?? undefined }, type: "required" });
+      }
+    }
+  }
+
+  const { data: panel } = await admin
+    .from("tas_interview_panelist")
+    .select("user_id")
+    .eq("interview_id", iv.id);
+  const ids = (panel ?? []).map((p: { user_id: string }) => p.user_id);
+  if (ids.length > 0) {
+    const { data: users } = await admin
+      .from("tas_user")
+      .select("email, display_name_en, display_name_ar")
+      .in("id", ids);
+    for (const u of users ?? []) {
+      if (u.email) {
+        attendees.push({
+          emailAddress: { address: u.email, name: u.display_name_en ?? u.display_name_ar ?? undefined },
+          type: "required",
+        });
+      }
+    }
+  }
+
+  return { candidateName, attendees };
+}
+
+// Create the Outlook calendar event (+ Teams online meeting when mode='teams') on
+// the organizer mailbox. Graph sends the invite to attendees. Returns the event id
+// and, for Teams mode, the join URL.
+async function createOutlookEvent(
+  secrets: GraphSecrets,
+  admin: Admin,
+  iv: InterviewRow,
+): Promise<{ eventId: string; joinUrl: string | null }> {
+  if (!iv.scheduled_at) {
+    throw new UnconfiguredError("interview has no scheduled_at; nothing to place on the calendar.");
+  }
+  const token = await graphToken(secrets);
+  const { candidateName, attendees } = await buildAttendees(admin, iv);
+
+  const start = new Date(iv.scheduled_at);
+  const end = new Date(start.getTime() + (iv.duration_min || 60) * 60_000);
+  const isTeams = iv.mode === "teams";
+
+  const subject = `Interview${candidateName ? ` – ${candidateName}` : ""}${iv.reference ? ` (${iv.reference})` : ""}`;
+  const lines = [
+    candidateName ? `Candidate: ${candidateName}` : null,
+    iv.round_type ? `Round: ${iv.round_type}` : null,
+    isTeams ? "Mode: Microsoft Teams (online)" : iv.mode === "phone" ? "Mode: Phone" : "Mode: On-site",
+    !isTeams && iv.location ? `Location: ${iv.location}` : null,
+    iv.reference ? `Reference: ${iv.reference}` : null,
+  ].filter(Boolean);
+
+  // deno-lint-ignore no-explicit-any
+  const event: Record<string, any> = {
+    subject,
+    body: { contentType: "HTML", content: `<p>${lines.join("<br/>")}</p>` },
+    start: { dateTime: start.toISOString().slice(0, 19), timeZone: "UTC" },
+    end: { dateTime: end.toISOString().slice(0, 19), timeZone: "UTC" },
+    attendees,
+  };
+  if (isTeams) {
+    event.isOnlineMeeting = true;
+    event.onlineMeetingProvider = "teamsForBusiness";
+  } else if (iv.location) {
+    event.location = { displayName: iv.location };
+  }
+
+  const resp = await fetch(`${GRAPH}/users/${encodeURIComponent(secrets.organizer)}/events`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify(event),
+  });
+  if (!resp.ok) {
+    throw new Error(`Graph create event failed: ${resp.status} ${await resp.text()}`);
+  }
+  const created = await resp.json();
+  const joinUrl = created?.onlineMeeting?.joinUrl ?? null;
+  return { eventId: created.id as string, joinUrl };
 }
 
 async function adapterLive(admin: Admin): Promise<boolean> {
@@ -120,7 +240,7 @@ Deno.serve(async (req: Request) => {
   try {
     const { data: iv } = await admin
       .from("tas_interview")
-      .select("id, reference, scheduled_at, duration_min, mode, location")
+      .select("id, reference, application_id, round_type, scheduled_at, duration_min, mode, location")
       .eq("id", interviewId)
       .maybeSingle();
     if (!iv) return errorResponse("INVALID_PAYLOAD", 404);
@@ -133,26 +253,19 @@ Deno.serve(async (req: Request) => {
 
     try {
       const secrets = readGraphSecrets();
-      const eventId = await createOutlookEvent(secrets, iv as InterviewRow);
-      let joinUrl: string | null = null;
-      if (iv.mode === "teams") {
-        joinUrl = await createTeamsMeeting(secrets, iv as InterviewRow);
-      }
+      const { eventId, joinUrl } = await createOutlookEvent(secrets, admin, iv as InterviewRow);
       await admin
         .from("tas_interview")
         .update({ calendar_status: "created", outlook_event_id: eventId, teams_join_url: joinUrl })
         .eq("id", interviewId);
-      return jsonResponse({ interview_id: interviewId, calendar_status: "created" });
+      return jsonResponse({ interview_id: interviewId, calendar_status: "created", teams_join_url: joinUrl });
     } catch (err) {
       // Unconfigured -> skipped; any other Graph error -> failed (+ note). No crash.
       if (err instanceof UnconfiguredError) {
         await admin.from("tas_interview").update({ calendar_status: "skipped" }).eq("id", interviewId);
         return jsonResponse({ interview_id: interviewId, calendar_status: "skipped", note: err.message });
       }
-      await admin
-        .from("tas_interview")
-        .update({ calendar_status: "failed" })
-        .eq("id", interviewId);
+      await admin.from("tas_interview").update({ calendar_status: "failed" }).eq("id", interviewId);
       return jsonResponse({ interview_id: interviewId, calendar_status: "failed", note: String(err) });
     }
   } catch (err) {
