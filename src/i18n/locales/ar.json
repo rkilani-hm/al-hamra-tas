@@ -14,6 +14,7 @@
     "sourcing": "المصادر ومجمع المواهب",
     "screening": "الفرز",
     "interviews": "المقابلات",
+    "assessments": "التقييمات",
     "offers": "العروض",
     "preboarding": "ما قبل الالتحاق",
     "onboarding": "الالتحاق",
@@ -407,6 +408,13 @@
     }
   },
   "assessment": {
+    "page": {
+      "title": "التقييمات",
+      "subtitle": "تقييمات المرشحين عبر مسار التوظيف."
+    },
+    "filterAll": "الكل",
+    "openApplication": "فتح الطلب",
+    "noPermission": "ليس لديك صلاحية الوصول إلى التقييمات.",
     "panel": {
       "title": "التقييم والتقدير",
       "none": "لا توجد تقييمات بعد."

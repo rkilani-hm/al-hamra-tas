@@ -35,6 +35,7 @@ import { Route as AppConfigIndexRouteImport } from './routes/app.config.index'
 import { Route as AppComplianceIndexRouteImport } from './routes/app.compliance.index'
 import { Route as AppCandidatesIndexRouteImport } from './routes/app.candidates.index'
 import { Route as AppAuditIndexRouteImport } from './routes/app.audit.index'
+import { Route as AppAssessmentsIndexRouteImport } from './routes/app.assessments.index'
 import { Route as AppApplicationsIndexRouteImport } from './routes/app.applications.index'
 import { Route as AppAiIndexRouteImport } from './routes/app.ai.index'
 import { Route as AppWorkflowInboxRouteImport } from './routes/app.workflow.inbox'
@@ -195,6 +196,11 @@ const AppCandidatesIndexRoute = AppCandidatesIndexRouteImport.update({
 const AppAuditIndexRoute = AppAuditIndexRouteImport.update({
   id: '/audit/',
   path: '/audit/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppAssessmentsIndexRoute = AppAssessmentsIndexRouteImport.update({
+  id: '/assessments/',
+  path: '/assessments/',
   getParentRoute: () => AppRoute,
 } as any)
 const AppApplicationsIndexRoute = AppApplicationsIndexRouteImport.update({
@@ -391,6 +397,7 @@ export interface FileRoutesByFullPath {
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
   '/app/ai/': typeof AppAiIndexRoute
   '/app/applications/': typeof AppApplicationsIndexRoute
+  '/app/assessments/': typeof AppAssessmentsIndexRoute
   '/app/audit/': typeof AppAuditIndexRoute
   '/app/candidates/': typeof AppCandidatesIndexRoute
   '/app/compliance/': typeof AppComplianceIndexRoute
@@ -449,6 +456,7 @@ export interface FileRoutesByTo {
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
   '/app/ai': typeof AppAiIndexRoute
   '/app/applications': typeof AppApplicationsIndexRoute
+  '/app/assessments': typeof AppAssessmentsIndexRoute
   '/app/audit': typeof AppAuditIndexRoute
   '/app/candidates': typeof AppCandidatesIndexRoute
   '/app/compliance': typeof AppComplianceIndexRoute
@@ -509,6 +517,7 @@ export interface FileRoutesById {
   '/app/workflow/inbox': typeof AppWorkflowInboxRoute
   '/app/ai/': typeof AppAiIndexRoute
   '/app/applications/': typeof AppApplicationsIndexRoute
+  '/app/assessments/': typeof AppAssessmentsIndexRoute
   '/app/audit/': typeof AppAuditIndexRoute
   '/app/candidates/': typeof AppCandidatesIndexRoute
   '/app/compliance/': typeof AppComplianceIndexRoute
@@ -570,6 +579,7 @@ export interface FileRouteTypes {
     | '/app/workflow/inbox'
     | '/app/ai/'
     | '/app/applications/'
+    | '/app/assessments/'
     | '/app/audit/'
     | '/app/candidates/'
     | '/app/compliance/'
@@ -628,6 +638,7 @@ export interface FileRouteTypes {
     | '/app/workflow/inbox'
     | '/app/ai'
     | '/app/applications'
+    | '/app/assessments'
     | '/app/audit'
     | '/app/candidates'
     | '/app/compliance'
@@ -687,6 +698,7 @@ export interface FileRouteTypes {
     | '/app/workflow/inbox'
     | '/app/ai/'
     | '/app/applications/'
+    | '/app/assessments/'
     | '/app/audit/'
     | '/app/candidates/'
     | '/app/compliance/'
@@ -904,6 +916,13 @@ declare module '@tanstack/react-router' {
       path: '/audit'
       fullPath: '/app/audit/'
       preLoaderRoute: typeof AppAuditIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/app/assessments/': {
+      id: '/app/assessments/'
+      path: '/assessments'
+      fullPath: '/app/assessments/'
+      preLoaderRoute: typeof AppAssessmentsIndexRouteImport
       parentRoute: typeof AppRoute
     }
     '/app/applications/': {
@@ -1154,6 +1173,7 @@ interface AppRouteChildren {
   AppWorkflowInboxRoute: typeof AppWorkflowInboxRoute
   AppAiIndexRoute: typeof AppAiIndexRoute
   AppApplicationsIndexRoute: typeof AppApplicationsIndexRoute
+  AppAssessmentsIndexRoute: typeof AppAssessmentsIndexRoute
   AppAuditIndexRoute: typeof AppAuditIndexRoute
   AppCandidatesIndexRoute: typeof AppCandidatesIndexRoute
   AppComplianceIndexRoute: typeof AppComplianceIndexRoute
@@ -1206,6 +1226,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppWorkflowInboxRoute: AppWorkflowInboxRoute,
   AppAiIndexRoute: AppAiIndexRoute,
   AppApplicationsIndexRoute: AppApplicationsIndexRoute,
+  AppAssessmentsIndexRoute: AppAssessmentsIndexRoute,
   AppAuditIndexRoute: AppAuditIndexRoute,
   AppCandidatesIndexRoute: AppCandidatesIndexRoute,
   AppComplianceIndexRoute: AppComplianceIndexRoute,
@@ -1245,3 +1266,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

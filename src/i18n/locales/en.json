@@ -14,6 +14,7 @@
     "sourcing": "Sourcing & Talent Pool",
     "screening": "Screening",
     "interviews": "Interviews",
+    "assessments": "Assessments",
     "offers": "Offers",
     "preboarding": "Pre-Boarding",
     "onboarding": "Onboarding",
@@ -407,6 +408,13 @@
     }
   },
   "assessment": {
+    "page": {
+      "title": "Assessments",
+      "subtitle": "Candidate assessments across the pipeline."
+    },
+    "filterAll": "All",
+    "openApplication": "Open application",
+    "noPermission": "You don't have access to assessments.",
     "panel": {
       "title": "Assessment & Evaluation",
       "none": "No assessments yet."

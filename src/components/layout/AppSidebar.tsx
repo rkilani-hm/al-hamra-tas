@@ -2,7 +2,7 @@ import {
   LayoutDashboard, FileBarChart, Settings, Settings2, ShieldCheck, Workflow, Bell,
   ScrollText, FolderArchive, ClipboardList, KanbanSquare, UserSearch, ClipboardCheck,
   CalendarClock, FileSignature, UserCog, KeyRound, UserPlus, UserCheck, Users, Sparkles,
-  Plug, Contact, Plus, Minus,
+  Plug, Contact, Plus, Minus, FileCheck2,
 } from "lucide-react";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
@@ -26,7 +26,7 @@ type NavGroup = { label: string; defaultOpen: boolean; items: NavItem[] };
 
 export function AppSidebar() {
   const { t } = useTranslation();
-  const { roles } = useAuth();
+  const { roles, capabilities } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   // Ordered by the recruitment pipeline: plan & source -> recruit -> hire,
@@ -58,6 +58,10 @@ export function AppSidebar() {
         { title: t("nav.applications"), url: "/app/applications", icon: KanbanSquare },
         { title: t("nav.screening"), url: "/app/screening", icon: ClipboardCheck },
         { title: t("nav.interviews"), url: "/app/interviews", icon: CalendarClock },
+        // Assessment (M1.8) — shown only to users who can work with assessments.
+        ...(capabilities.includes("assessment.write")
+          ? [{ title: t("nav.assessments"), url: "/app/assessments", icon: FileCheck2 }]
+          : []),
         { title: t("nav.offers"), url: "/app/offers", icon: FileSignature },
       ],
     },
