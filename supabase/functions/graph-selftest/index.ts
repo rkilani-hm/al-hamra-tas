@@ -166,15 +166,20 @@ Deno.serve(async (req: Request) => {
   //    + a Teams application access policy for the organizer). This is the reliable
   //    app-only path for a Teams join link.
   if (organizer) {
-    // /onlineMeetings requires the user's object GUID, not the UPN — resolve it first.
-    let organizerId = organizer;
-    try {
-      const u = await fetch(`https://graph.microsoft.com/v1.0/users/${encodeURIComponent(organizer)}?$select=id`, {
-        headers: { authorization: `Bearer ${token}` },
-      });
-      if (u.ok) organizerId = (await u.json()).id ?? organizer;
-      report.organizer_id = organizerId;
-    } catch { /* fall back to UPN */ }
+    // /onlineMeetings requires the user's object GUID, not the UPN. Prefer an
+    // explicit GRAPH_ORGANIZER_ID secret (no User.Read.All needed); else try a
+    // directory lookup (needs User.Read.All).
+    let organizerId = env("GRAPH_ORGANIZER_ID") ?? organizer;
+    if (!env("GRAPH_ORGANIZER_ID")) {
+      try {
+        const u = await fetch(`https://graph.microsoft.com/v1.0/users/${encodeURIComponent(organizer)}?$select=id`, {
+          headers: { authorization: `Bearer ${token}` },
+        });
+        if (u.ok) organizerId = (await u.json()).id ?? organizer;
+      } catch { /* fall back to UPN */ }
+    }
+    report.organizer_id = organizerId;
+    report.organizer_id_source = env("GRAPH_ORGANIZER_ID") ? "secret" : "lookup";
     const s2 = new Date(Date.now() + 60 * 60 * 1000);
     const e2 = new Date(s2.getTime() + 30 * 60 * 1000);
     const r = await fetch(`https://graph.microsoft.com/v1.0/users/${encodeURIComponent(organizerId)}/onlineMeetings`, {
