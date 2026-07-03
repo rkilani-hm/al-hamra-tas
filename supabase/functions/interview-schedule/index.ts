@@ -46,7 +46,8 @@ interface GraphSecrets {
   clientId: string;
   clientSecret: string;
   scopes: string;
-  organizer: string;
+  organizer: string;    // UPN — used for sendMail / events
+  organizerId: string;  // object GUID — required by /onlineMeetings
 }
 
 // Read Graph secrets; throw UnconfiguredError if any is missing (dormant state).
@@ -56,13 +57,34 @@ function readGraphSecrets(): GraphSecrets {
   const clientSecret = Deno.env.get("ENTRA_CLIENT_SECRET") ?? "";
   const scopes = Deno.env.get("GRAPH_SCOPES") ?? "https://graph.microsoft.com/.default";
   const organizer = Deno.env.get("GRAPH_ORGANIZER_UPN") ?? Deno.env.get("GRAPH_SENDER_UPN") ?? "";
+  const organizerId = Deno.env.get("GRAPH_ORGANIZER_ID") ?? organizer;
   if (!tenantId || !clientId || !clientSecret) {
     throw new UnconfiguredError("Graph credentials (ENTRA_*) are not configured.");
   }
   if (!organizer) {
     throw new UnconfiguredError("GRAPH_ORGANIZER_UPN / GRAPH_SENDER_UPN is not configured.");
   }
-  return { tenantId, clientId, clientSecret, scopes, organizer };
+  return { tenantId, clientId, clientSecret, scopes, organizer, organizerId };
+}
+
+// Create a Teams online meeting via the dedicated endpoint (reliable app-only path;
+// requires OnlineMeetings.ReadWrite.All + a Teams application access policy on the
+// organizer, and the organizer's object GUID). Returns the join URL.
+async function createOnlineMeeting(
+  secrets: GraphSecrets,
+  token: string,
+  start: Date,
+  end: Date,
+  subject: string,
+): Promise<string | null> {
+  const resp = await fetch(`${GRAPH}/users/${encodeURIComponent(secrets.organizerId)}/onlineMeetings`, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ startDateTime: start.toISOString(), endDateTime: end.toISOString(), subject }),
+  });
+  if (!resp.ok) throw new Error(`Graph onlineMeetings failed: ${resp.status} ${await resp.text()}`);
+  const j = await resp.json();
+  return (j.joinWebUrl ?? j.joinUrl ?? null) as string | null;
 }
 
 interface InterviewRow {
@@ -177,12 +199,21 @@ async function createOutlookEvent(
   }
 
   const subject = `Interview${candidateName ? ` – ${candidateName}` : ""}${iv.reference ? ` (${iv.reference})` : ""}`;
+
+  // Teams: create the online meeting via the dedicated endpoint first (the event
+  // isOnlineMeeting flag is unreliable app-only) and embed the join link in the invite.
+  let joinUrl: string | null = null;
+  if (isTeams) {
+    joinUrl = await createOnlineMeeting(secrets, token, start, end, subject);
+  }
+
   const lines = [
     candidateName ? `Candidate: ${candidateName}` : null,
     iv.round_type ? `Round: ${iv.round_type}` : null,
     isTeams ? "Mode: Microsoft Teams (online)" : iv.mode === "phone" ? "Mode: Phone" : "Mode: On-site",
     !isTeams && locationName ? `Location: ${locationName}` : null,
     iv.reference ? `Reference: ${iv.reference}` : null,
+    joinUrl ? `<a href="${joinUrl}">Join the Microsoft Teams meeting</a>` : null,
   ].filter(Boolean);
 
   // deno-lint-ignore no-explicit-any
@@ -193,11 +224,9 @@ async function createOutlookEvent(
     end: { dateTime: end.toISOString().slice(0, 19), timeZone: "UTC" },
     attendees,
   };
-  if (isTeams) {
-    event.isOnlineMeeting = true;
-    event.onlineMeetingProvider = "teamsForBusiness";
-  } else if (locationName) {
-    event.location = { displayName: locationName };
+  const eventLocation = isTeams ? "Microsoft Teams Meeting" : locationName;
+  if (eventLocation) {
+    event.location = { displayName: eventLocation };
   }
 
   const resp = await fetch(`${GRAPH}/users/${encodeURIComponent(secrets.organizer)}/events`, {
@@ -210,22 +239,6 @@ async function createOutlookEvent(
   }
   const created = await resp.json();
   const webLink = created?.webLink ?? null;
-  let joinUrl = created?.onlineMeeting?.joinUrl ?? null;
-
-  // The create response omits onlineMeeting even when created — re-fetch for the
-  // Teams join URL when this is an online meeting.
-  if (isTeams && !joinUrl) {
-    try {
-      const g = await fetch(
-        `${GRAPH}/users/${encodeURIComponent(secrets.organizer)}/events/${created.id}?$select=onlineMeeting`,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      if (g.ok) {
-        const ev = await g.json();
-        joinUrl = ev?.onlineMeeting?.joinUrl ?? null;
-      }
-    } catch { /* best-effort */ }
-  }
 
   return { eventId: created.id as string, joinUrl, webLink };
 }
