@@ -42,6 +42,19 @@ async function graphToken(): Promise<string> {
   return json.access_token as string;
 }
 
+// Decode the (unverified) JWT payload to inspect the granted app roles.
+// deno-lint-ignore no-explicit-any
+function decodeToken(token: string): Record<string, any> {
+  try {
+    const payload = token.split(".")[1];
+    const b64 = payload.replace(/-/g, "+").replace(/_/g, "/").padEnd(payload.length + (4 - (payload.length % 4)) % 4, "=");
+    const json = JSON.parse(atob(b64));
+    return { roles: json.roles ?? [], aud: json.aud, appid: json.appid ?? json.azp, tenant: json.tid };
+  } catch {
+    return { roles: [], decode: "failed" };
+  }
+}
+
 Deno.serve(async (req: Request) => {
   const preflight = handleCorsPreflight(req);
   if (preflight) return preflight;
@@ -79,6 +92,7 @@ Deno.serve(async (req: Request) => {
   try {
     token = await graphToken();
     report.token = "ok";
+    report.token_claims = decodeToken(token);
   } catch (err) {
     report.token = "failed";
     report.token_error = String(err);
