@@ -30,10 +30,12 @@ export interface PublicApplyInput {
   phone: string | null;
   nationality: string | null;
   cover: string | null;
+  resume_ref?: string | null;
 }
 
 export interface PublicApplyResult {
   application_id: string | null;
+  candidate_id?: string | null;
   reference: string | null;
   duplicate: boolean;
 }

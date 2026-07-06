@@ -11,7 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useLanguage } from "@/hooks/use-language";
-import { publicJobDetail, submitPublicApplication } from "@/features/careers/api";
+import { publicJobDetail, submitPublicApplication, uploadCareersCv } from "@/features/careers/api";
+
+const CV_TYPES = [
+  "application/pdf",
+  "application/msword",
+  "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+];
+const CV_MAX_BYTES = 5 * 1024 * 1024;
 
 export const Route = createFileRoute("/careers/$id")({
   head: () => ({ meta: [{ title: "Job — Al Hamra Careers" }] }),
@@ -29,8 +36,16 @@ function CareersJobPage() {
   const [phone, setPhone] = useState("");
   const [nationality, setNationality] = useState("");
   const [cover, setCover] = useState("");
+  const [cv, setCv] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [doneRef, setDoneRef] = useState<string | null>(null);
+
+  const onPickCv = (file: File | null) => {
+    if (!file) { setCv(null); return; }
+    if (!CV_TYPES.includes(file.type)) { toast.error(t("careers.apply.cvType")); return; }
+    if (file.size > CV_MAX_BYTES) { toast.error(t("careers.apply.cvTooLarge")); return; }
+    setCv(file);
+  };
 
   const q = useQuery({ queryKey: ["careers", "job", id], queryFn: () => publicJobDetail(id) });
   const job = q.data?.job ?? null;
@@ -43,10 +58,12 @@ function CareersJobPage() {
     if (!canSubmit) return;
     setBusy(true);
     try {
+      const resumeRef = cv ? await uploadCareersCv(cv) : null;
       const r = await submitPublicApplication({
         job_id: id, full_name: name.trim(), email: email.trim(),
         phone: phone.trim() || null, nationality: nationality.trim() || null, cover: cover.trim() || null,
-      });
+        resume_ref: resumeRef,
+      }, language);
       setDoneRef(r.reference ?? "—");
       if (r.duplicate) toast.info(t("careers.apply.duplicate"));
       else toast.success(t("careers.apply.success"));
@@ -116,6 +133,16 @@ function CareersJobPage() {
                 <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <Label>{t("careers.apply.cover")}</Label>
                   <Textarea value={cover} onChange={(e) => setCover(e.target.value)} rows={3} />
+                </div>
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
+                  <Label>{t("careers.apply.cv")}</Label>
+                  <Input
+                    type="file"
+                    accept=".pdf,.doc,.docx"
+                    dir="ltr"
+                    onChange={(e) => onPickCv(e.target.files?.[0] ?? null)}
+                  />
+                  <p className="text-xs text-muted-foreground">{cv ? cv.name : t("careers.apply.cvHint")}</p>
                 </div>
               </div>
               <Button onClick={submit} disabled={!canSubmit}>{t("careers.apply.submit")}</Button>
