@@ -559,10 +559,13 @@ export type Database = {
           nationality: string | null
           nationality_class: string | null
           phone: string | null
+          resume_ref: string | null
+          skills: string[] | null
           source: string | null
           status: string
           updated_at: string
           updated_by: string | null
+          years_experience: number | null
         }
         Insert: {
           created_at?: string
@@ -577,10 +580,13 @@ export type Database = {
           nationality?: string | null
           nationality_class?: string | null
           phone?: string | null
+          resume_ref?: string | null
+          skills?: string[] | null
           source?: string | null
           status?: string
           updated_at?: string
           updated_by?: string | null
+          years_experience?: number | null
         }
         Update: {
           created_at?: string
@@ -595,10 +601,13 @@ export type Database = {
           nationality?: string | null
           nationality_class?: string | null
           phone?: string | null
+          resume_ref?: string | null
+          skills?: string[] | null
           source?: string | null
           status?: string
           updated_at?: string
           updated_by?: string | null
+          years_experience?: number | null
         }
         Relationships: []
       }
@@ -4428,6 +4437,8 @@ export type Database = {
           p_job_id: string
           p_nationality?: string
           p_phone?: string
+          p_resume_ref?: string
+          p_source?: string
         }
         Returns: Json
       }
